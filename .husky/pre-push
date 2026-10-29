@@ -1,0 +1,12 @@
+# Before each push: the checks CI runs, except the browser tests (pnpm test:e2e), which are slow.
+# Skip once with `git push --no-verify`.
+set -e
+echo "pre-push: type check" && pnpm check
+echo "pre-push: lint" && pnpm lint
+echo "pre-push: unit tests" && pnpm test:unit
+if node scripts/hooks/db-reachable.js; then
+	echo "pre-push: database tests" && pnpm test:db
+else
+	echo "pre-push: Postgres isn't running (start it with pnpm db:start), so the database tests were skipped. CI still runs them."
+fi
+echo "pre-push: dependency audit" && pnpm audit --audit-level high

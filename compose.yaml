@@ -1,0 +1,16 @@
+# Local development database. Production uses Render Postgres (see render.yaml).
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: deteck
+      POSTGRES_PASSWORD: deteck
+      POSTGRES_DB: deteck
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./scripts/db/init:/docker-entrypoint-initdb.d:ro
+volumes:
+  pgdata:

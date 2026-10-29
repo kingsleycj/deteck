@@ -1,0 +1,62 @@
+{
+	"name": "deteck",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm --filter @deteck/web dev",
+		"dev:worker": "pnpm --filter @deteck/worker dev",
+		"build": "pnpm --filter @deteck/web build",
+		"start": "pnpm --filter @deteck/web start",
+		"worker": "pnpm --filter @deteck/worker start",
+		"check": "pnpm -r check",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"test:unit": "pnpm --filter @deteck/core test:unit",
+		"test:db": "pnpm --filter @deteck/core test:db",
+		"test:e2e": "pnpm --filter @deteck/web test:e2e",
+		"budget": "pnpm --filter @deteck/web budget",
+		"db:start": "docker compose up -d",
+		"db:stop": "docker compose down",
+		"db:generate": "pnpm --filter @deteck/core db:generate",
+		"db:migrate": "pnpm --filter @deteck/core db:migrate",
+		"db:seed": "pnpm --filter @deteck/core db:seed",
+		"db:studio": "pnpm --filter @deteck/core db:studio",
+		"auth:schema": "pnpm --filter @deteck/core auth:schema",
+		"staff:create": "pnpm --filter @deteck/core staff:create",
+		"eval:scan": "pnpm --filter @deteck/core eval:scan",
+		"screenshots": "pnpm --filter @deteck/web screenshots",
+		"prepare": "husky",
+		"demo:accounts": "pnpm --filter @deteck/core demo:accounts",
+		"demo:code": "node packages/core/scripts/demo-code.ts",
+		"loadtest": "node scripts/load-test.js",
+		"db:reset": "pnpm --filter @deteck/core db:reset",
+		"backup": "pnpm --filter @deteck/core backup",
+		"restore": "pnpm --filter @deteck/core restore"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/node": "^24",
+		"eslint": "^10.4.1",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.19.0",
+		"globals": "^17.6.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.6.0",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.1.0",
+		"svelte": "^5.57.1",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.60.1"
+	},
+	"engines": {
+		"node": ">=22.17"
+	},
+	"packageManager": "pnpm@10.33.2",
+	"pnpm": {
+		"overrides": {
+			"uuid@<11.1.1": "^11.1.1",
+			"esbuild@<0.25.0": "^0.25.0"
+		}
+	}
+}

@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: deteck
+          POSTGRES_PASSWORD: deteck
+          POSTGRES_DB: deteck
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U deteck" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://deteck:deteck@localhost:5432/deteck
+      TEST_DATABASE_URL: postgres://deteck:deteck@localhost:5432/deteck_test
+      E2E_DATABASE_URL: postgres://deteck:deteck@localhost:5432/deteck_e2e
+      ORIGIN: http://localhost:4173
+      # Throwaway CI-only values; real secrets live in Render.
+      BETTER_AUTH_SECRET: ci-only-better-auth-secret-0000000000
+      SERIAL_HMAC_KEY: ci-only-serial-hmac-key-000000000000000
+      DEVICE_HASH_SECRET: ci-only-device-hash-secret-00000000000
+      EMAIL_DRIVER: log
+      STORAGE_DRIVER: local
+      FEATURE_PACKAGING_AI: pilot
+      PILOT_ACCESS_CODE: ci-pilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Create test databases
+        run: |
+          psql postgres://deteck:deteck@localhost:5432/deteck -c 'CREATE DATABASE deteck_test' -c 'CREATE DATABASE deteck_e2e'
+
+      - name: Dependency audit (fails on high or critical)
+        run: pnpm audit --prod --audit-level high
+      - run: pnpm lint
+      - run: pnpm check
+      - run: pnpm test:unit
+      - run: pnpm test:db
+
+      - run: pnpm build
+      - name: Page-weight budgets (F-04)
+        run: |
+          pnpm db:migrate
+          pnpm db:seed --packs 50
+          PORT=4173 PROTOCOL_HEADER=x-forwarded-proto node apps/web/build/index.js &
+          for i in $(seq 1 30); do curl -fs http://localhost:4173/healthz && break; sleep 2; done
+          BASE_URL=http://localhost:4173 pnpm budget
+
+      - name: Worker starts and shuts down cleanly
+        run: |
+          JOBS_IN_WEB=false node apps/worker/src/index.ts & pid=$!
+          sleep 10
+          kill -TERM $pid
+          wait $pid
+
+      - name: Install Playwright browser
+        run: pnpm --filter @deteck/web exec playwright install --with-deps chromium
+      - name: End-to-end tests
+        # Uses the build from the step above instead of building again.
+        env:
+          E2E_SKIP_BUILD: '1'
+        run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          retention-days: 7

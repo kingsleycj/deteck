@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "custody_supersedes_uq" ON "custody_event" USING btree ("supersedes_id");

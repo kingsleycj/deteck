@@ -1,0 +1,20 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Miscellaneous
+apps/web/static/
+packages/core/drizzle/
+
+# Planning documents and design inputs (formatted by hand)
+/docs/
+
+# Local data and test output
+/.data/
+test-results/
+playwright-report/
+.svelte-kit/
+build/

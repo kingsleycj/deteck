@@ -1,0 +1,19 @@
+{
+	"name": "@deteck/worker",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"description": "Runs DETECK's background jobs (imports, AI comparisons, emails, webhooks, clean-up) as its own process.",
+	"scripts": {
+		"start": "node --env-file-if-exists=../../.env src/index.ts",
+		"dev": "node --watch --env-file-if-exists=../../.env src/index.ts",
+		"check": "tsc --noEmit -p tsconfig.json"
+	},
+	"dependencies": {
+		"@deteck/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^24",
+		"typescript": "^6.0.3"
+	}
+}

@@ -1,0 +1,134 @@
+# Render Blueprint (D-06): the website, the background worker, a nightly backup and Postgres, in
+# Frankfurt. Cloudflare sits in front (DNS, TLS, WAF, Turnstile); files go to Cloudflare R2.
+# Not deployed yet. docs/DEPLOY.md walks through the first deployment.
+#
+# Settings Render can't know (your keys and addresses) are NOT listed here: Render ignores
+# "fill this in" values inside an environment group. Before the first deploy, add them by hand in
+# Render → Env Groups → deteck-shared (docs/DEPLOY.md, step 3, lists every one):
+#   ORIGIN, EMAIL_FROM, RESEND_API_KEY, S3_ENDPOINT, S3_BUCKET, S3_ACCESS_KEY_ID,
+#   S3_SECRET_ACCESS_KEY, BACKUP_S3_BUCKET, SENTRY_DSN, CONTACT_EMAIL, EDGE_SECRET, and when you
+#   use them: TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY, ANTHROPIC_API_KEY, PILOT_ACCESS_CODE,
+#   WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_APP_SECRET, WHATSAPP_VERIFY_TOKEN.
+# With NODE_ENV=production the app refuses to start, listing what's missing, rather than run with
+# development fallbacks.
+#
+# Never change SERIAL_HMAC_KEY or BETTER_AUTH_SECRET after the first deploy, and keep a copy of
+# both outside Render. The app refuses to start if they don't match the database.
+
+envVarGroups:
+  - name: deteck-shared
+    envVars:
+      - key: NODE_VERSION
+        value: 24.11.1
+      - key: NODE_ENV
+        value: production
+      # No git hooks on Render.
+      - key: HUSKY
+        value: '0'
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: SERIAL_HMAC_KEY
+        generateValue: true
+      - key: DEVICE_HASH_SECRET
+        generateValue: true
+      - key: STORAGE_DRIVER
+        value: s3
+      - key: S3_REGION
+        value: auto
+      - key: EMAIL_DRIVER
+        value: resend
+      - key: FEATURE_PACKAGING_AI
+        value: 'off'
+      - key: SCAN_MODEL
+        value: claude-opus-5-5
+      - key: WHATSAPP_TEMPLATE_SUBSCRIBED
+        value: deteck_alert_subscribed
+      - key: WHATSAPP_TEMPLATE_RECALL
+        value: deteck_recall_alert
+      - key: WHATSAPP_TEMPLATE_LANGUAGE
+        value: en
+      # Public pages in English only until each translation has been checked by a native
+      # speaker (docs/reference/translation-review.md). Then, for example: en,pcm,ha,yo,ig
+      - key: LANGUAGES
+        value: en
+      # Connections per process. Each website copy or worker uses up to this many plus about 5
+      # (the job queue and reports); keep the total under the database plan's limit.
+      - key: DATABASE_POOL_MAX
+        value: '10'
+
+services:
+  - type: web
+    name: deteck-web
+    runtime: node
+    region: frankfurt
+    plan: 0.5c-512mb
+    autoDeploy: false
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    # Plain node (no pnpm needed at this step). Migrations take a lock, so the worker can run them
+    # too during the same deploy.
+    preDeployCommand: node packages/core/scripts/migrate.ts
+    startCommand: node apps/web/build/index.js
+    healthCheckPath: /healthz
+    maxShutdownDelaySeconds: 60
+    envVars:
+      - fromGroup: deteck-shared
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deteck-db
+          property: connectionString
+      # The worker runs the jobs; the website only queues them.
+      - key: JOBS_IN_WEB
+        value: 'false'
+      # Cloudflare in front: trust its headers for the protocol and the client IP (and set
+      # EDGE_SECRET so requests that skip Cloudflare are refused).
+      - key: PROTOCOL_HEADER
+        value: x-forwarded-proto
+      - key: ADDRESS_HEADER
+        value: cf-connecting-ip
+      - key: XFF_DEPTH
+        value: '1'
+      # Manufacturer spreadsheets and reference photos. Public forms are capped at 20 MB in code.
+      - key: BODY_SIZE_LIMIT
+        value: 60M
+
+  - type: worker
+    name: deteck-worker
+    runtime: node
+    region: frankfurt
+    plan: 0.5c-512mb
+    autoDeploy: false
+    buildCommand: corepack enable && pnpm install --frozen-lockfile
+    preDeployCommand: node packages/core/scripts/migrate.ts
+    startCommand: node apps/worker/src/index.ts
+    # A running import may need a few minutes to finish before the old worker stops.
+    maxShutdownDelaySeconds: 300
+    envVars:
+      - fromGroup: deteck-shared
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deteck-db
+          property: connectionString
+
+  # Nightly backup of the whole database to a separate R2 bucket (BACKUP_S3_BUCKET), kept as long
+  # as that bucket's rules say. Render's own backups only go back a few days.
+  - type: cron
+    name: deteck-backup
+    runtime: node
+    region: frankfurt
+    plan: 0.5c-512mb
+    schedule: '30 1 * * *' # 02:30 in Lagos
+    buildCommand: corepack enable && pnpm install --frozen-lockfile
+    startCommand: node packages/core/scripts/backup.ts
+    envVars:
+      - fromGroup: deteck-shared
+      - key: DATABASE_URL
+        fromDatabase:
+          name: deteck-db
+          property: connectionString
+
+databases:
+  - name: deteck-db
+    region: frankfurt
+    plan: 0.1c-256mb
+    postgresMajorVersion: '18'
+    databaseName: deteck
