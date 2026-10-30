@@ -16,7 +16,9 @@
 				{ href: '/workspace/import', label: 'Import data' },
 				{ href: '/workspace/packaging', label: 'Packaging photos' },
 				{ href: '/workspace/businesses', label: 'Supply chain businesses' },
-				{ href: '/workspace/reports', label: 'Reports of fakes' },
+				...(data.features.reports
+					? [{ href: '/workspace/reports', label: 'Reports of fakes' }]
+					: []),
 				{ href: '/workspace/company', label: 'Company and documents' },
 				{ href: '/workspace/team', label: 'Team' },
 				{ href: '/workspace/developers', label: 'API and webhooks' }

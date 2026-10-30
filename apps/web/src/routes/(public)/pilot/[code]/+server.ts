@@ -16,13 +16,10 @@ export const GET: RequestHandler = async (event) => {
 	}
 	const limited = await consume([{ key: `pilot:ip:${address}:h`, windowSeconds: 3600, max: 20 }]);
 	if (!limited.ok) error(429, 'Too many tries. Please wait an hour.');
-	const expected = ctx().config.pilotAccessCode;
-	const given = event.params.code;
-	if (
-		!expected ||
-		given.length !== expected.length ||
-		!timingSafeEqual(Buffer.from(given), Buffer.from(expected))
-	) {
+	const expected = Buffer.from(ctx().config.pilotAccessCode ?? '');
+	// Compared as bytes: characters outside ASCII take several bytes each.
+	const given = Buffer.from(event.params.code);
+	if (!expected.length || given.length !== expected.length || !timingSafeEqual(given, expected)) {
 		error(404, 'Not found');
 	}
 	grantPilotAccess(event);

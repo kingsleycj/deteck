@@ -65,7 +65,8 @@ for (const url of assets(home.text)) {
 report('firstVisitTotal', firstVisit, `(${parts.join(', ')})`);
 
 const body = new URLSearchParams({ serial }).toString();
-const post = await fetchText(`${base}/check`, {
+// The checker's form posts to its named action, as a browser does.
+const post = await fetchText(`${base}/check?/check`, {
 	method: 'POST',
 	headers: { 'content-type': 'application/x-www-form-urlencoded', origin: base },
 	body

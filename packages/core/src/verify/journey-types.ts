@@ -21,9 +21,12 @@ export type JourneyStep =
 			verified: boolean;
 			/** The business itself confirmed receiving this pack on DETECK. */
 			confirmed?: boolean;
-	  }
-	| { kind: 'gap'; afterName: string; beforeName: string };
+	  };
 
+/**
+ * Where the records reach. Supply chains differ, so ENDS_BEFORE_RETAIL isn't shown as a problem:
+ * the public sees what is recorded, never "missing" steps.
+ */
 export type JourneyState = 'TO_RETAIL' | 'ENDS_BEFORE_RETAIL' | 'BATCH_LEVEL' | 'NONE';
 
 export interface Journey {
@@ -32,5 +35,4 @@ export interface Journey {
 	/** The last business the records name, for the summary line. */
 	lastHolder?: { name: string; role: PartyRoleName; place: string | null; date: string | null };
 	recordedSteps: number;
-	gaps: number;
 }

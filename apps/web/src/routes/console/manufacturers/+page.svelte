@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SearchField from '#lib/ui/SearchField.svelte';
 	import type { PageProps } from './$types';
 	import Mascot from '#lib/ui/Mascot.svelte';
 	import { formatNumber, MANUFACTURER_STATUS } from '#lib/ui/status.ts';
@@ -16,17 +17,13 @@
 		<p class="crumbs">DETECK team console</p>
 		<h1>Manufacturers</h1>
 	</div>
-	<form method="get" class="row" style="--gap: 8px">
+	<form method="get" class="page-search" role="search">
 		{#if data.status}<input type="hidden" name="status" value={data.status} />{/if}
-		<input
-			class="input"
-			name="q"
+		<SearchField
 			value={data.q}
-			placeholder="Search manufacturers"
-			aria-label="Search manufacturers"
-			style="min-width: 240px"
+			label="Search manufacturers"
+			placeholder="Company name or NAFDAC company no."
 		/>
-		<button class="btn btn-small">Search</button>
 	</form>
 </div>
 

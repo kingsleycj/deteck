@@ -6,5 +6,6 @@ import { serverContext } from '#lib/server/app.ts';
 export const load: LayoutServerLoad = ({ locals }) => ({
 	lang: locals.lang,
 	t: messages(locals.lang),
-	languages: languageChoices(serverContext.config.languages)
+	languages: languageChoices(serverContext.config.languages),
+	features: { reports: serverContext.config.reportsEnabled }
 });

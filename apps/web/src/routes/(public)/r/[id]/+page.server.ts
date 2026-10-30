@@ -46,7 +46,8 @@ export const actions: Actions = {
 		if (data.get('consent') !== 'on')
 			return fail(400, {
 				alertMessage: t.alerts.needConsent,
-				alertAddress: address
+				alertAddress: address,
+				alertConsent: false
 			});
 		const who = requester(event);
 		const limited = await consume([
@@ -57,27 +58,27 @@ export const actions: Actions = {
 		if (!limited.ok)
 			return fail(429, {
 				alertMessage: t.alerts.errors.daily_limit,
-				alertAddress: address
+				alertAddress: address,
+				alertConsent: true
 			});
+		const done = channel === 'email' ? t.alerts.checkEmail : t.alerts.whatsappDone;
 		try {
-			const result = await subscribeToRecalls({
+			await subscribeToRecalls({
 				verificationId: event.params.id,
 				channel,
 				address,
 				locale: event.locals.lang
 			});
-			return {
-				alertDone: result.alreadySubscribed
-					? t.alerts.already
-					: channel === 'email'
-						? t.alerts.checkEmail
-						: t.alerts.whatsappDone
-			};
+			// The same answer whether or not this address had already signed up, so nobody can
+			// learn who takes which medicine by typing someone else's address.
+			return { alertDone: done };
 		} catch (error) {
+			if (error instanceof AlertError && error.code === 'too_many') return { alertDone: done };
 			if (error instanceof AlertError)
 				return fail(400, {
 					alertMessage: error.code ? t.alerts.errors[error.code] : error.message,
-					alertAddress: address
+					alertAddress: address,
+					alertConsent: true
 				});
 			throw error;
 		}

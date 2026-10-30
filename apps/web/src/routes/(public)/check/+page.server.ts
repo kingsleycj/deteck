@@ -38,7 +38,11 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const serial = String(data.get('serial') ?? '').slice(0, 200);
 		const who = requester(event);
-		if (!(await verifyTurnstile(String(data.get('cf-turnstile-response') ?? ''), who.ip)))
+		// No Turnstile set up: there's nothing to pass, so no pass is given (the limits stand).
+		if (
+			!turnstileSiteKey() ||
+			!(await verifyTurnstile(String(data.get('cf-turnstile-response') ?? ''), who.ip))
+		)
 			return fail(400, { serial, retryAfter: 60, turnstile: turnstileSiteKey() });
 		grantHumanPass(event);
 		return check(serial, { ...who, human: true });

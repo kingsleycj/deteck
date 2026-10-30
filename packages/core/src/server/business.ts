@@ -302,6 +302,8 @@ export async function decideBusiness(
 	decision: 'approve' | 'request_info' | 'reject',
 	reason: string
 ) {
+	if (!['approve', 'request_info', 'reject'].includes(decision))
+		throw new BusinessError('Choose a decision.');
 	const why = reason.trim();
 	if (why.length < 3) throw new BusinessError('A reason is required.');
 	const b = await getBusiness(id);
@@ -429,6 +431,8 @@ export interface DeliveryLine {
 	result?: VerificationResult;
 	/** Another pharmacy or hospital already recorded with this pack, e.g. "Riverside Pharmacy". */
 	heldElsewhere?: string;
+	/** This business is already the pack's latest recorded holder (it confirmed it before). */
+	alreadyHere?: boolean;
 }
 
 /** Splits pasted text or a CSV column into codes: one per line, comma or semicolon. */
@@ -516,9 +520,11 @@ async function markHeldElsewhere(b: BusinessRow, lines: DeliveryLine[]) {
 			.filter((h) => h.partyId !== b.partyId && sameKind('pharmacy').includes(h.role as 'pharmacy'))
 			.map((h) => [h.packId, h.name])
 	);
+	const here = new Set(holders.filter((h) => h.partyId === b.partyId).map((h) => h.packId));
 	for (const l of lines) {
 		const name = l.result?.packId ? elsewhere.get(l.result.packId) : undefined;
 		if (name) l.heldElsewhere = name;
+		if (l.result?.packId && here.has(l.result.packId)) l.alreadyHere = true;
 	}
 }
 

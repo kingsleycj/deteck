@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { confirmFirst } from '#lib/ui/confirm.ts';
 	import type { PageProps } from './$types';
 	import { formatDateTime } from '#lib/ui/status.ts';
 
@@ -69,7 +70,11 @@
 									</form>
 									<form method="post" action="?/remove">
 										<input type="hidden" name="memberId" value={m.id} />
-										<button class="btn btn-small">Remove</button>
+										<button
+											class="btn btn-small"
+											use:confirmFirst={`Remove ${m.name} from the team? They won't be able to sign in to this company any more.`}
+											>Remove</button
+										>
 									</form>
 									{#if m.twoFactor}
 										<form method="post" action="?/reset2fa">
@@ -77,6 +82,7 @@
 											<button
 												class="btn btn-small"
 												title="For a teammate who lost their phone and backup codes"
+												use:confirmFirst={`Reset ${m.name}'s two-step sign-in? They're signed out and set it up again at their next sign-in.`}
 												>Reset two-step sign-in</button
 											>
 										</form>
@@ -100,7 +106,9 @@
 					{#if data.access.isAdmin && !data.access.onBehalf}
 						<td
 							><form method="post" action="?/cancel">
-								<input type="hidden" name="email" value={i.email} /><button class="btn btn-small"
+								<input type="hidden" name="email" value={i.email} /><button
+									class="btn btn-small"
+									use:confirmFirst={`Cancel the invite to ${i.email}? Its link stops working.`}
 									>Cancel invite</button
 								>
 							</form></td
@@ -119,7 +127,13 @@
 		<h2>Invite a team member</h2>
 		<form method="post" action="?/invite" class="form-grid">
 			<div class="field">
-				<label for="email">Work email</label><input id="email" name="email" type="email" required />
+				<label for="email">Work email</label><input
+					id="email"
+					name="email"
+					type="email"
+					required
+					defaultValue={form && 'email' in form ? (form.email ?? '') : ''}
+				/>
 			</div>
 			<div class="field">
 				<label for="role">Role</label>

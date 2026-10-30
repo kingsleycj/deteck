@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 
 	let { data, form }: PageProps = $props();
 </script>
@@ -9,7 +10,7 @@
 
 {#if data.state !== 'ok'}
 	<AuthShell
-		bubble="This invite has expired. Ask the admin who invited you to send a new one."
+		bubble="This invite has expired, or it was already used or cancelled. Ask the admin who invited you to send a new one."
 		mood="thinking"
 	>
 		<h1 style="font-size: 28px">This invite no longer works</h1>
@@ -52,22 +53,27 @@
 			<form method="post" action="?/create" class="stack" style="--gap: 14px">
 				<div class="field">
 					<label for="name">Full name</label>
-					<input id="name" name="name" required autocomplete="name" value={form?.name ?? ''} />
+					<input
+						id="name"
+						name="name"
+						required
+						autocomplete="name"
+						defaultValue={form?.name ?? ''}
+					/>
 				</div>
 				<div class="field">
 					<label for="password">Password</label>
-					<input
+					<PasswordInput
 						id="password"
 						name="password"
-						type="password"
 						required
-						minlength="10"
+						minlength={10}
 						autocomplete="new-password"
 					/>
 				</div>
 				<div class="field">
 					<label for="confirm">Confirm password</label>
-					<input id="confirm" name="confirm" type="password" required autocomplete="new-password" />
+					<PasswordInput id="confirm" name="confirm" required autocomplete="new-password" />
 				</div>
 				<p class="help">
 					At least 10 characters, with a number and a symbol. Next, you'll set up two-step sign-in.

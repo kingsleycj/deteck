@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SearchField from '#lib/ui/SearchField.svelte';
 	import type { PageProps } from './$types';
 	import Mascot from '#lib/ui/Mascot.svelte';
 	import { countOf, formatDateTime, formatNumber } from '#lib/ui/status.ts';
@@ -47,16 +48,15 @@
 	</div>
 </div>
 
-<form method="get" class="panel" style="padding: 14px">
+<form method="get" class="panel stack" style="padding: 14px; --gap: 12px" role="search">
+	<SearchField
+		id="q"
+		value={data.filter.q}
+		label="Search the audit trail"
+		placeholder="File, person, item or text"
+		wide
+	/>
 	<div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr))">
-		<div class="field">
-			<label for="q">Search</label><input
-				id="q"
-				name="q"
-				value={data.filter.q}
-				placeholder="File, person, item or text"
-			/>
-		</div>
 		<div class="field">
 			<label for="area">Area</label>
 			<select id="area" name="area"

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import { formatMonth } from '#lib/ui/status.ts';
 	import { lagosToday } from '@deteck/core/dates.ts';
@@ -15,6 +16,7 @@
 		lot: string | null;
 		expiry: string | null;
 		heldElsewhere: string | null;
+		alreadyHere: boolean;
 	};
 	const checked: Line[] = $derived((form && 'checked' in form && form.checked) || []);
 	const received = $derived(form && 'received' in form ? form.received : undefined);
@@ -23,7 +25,9 @@
 		c.flags.includes('LOT_MISMATCH') || c.flags.includes('EXPIRY_MISMATCH');
 	const receivable = $derived(checked.filter((c) => c.code === 'VALID' && !mismatched(c)));
 	/** Only clean packs start ticked; expired ones, or ones another pharmacy has, need a decision. */
-	const clean = (c: Line) => c.flags.length === 0 && !c.heldElsewhere;
+	const clean = (c: Line) => c.flags.length === 0 && !c.heldElsewhere && !c.alreadyHere;
+	const typed = $derived(form && 'typed' in form ? (form.typed ?? '') : '');
+	const left = $derived(form && 'left' in form ? (form.left ?? 0) : 0);
 	const label = (c: Line) => {
 		if (c.problem) return { text: c.problem, chip: 'chip-bad' };
 		if (c.code === 'VALID' && c.flags.includes('EXPIRED'))
@@ -78,12 +82,16 @@
 				id="codes"
 				name="codes"
 				rows="8"
-				placeholder="7K4M9QX2TB8D&#10;(01)09506000990019(21)H2R5W8C1N6PZ"></textarea>
+				placeholder="7K4M9QX2TB8D&#10;(01)09506000990019(21)H2R5W8C1N6PZ"
+				defaultValue={typed}></textarea>
 		</div>
-		<div class="field">
-			<label for="file">Or upload a CSV (first column)</label>
-			<input id="file" name="file" type="file" accept=".csv,text/csv,text/plain" />
-		</div>
+		<Upload
+			id="file"
+			name="file"
+			title="Or upload a CSV"
+			hint="Serials or codes in the first column"
+			accept=".csv,text/csv,text/plain"
+		/>
 		<p class="help">
 			Up to 500 at a time. A barcode scanner that types into the box works too: scan each pack, one
 			per line. Each check is counted, without any personal data.
@@ -91,6 +99,9 @@
 		<button class="btn btn-primary">Check them</button>
 	</form>{/if}
 
+{#if left > 0}<p class="notice" role="status">
+		Only the first 500 were checked. Check the other {left} in another round.
+	</p>{/if}
 {#if checked.length}
 	<form method="post" action="?/receive" class="stack" style="--gap: 12px">
 		<div class="table-wrap">
@@ -117,7 +128,9 @@
 							>
 							<td class="mono small">{c.input}</td>
 							<td
-								><span class="chip {l.chip}">{l.text}</span>{#if c.heldElsewhere}<span class="sub"
+								><span class="chip {l.chip}">{l.text}</span>{#if c.alreadyHere}<span class="sub"
+										>Already recorded with you</span
+									>{:else if c.heldElsewhere}<span class="sub"
 										>Already recorded with {c.heldElsewhere}</span
 									>{/if}</td
 							>
@@ -148,7 +161,13 @@
 					only.
 				</p>
 				<div class="span-2">
-					<button class="btn btn-primary">Confirm the ticked packs as received</button>
+					{#if data.access.onBehalf}
+						<p class="notice small">
+							Only {data.business.name} can confirm what it received, so DETECK staff can't.
+						</p>
+					{:else}
+						<button class="btn btn-primary">Confirm the ticked packs as received</button>
+					{/if}
 				</div>
 			</section>
 		{/if}

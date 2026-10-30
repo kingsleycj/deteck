@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { markInvalidFields } from '#lib/client/fields.ts';
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 	import Turnstile from '#lib/ui/Turnstile.svelte';
 	import { NIGERIAN_STATES } from '@deteck/core/nigeria.ts';
 
@@ -8,6 +11,11 @@
 	const v = $derived(form?.values ?? ({} as Record<string, string>));
 	const e = $derived((form?.errors ?? {}) as Record<string, string>);
 	const errorCount = $derived(Object.keys(e).length);
+
+	// Each time the form comes back with problems, point screen readers (and the focus) at them.
+	$effect(() => {
+		if (form) markInvalidFields();
+	});
 </script>
 
 <svelte:head><title>Register your company · DETECK</title></svelte:head>
@@ -51,7 +59,7 @@
 						id="companyName"
 						name="companyName"
 						required
-						value={v.companyName ?? ''}
+						defaultValue={v.companyName ?? ''}
 						autocomplete="organization"
 					/>
 					{@render err('companyName')}
@@ -62,17 +70,21 @@
 						id="address"
 						name="address"
 						required
-						value={v.address ?? ''}
+						defaultValue={v.address ?? ''}
 						autocomplete="street-address"
 					/>
 					{@render err('address')}
 				</div>
 				<div class="field" class:field-error={e.state}>
 					<label for="state">State</label>
-					<select id="state" name="state" required>
-						<option value="">Choose a state</option>
-						{#each NIGERIAN_STATES as s (s)}<option value={s} selected={v.state === s}>{s}</option
-							>{/each}
+					<!-- When the page's script loads it must not touch this list: a change while the list
+					     is open closes it under the pointer, and setting a value wipes a state already
+					     picked. So the options carry no value attribute (each state's name is its value,
+					     and the empty first option shows its label), and defaultValue only marks the
+					     server's choice. -->
+					<select id="state" name="state" required defaultValue={v.state ?? ''}>
+						<option label="Choose a state"></option>
+						{#each NIGERIAN_STATES as s (s)}<option>{s}</option>{/each}
 					</select>
 					{@render err('state')}
 				</div>
@@ -81,7 +93,7 @@
 					<input
 						id="factoryTown"
 						name="factoryTown"
-						value={v.factoryTown ?? ''}
+						defaultValue={v.factoryTown ?? ''}
 						placeholder="e.g. Ota"
 					/>
 				</div>
@@ -92,7 +104,7 @@
 						name="nafdacCompanyReg"
 						class="mono"
 						required
-						value={v.nafdacCompanyReg ?? ''}
+						defaultValue={v.nafdacCompanyReg ?? ''}
 						placeholder="From your certificate"
 					/>
 					{@render err('nafdacCompanyReg')}
@@ -103,7 +115,7 @@
 						id="cacRc"
 						name="cacRc"
 						class="mono"
-						value={v.cacRc ?? ''}
+						defaultValue={v.cacRc ?? ''}
 						placeholder="RC 000000"
 					/>
 				</div>
@@ -122,7 +134,7 @@
 						id="contactName"
 						name="contactName"
 						required
-						value={v.contactName ?? ''}
+						defaultValue={v.contactName ?? ''}
 						autocomplete="name"
 					/>
 					{@render err('contactName')}
@@ -134,7 +146,7 @@
 						name="contactEmail"
 						type="email"
 						required
-						value={v.contactEmail ?? ''}
+						defaultValue={v.contactEmail ?? ''}
 						autocomplete="email"
 					/>
 					{@render err('contactEmail')}
@@ -145,7 +157,7 @@
 						id="contactPhone"
 						name="contactPhone"
 						type="tel"
-						value={v.contactPhone ?? ''}
+						defaultValue={v.contactPhone ?? ''}
 						placeholder="+234"
 						autocomplete="tel"
 					/>
@@ -153,12 +165,11 @@
 				<div></div>
 				<div class="field" class:field-error={e.password}>
 					<label for="password">Password</label>
-					<input
+					<PasswordInput
 						id="password"
 						name="password"
-						type="password"
 						required
-						minlength="10"
+						minlength={10}
 						autocomplete="new-password"
 						aria-describedby="password-help"
 					/>
@@ -167,7 +178,7 @@
 				</div>
 				<div class="field" class:field-error={e.confirm}>
 					<label for="confirm">Confirm password</label>
-					<input id="confirm" name="confirm" type="password" required autocomplete="new-password" />
+					<PasswordInput id="confirm" name="confirm" required autocomplete="new-password" />
 					{@render err('confirm')}
 				</div>
 			</div>
@@ -176,47 +187,37 @@
 		<section class="panel">
 			<h2>Documents</h2>
 			<div class="form-grid">
-				<div class="field" class:field-error={e.nafdacCertificate}>
-					<label for="nafdacCertificate">NAFDAC certificate</label>
-					<div class="file-drop">
-						<input
-							id="nafdacCertificate"
-							name="nafdacCertificate"
-							type="file"
-							accept="application/pdf,image/jpeg,image/png"
-							required
-						/>
-					</div>
-					<p class="help">PDF, JPG or PNG, under 10 MB.</p>
-					{@render err('nafdacCertificate')}
+				<div class="field">
+					<Upload
+						id="nafdacCertificate"
+						name="nafdacCertificate"
+						title="NAFDAC certificate"
+						hint="PDF, JPG or PNG, under 10 MB"
+						accept="application/pdf,image/jpeg,image/png"
+						required
+						error={e.nafdacCertificate}
+					/>
 				</div>
-				<div class="field" class:field-error={e.agreement}>
-					<label for="agreement">Signed data-sharing agreement</label>
-					<div class="file-drop">
-						<input
-							id="agreement"
-							name="agreement"
-							type="file"
-							accept="application/pdf,image/jpeg,image/png"
-						/>
-					</div>
-					<p class="help">
+				<div class="field">
+					<Upload
+						id="agreement"
+						name="agreement"
+						title="Signed data-sharing agreement"
+						hint="PDF, JPG or PNG, under 10 MB"
+						accept="application/pdf,image/jpeg,image/png"
+						error={e.agreement}
+						describedby="agreement-help"
+					/>
+					<p class="help" id="agreement-help">
 						Required before your first import. You can add it later.{#if data.agreementTemplate}
 							<a href="/files/site/agreement_template">Download the blank agreement</a> to sign.{/if}
 					</p>
-					{@render err('agreement')}
 				</div>
 			</div>
 		</section>
 
-		<label class="row small" style="--gap: 10px; align-items: flex-start">
-			<input
-				type="checkbox"
-				name="consent"
-				required
-				checked={v.consent === 'on'}
-				style="margin-top: 3px"
-			/>
+		<label class="option">
+			<input type="checkbox" name="consent" required checked={v.consent === 'on'} />
 			<span
 				>I'm authorised to register this company, and I agree to DETECK's <a href="/terms">terms</a>
 				and <a href="/privacy">privacy notice</a>.</span

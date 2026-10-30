@@ -210,9 +210,7 @@ describe('staff corrections', () => {
 		});
 
 		const names = async () =>
-			(await journey()).steps.map((s) =>
-				s.kind === 'manufacturer' ? 'maker' : s.kind === 'party' ? s.name : 'gap'
-			);
+			(await journey()).steps.map((s) => (s.kind === 'manufacturer' ? 'maker' : s.name));
 
 		it('cancels a record so the journey stops showing it, once', async () => {
 			expect((await journey()).state).toBe('TO_RETAIL');
@@ -250,7 +248,6 @@ describe('staff corrections', () => {
 			const j = await journey();
 			expect(await names()).toEqual(['maker', 'Northgate Wholesale', 'Riverside Pharmacy']);
 			expect(j.steps[1]).toMatchObject({ date: '2026-04-02' });
-			expect(j.gaps).toBe(0);
 
 			await expect(
 				replaceCustodyRecord(

@@ -1,3 +1,4 @@
+import { and, eq, inArray, max } from 'drizzle-orm';
 import { ctx } from './context.ts';
 import type { DbOrTx } from './db/client.ts';
 import { auditLog } from './db/schema.ts';
@@ -56,4 +57,18 @@ export async function audit(actor: Actor, entry: AuditEntry, db: DbOrTx = ctx().
 		ip: actor.ip ?? null,
 		userAgent: actor.userAgent?.slice(0, 300) ?? null
 	});
+}
+
+/**
+ * When each item last had this action, for example when DETECK last asked an applicant for more
+ * information (`application_request_info`, `business_request_info`). Items without one are left out.
+ */
+export async function lastActionAt(action: string, itemIds: string[]): Promise<Map<string, Date>> {
+	if (itemIds.length === 0) return new Map();
+	const rows = await ctx()
+		.db.select({ itemId: auditLog.itemId, at: max(auditLog.createdAt) })
+		.from(auditLog)
+		.where(and(eq(auditLog.action, action), inArray(auditLog.itemId, itemIds)))
+		.groupBy(auditLog.itemId);
+	return new Map(rows.flatMap((r) => (r.itemId && r.at ? [[r.itemId, r.at] as const] : [])));
 }

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { confirmSubmit } from '#lib/ui/confirm.ts';
+	import SearchField from '#lib/ui/SearchField.svelte';
 	import type { PageProps } from './$types';
 	import { formatNumber } from '#lib/ui/status.ts';
 	import { ROLE_LABEL } from '@deteck/core/messages/en.ts';
@@ -14,17 +16,9 @@
 		<p class="crumbs">DETECK team console</p>
 		<h1>Supply chain businesses</h1>
 	</div>
-	<form method="get" class="row" style="--gap: 8px">
+	<form method="get" class="page-search" role="search">
 		{#if !data.unverifiedOnly}<input type="hidden" name="show" value="all" />{/if}
-		<input
-			class="input"
-			name="q"
-			value={data.q}
-			placeholder="Name, place, PCN or CAC"
-			aria-label="Search businesses"
-			style="min-width: 260px"
-		/>
-		<button class="btn btn-small">Search</button>
+		<SearchField value={data.q} label="Search businesses" placeholder="Name, place, PCN or CAC" />
 	</form>
 </div>
 
@@ -93,6 +87,7 @@
 										<input
 											class="input"
 											name="pcn"
+											aria-label="PCN premises licence"
 											placeholder="PCN premises licence"
 											value={p.pcn_licence ?? ''}
 											style="min-height: 40px"
@@ -100,6 +95,7 @@
 										<input
 											class="input"
 											name="cac"
+											aria-label="CAC RC number"
 											placeholder="CAC RC number"
 											value={p.cac_rc ?? ''}
 											style="min-height: 40px"
@@ -107,6 +103,7 @@
 										<input
 											class="input"
 											name="gln"
+											aria-label="GLN, 13 digits"
 											placeholder="GLN (13 digits)"
 											value={p.gln ?? ''}
 											style="min-height: 40px"
@@ -120,17 +117,33 @@
 										>
 									</form>
 								{/if}
-								<form method="post" action="?/merge" class="stack" style="--gap: 6px">
-									<input type="hidden" name="id" value={p.id} />
-									<label class="small" for="into-{p.id}">Merge this duplicate into</label>
-									<select id="into-{p.id}" name="into" class="input" style="min-height: 40px">
-										{#each data.all.filter((x) => x.id !== p.id) as other (other.id)}<option
-												value={other.id}
-												>{other.name}{other.place ? ` (${other.place})` : ''}</option
-											>{/each}
-									</select>
-									<button class="btn btn-small">Merge</button>
-								</form>
+								{#if data.staff.isAdmin}<form
+										method="post"
+										action="?/merge"
+										class="stack"
+										style="--gap: 6px"
+										use:confirmSubmit={{
+											message: `Merge ${p.name} into the business you chose? Its records move there and journeys change at once. This can't be undone.`
+										}}
+									>
+										<input type="hidden" name="id" value={p.id} />
+										<label class="small" for="into-{p.id}">Merge this duplicate into</label>
+										<!-- Nothing chosen to start with: one click must never merge by accident. -->
+										<select
+											id="into-{p.id}"
+											name="into"
+											class="input"
+											style="min-height: 40px"
+											required
+										>
+											<option value="" selected disabled>Choose the business to keep…</option>
+											{#each data.all.filter((x) => x.id !== p.id) as other (other.id)}<option
+													value={other.id}
+													>{other.name}{other.place ? ` (${other.place})` : ''}</option
+												>{/each}
+										</select>
+										<button class="btn btn-small">Merge</button>
+									</form>{/if}
 							</div>
 						</details>
 					</td>

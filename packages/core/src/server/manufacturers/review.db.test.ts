@@ -4,7 +4,7 @@ import { ctx } from '../context.ts';
 import { createAuth } from '../auth-factory.ts';
 import { auditLog, document, manufacturer, member, user } from '../db/schema.ts';
 import { sentEmails } from '../email/index.ts';
-import { SYSTEM_ACTOR } from '../audit.ts';
+import { lastActionAt, SYSTEM_ACTOR } from '../audit.ts';
 import { registerManufacturer } from './register.ts';
 import {
 	decideApplication,
@@ -150,6 +150,17 @@ describe('application review (US-06.1)', () => {
 			sentEmails.some((e) => e.subject === 'Meridian Life Sciences is approved on DETECK')
 		).toBe(true);
 		expect(await ctx().db.$count(auditLog, eq(auditLog.action, 'application_approve'))).toBe(1);
+	});
+
+	it('records when more information was last requested, for the reviewer queue', async () => {
+		expect((await lastActionAt('application_request_info', [id])).has(id)).toBe(false);
+		await decideApplication(SYSTEM_ACTOR, id, 'request_info', 'Send the signed agreement');
+		const first = (await lastActionAt('application_request_info', [id])).get(id);
+		expect(first).toBeInstanceOf(Date);
+		await decideApplication(SYSTEM_ACTOR, id, 'request_info', 'Also the CAC certificate');
+		const second = (await lastActionAt('application_request_info', [id])).get(id);
+		expect(second!.getTime()).toBeGreaterThanOrEqual(first!.getTime());
+		expect(await lastActionAt('application_request_info', [])).toEqual(new Map());
 	});
 
 	it('can reopen a rejected application, but not decide an approved one again', async () => {

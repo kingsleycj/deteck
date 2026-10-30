@@ -10,14 +10,7 @@
 
 <ol class="timeline">
 	{#each journey.steps as step, i (i)}
-		{#if step.kind === 'gap'}
-			<li class="gap">
-				<p class="step-name">{t.journey.gap}</p>
-				<p class="step-meta">
-					{fmt(t.journey.gapBetween, { after: step.afterName, before: step.beforeName })}
-				</p>
-			</li>
-		{:else if step.kind === 'manufacturer'}
+		{#if step.kind === 'manufacturer'}
 			<li>
 				<p class="step-label">{stepLabel(step, i === lastIndex, journey.state, t)}</p>
 				<p class="step-name">{step.name}</p>
@@ -30,7 +23,7 @@
 				</p>
 			</li>
 		{:else}
-			<li class:end={i === lastIndex && journey.state === 'TO_RETAIL'}>
+			<li class:end={i === lastIndex && journey.state !== 'BATCH_LEVEL'}>
 				<p class="step-label">{stepLabel(step, i === lastIndex, journey.state, t)}</p>
 				<p class="step-name">{step.name}</p>
 				{#if step.place}<p class="step-meta">{step.place}</p>{/if}
@@ -41,9 +34,4 @@
 			</li>
 		{/if}
 	{/each}
-	{#if journey.state === 'ENDS_BEFORE_RETAIL'}
-		<li class="gap">
-			<p class="step-name">{t.journey.recordsEnd}</p>
-		</li>
-	{/if}
 </ol>

@@ -4,7 +4,9 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { organization } from 'better-auth/plugins/organization';
 import { twoFactor } from 'better-auth/plugins/two-factor';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
+import { and, eq, like } from 'drizzle-orm';
 import type { Db } from './db/client.ts';
+import { verification } from './db/schema.ts';
 import { sendEmail } from './email/index.ts';
 import { emailTemplates } from './email/templates.ts';
 
@@ -39,6 +41,15 @@ export function createAuth(options: AuthFactoryOptions) {
 			autoSignIn: false,
 			resetPasswordTokenExpiresIn: 60 * 30,
 			revokeSessionsOnPasswordReset: true,
+			// A new password also forgets every "trusted" device: whoever trusted one with the old
+			// password must pass two-step sign-in again.
+			onPasswordReset: async ({ user }) => {
+				await options.db
+					.delete(verification)
+					.where(
+						and(like(verification.identifier, 'trust-device-%'), eq(verification.value, user.id))
+					);
+			},
 			sendResetPassword: async ({ user, token }) => {
 				await sendEmail(
 					emailTemplates.resetPassword({

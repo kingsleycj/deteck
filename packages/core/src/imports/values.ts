@@ -17,17 +17,28 @@ const MONTHS: Record<string, number> = {
 	dec: 12
 };
 
-function iso(y: number, m: number, d: number): string | null {
-	if (y < 100) y += 2000;
+/**
+ * A two-digit year is this century, and only when that's within the next 20 years: "01/01/95"
+ * isn't read as 2095 (it may mean 1995), so the person is asked for four digits instead.
+ */
+function fullYear(y: number): number | null {
+	if (y >= 100) return y;
+	const full = 2000 + y;
+	return full <= new Date().getUTCFullYear() + 20 ? full : null;
+}
+
+function iso(year: number, m: number, d: number): string | null {
+	const y = fullYear(year);
+	if (y === null) return null;
 	if (m < 1 || m > 12 || y < 1990 || y > 2100) return null;
 	const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
 	if (d < 1 || d > last) return null;
 	return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
 
-function lastDay(y: number, m: number): string | null {
-	if (y < 100) y += 2000;
-	if (m < 1 || m > 12) return null;
+function lastDay(year: number, m: number): string | null {
+	const y = fullYear(year);
+	if (y === null || m < 1 || m > 12) return null;
 	return iso(y, m, new Date(Date.UTC(y, m, 0)).getUTCDate());
 }
 

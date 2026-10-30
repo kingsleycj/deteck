@@ -56,20 +56,51 @@ function* pieces(body: Uint8Array, size = 64 * 1024): Generator<Buffer> {
 		yield Buffer.from(body.buffer, body.byteOffset + i, Math.min(size, body.length - i));
 }
 
-async function* csvRows(body: Uint8Array): AsyncGenerator<string[]> {
+/**
+ * The file's delimiter, from its header line: the one used most outside quotes (a comma when
+ * there's none). One per file, so a semicolon inside "Artemether; Lumefantrine" stays in its cell.
+ */
+export function csvDelimiter(body: Uint8Array): ',' | ';' | '\t' {
+	const head = new TextDecoder().decode(body.subarray(0, 64 * 1024));
+	const counts = { ',': 0, ';': 0, '\t': 0 };
+	let quoted = false;
+	for (const ch of head) {
+		if (ch === '"') quoted = !quoted;
+		else if (!quoted && (ch === '\n' || ch === '\r')) break;
+		else if (!quoted && ch in counts) counts[ch as keyof typeof counts]++;
+	}
+	const [best, n] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+	return n > 0 ? (best as ',' | ';' | '\t') : ',';
+}
+
+/** A row's cells and the line it starts on in the file (for the problem list). */
+export interface NumberedRow {
+	cells: string[];
+	line: number;
+}
+
+async function* csvRows(body: Uint8Array): AsyncGenerator<NumberedRow> {
 	const parser = Readable.from(pieces(body)).pipe(
 		parse({
 			bom: true,
-			delimiter: [',', ';', '\t'],
+			delimiter: csvDelimiter(body),
 			relax_column_count: true,
 			skip_empty_lines: true,
-			trim: true
+			trim: true,
+			info: true
 		})
 	);
-	for await (const record of parser) yield (record as string[]).map((v) => v ?? '');
+	for await (const { record, info } of parser as AsyncIterable<{
+		record: string[];
+		info: { lines: number };
+	}>) {
+		const cells = record.map((v) => v ?? '');
+		// Excel leaves rows of nothing but commas at the end of a sheet: they aren't rows.
+		if (cells.some((v) => v !== '')) yield { cells, line: info.lines };
+	}
 }
 
-async function* xlsxRows(body: Uint8Array): AsyncGenerator<string[]> {
+async function* xlsxRows(body: Uint8Array): AsyncGenerator<NumberedRow> {
 	checkXlsxSize(body);
 	const reader = new ExcelJS.stream.xlsx.WorkbookReader(Readable.from(pieces(body)), {
 		sharedStrings: 'cache',
@@ -85,7 +116,8 @@ async function* xlsxRows(body: Uint8Array): AsyncGenerator<string[]> {
 				values[column - 1] = cellToString(cell.value, cell.numFmt);
 			});
 			for (let i = 0; i < values.length; i++) values[i] ??= '';
-			if (values.some((v) => v.trim() !== '')) yield values.map((v) => v.trim());
+			if (values.some((v) => v.trim() !== ''))
+				yield { cells: values.map((v) => v.trim()), line: row.number };
 		}
 		return;
 	}
@@ -130,9 +162,14 @@ export function checkXlsxSize(body: Uint8Array) {
 	if (total > 400 * 1024 * 1024) throw tooLarge();
 }
 
-/** Streams rows (header first) from a CSV or XLSX file. */
-export function readRows(body: Uint8Array, kind: FileKind): AsyncGenerator<string[]> {
+/** Streams rows (header first) from a CSV or XLSX file, with the line each starts on. */
+export function readNumberedRows(body: Uint8Array, kind: FileKind): AsyncGenerator<NumberedRow> {
 	return kind === 'csv' ? csvRows(body) : xlsxRows(body);
+}
+
+/** Streams rows (header first) from a CSV or XLSX file. */
+export async function* readRows(body: Uint8Array, kind: FileKind): AsyncGenerator<string[]> {
+	for await (const row of readNumberedRows(body, kind)) yield row.cells;
 }
 
 /** Header row plus the first few data rows, for the column-matching screen. */
@@ -142,7 +179,15 @@ export async function preview(body: Uint8Array, kind: FileKind, sampleSize = 3) 
 	let rows = 0;
 	for await (const row of readRows(body, kind)) {
 		if (!headers) {
-			headers = row.map((h, i) => h || `Column ${i + 1}`);
+			// Every column needs its own name to be matched: a blank one is "Column 3", a repeated
+			// one "Brand name (2)".
+			const seen = new Map<string, number>();
+			headers = row.map((h, i) => {
+				const name = h || `Column ${i + 1}`;
+				const n = (seen.get(name) ?? 0) + 1;
+				seen.set(name, n);
+				return n === 1 ? name : `${name} (${n})`;
+			});
 			continue;
 		}
 		rows++;

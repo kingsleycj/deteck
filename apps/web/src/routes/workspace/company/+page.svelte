@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import { formatDateTime } from '#lib/ui/status.ts';
 
@@ -125,7 +126,7 @@
 					style="--gap: 10px"
 				>
 					<div class="field">
-						<label for="kind">Document</label>
+						<label for="kind">Type of document</label>
 						<select id="kind" name="kind">
 							<option value="data_sharing_agreement" selected={missingAgreement}
 								>Signed data-sharing agreement</option
@@ -134,16 +135,14 @@
 							<option value="other">Other document</option>
 						</select>
 					</div>
-					<div class="file-drop">
-						<label for="document-file" class="visually-hidden">Choose a file</label>
-						<input
-							id="document-file"
-							name="file"
-							type="file"
-							accept="application/pdf,image/jpeg,image/png"
-							required
-						/>
-					</div>
+					<Upload
+						id="document-file"
+						name="file"
+						title="The file"
+						hint="PDF, JPG or PNG, under 10 MB"
+						accept="application/pdf,image/jpeg,image/png"
+						required
+					/>
 					<button class="btn btn-small">Upload</button>
 				</form>
 			{/if}

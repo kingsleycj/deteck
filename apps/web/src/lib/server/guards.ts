@@ -96,6 +96,10 @@ export function requireStaff(event: RequestEvent, roles: StaffRole[] = ['admin',
 
 export type ManufacturerAccess = Awaited<ReturnType<typeof requireManufacturer>>;
 
+/** A company id from the address or a cookie: anything else would be a database error. */
+const isUuid = (value: string) =>
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
 /**
  * A manufacturer workspace user, or DETECK staff working inside a workspace
  * ("on behalf", always audited, D-01).
@@ -107,7 +111,7 @@ export async function requireManufacturer(event: RequestEvent) {
 
 	if (role) {
 		const asId = event.url.searchParams.get('as') ?? event.cookies.get(AS_COOKIE);
-		if (!asId) redirect(303, '/console/manufacturers');
+		if (!asId || !isUuid(asId)) redirect(303, '/console/manufacturers');
 		const [m] = await db.select().from(manufacturer).where(eq(manufacturer.id, asId)).limit(1);
 		if (!m) redirect(303, '/console/manufacturers');
 		// The company is remembered per browser. Forms carry the company their page was opened for,
@@ -158,8 +162,12 @@ export async function requireManufacturer(event: RequestEvent) {
  */
 export const CAN_EDIT_DATA = ['approved', 'changes_requested', 'live', 'suspended'] as const;
 
-/** Why data can't be changed in this status, or null when it can. */
-export function editBlockedReason(status: string): string | null {
+/**
+ * Why data can't be changed in this status, or null when it can. A company suspended while its data
+ * was with a reviewer stays locked: reinstating it returns that same data to the review.
+ */
+export function editBlockedReason(status: string, before?: string | null): string | null {
+	if (status === 'suspended' && before === 'in_review') return editBlockedReason('in_review');
 	if ((CAN_EDIT_DATA as readonly string[]).includes(status)) return null;
 	switch (status) {
 		case 'in_review':
@@ -172,7 +180,10 @@ export function editBlockedReason(status: string): string | null {
 }
 
 export function assertCanEditData(access: ManufacturerAccess) {
-	const reason = editBlockedReason(access.manufacturer.status);
+	const reason = editBlockedReason(
+		access.manufacturer.status,
+		access.manufacturer.statusBeforeSuspension
+	);
 	if (reason) error(403, reason);
 }
 
@@ -190,7 +201,7 @@ export async function requireBusiness(event: RequestEvent) {
 	const role = staffRole(user);
 	if (role) {
 		const asId = event.url.searchParams.get('as') ?? event.cookies.get(BUSINESS_AS_COOKIE);
-		if (!asId) redirect(303, '/console/business-accounts');
+		if (!asId || !isUuid(asId)) redirect(303, '/console/business-accounts');
 		const [b] = await db
 			.select()
 			.from(businessAccount)

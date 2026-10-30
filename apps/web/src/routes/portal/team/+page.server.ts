@@ -30,7 +30,9 @@ async function adminAction(
 	try {
 		await run(access, data);
 	} catch (error) {
-		if (error instanceof TeamError) return fail(400, { message: error.message });
+		// The email typed for an invite stays in the box when it needs fixing.
+		if (error instanceof TeamError)
+			return fail(400, { message: error.message, email: String(data.get('email') ?? '') });
 		throw error;
 	}
 	return { done };

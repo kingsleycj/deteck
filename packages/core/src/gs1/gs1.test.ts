@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { gtinCheckDigit, isValidGtin, toGtin14 } from './gtin.ts';
 import { gs1DateToIso, looksLikeGs1, parseGs1 } from './element-string.ts';
-import { checkTypedSerial, looksLikeNafdacNumber, normaliseSerialKey } from './serial.ts';
+import {
+	checkTypedSerial,
+	looksLikeBatchNumber,
+	looksLikeNafdacNumber,
+	normaliseSerialKey
+} from './serial.ts';
 
 describe('GTIN', () => {
 	it('computes the GS1 check digit', () => {
@@ -131,5 +136,17 @@ describe('typed serials', () => {
 		expect(looksLikeNafdacNumber('A4-1234')).toBe(true);
 		expect(looksLikeNafdacNumber('04-1234L')).toBe(true);
 		expect(looksLikeNafdacNumber('7K4M9QX2')).toBe(false);
+		// With the label copied from the pack.
+		expect(looksLikeNafdacNumber('NAFDAC A4-0000')).toBe(true);
+		expect(looksLikeNafdacNumber('NAFDAC Reg. No. A4-1234')).toBe(true);
+		expect(looksLikeNafdacNumber('Reg No: 04-1234L')).toBe(true);
+	});
+
+	it('recognises a batch number copied with its label, but not a serial that starts like one', () => {
+		expect(looksLikeBatchNumber('LOT NB-2611')).toBe(true);
+		expect(looksLikeBatchNumber('Batch: NB-2611')).toBe(true);
+		expect(looksLikeBatchNumber('B/N NB2611')).toBe(true);
+		expect(looksLikeBatchNumber('BN7K4M9QX2')).toBe(false);
+		expect(looksLikeBatchNumber('LOTA9XK21')).toBe(false);
 	});
 });

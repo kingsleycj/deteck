@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { confirmFirst } from '#lib/ui/confirm.ts';
+	import ChoiceList from './ChoiceList.svelte';
 	import { formatDateTime } from './status.ts';
 
 	interface Key {
@@ -57,7 +59,9 @@
 						<td class="small">{k.lastUsedAt ? formatDateTime(k.lastUsedAt) : 'Never'}</td>
 						{#if canManage}<td
 								><form method="post" action="?/revokeKey">
-									<input type="hidden" name="id" value={k.id} /><button class="btn btn-small"
+									<input type="hidden" name="id" value={k.id} /><button
+										class="btn btn-small"
+										use:confirmFirst={`Revoke the key ${k.prefix}…? Systems using it stop working at once.`}
 										>Revoke</button
 									>
 								</form></td
@@ -75,14 +79,16 @@
 				<label for="key-name">Key name</label>
 				<input id="key-name" name="name" required maxlength="80" placeholder="e.g. ERP system" />
 			</div>
-			<fieldset class="field" style="border: 0; padding: 0; margin: 0">
-				<legend class="label">Permissions</legend>
-				{#each scopes as s (s.key)}
-					<label class="row small" style="--gap: 6px"
-						><input type="checkbox" name="scopes" value={s.key} checked /> {s.label}</label
-					>
-				{/each}
-			</fieldset>
+			<div class="span-2">
+				<!-- Nothing ticked to start with: the person chooses what the key may do. -->
+				<ChoiceList
+					name="scopes"
+					checked={[]}
+					legend="Permissions"
+					help="What this key may do. Give it only what the system using it needs."
+					options={scopes.map((s) => ({ value: s.key, label: s.label, code: s.key }))}
+				/>
+			</div>
 			<div class="span-2"><button class="btn btn-primary btn-small">Create key</button></div>
 		</form>
 	{/if}

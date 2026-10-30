@@ -27,7 +27,7 @@ export default defineConfig({
 		{
 			name: 'mobile',
 			use: { ...devices['Pixel 5'] },
-			testMatch: ['**/public.e2e.ts', '**/accessibility.e2e.ts']
+			testMatch: ['**/public.e2e.ts', '**/accessibility.e2e.ts', '**/scan-camera.e2e.ts']
 		},
 		{ name: 'desktop', use: { viewport: { width: 1440, height: 900 } } }
 	],
@@ -48,6 +48,8 @@ export default defineConfig({
 			STORAGE_DRIVER: 'local',
 			STORAGE_LOCAL_DIR: '.data/e2e-uploads',
 			FEATURE_PACKAGING_AI: 'public',
+			// Switched off for now in the product, but kept working: the tests use it.
+			FEATURE_REPORTS: 'on',
 			ANTHROPIC_API_KEY: '',
 			RATE_LIMIT_DEVICE_PER_MINUTE: '100',
 			RATE_LIMIT_DEVICE_PER_HOUR: '1000',

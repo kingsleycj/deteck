@@ -63,20 +63,10 @@ export async function startScan(
 	const reference = await referenceForBatch(result.product.id, result.batch.manufactureDate);
 	if (!reference) return { ok: false, status: 400, message: p.notAvailable };
 
-	for (const side of SIDES) {
-		const photo = photos[side];
-		if (!photo)
-			return {
-				ok: false,
-				status: 400,
-				side,
-				message: p.addPhoto[side]
-			};
-		const check = await checkPhoto(photo.bytes, QUALITY.minScanShortSide);
-		if (!check.ok)
-			return { ok: false, status: 400, side, message: p.photoProblems[check.problem!] };
-	}
+	for (const side of SIDES)
+		if (!photos[side]) return { ok: false, status: 400, side, message: p.addPhoto[side] };
 
+	// Counted before the photos are opened, so failing photos can't be sent without limit.
 	// Per device, and per IP so clearing cookies doesn't buy unlimited AI calls.
 	const limits = ctx().config.rateLimits;
 	const limited = await consume([
@@ -93,6 +83,12 @@ export async function startScan(
 			status: 429,
 			message: p.dailyLimit
 		};
+
+	for (const side of SIDES) {
+		const check = await checkPhoto(photos[side]!.bytes, QUALITY.minScanShortSide);
+		if (!check.ok)
+			return { ok: false, status: 400, side, message: p.photoProblems[check.problem!] };
+	}
 
 	const id = randomId(12);
 	const keys: Record<string, string> = {};

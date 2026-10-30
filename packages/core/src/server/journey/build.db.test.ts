@@ -41,7 +41,6 @@ describe('journey rules (F-03, D-08)', () => {
 		const j = await journeyFor('ENDSDIST0001');
 		expect(j.state).toBe('ENDS_BEFORE_RETAIL');
 		expect(j.lastHolder).toMatchObject({ name: 'Lakeside Medical Supply', date: '2026-03-28' });
-		expect(j.gaps).toBe(0);
 	});
 
 	it('reaches retail, orders steps oldest first and marks unverified businesses', async () => {
@@ -85,7 +84,7 @@ describe('journey rules (F-03, D-08)', () => {
 		});
 	});
 
-	it('inserts "no record for this step" when the next sender is not the last holder', async () => {
+	it('shows the next sender as its own step, without marking anything as missing', async () => {
 		const { manufacturer: m, batch: b, pack: k } = await makeLivePack('GAPGAP000001');
 		const d = await makeParty({ name: 'Lakeside Medical Supply', role: 'distributor' });
 		const w = await makeParty({
@@ -113,13 +112,14 @@ describe('journey rules (F-03, D-08)', () => {
 			eventDate: '2026-04-09'
 		});
 		const j = await journeyFor('GAPGAP000001');
-		expect(j.steps.map((s) => s.kind)).toEqual(['manufacturer', 'party', 'gap', 'party', 'party']);
-		expect(j.steps[2]).toEqual({
-			kind: 'gap',
-			afterName: 'Lakeside Medical Supply',
-			beforeName: 'Kano Wholesale'
-		});
-		expect(j.gaps).toBe(1);
+		// Only what's recorded: the sender named in the second record is a step of its own, and
+		// nothing marks the hand-off between the two businesses as missing.
+		expect(j.steps.map((s) => (s.kind === 'party' ? s.name : s.kind))).toEqual([
+			'manufacturer',
+			'Lakeside Medical Supply',
+			'Kano Wholesale',
+			'Riverside Pharmacy'
+		]);
 	});
 
 	it('lists businesses for batch-level records instead of a chain', async () => {

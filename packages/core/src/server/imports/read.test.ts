@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import ExcelJS from 'exceljs';
 import { parseDate } from '../../imports/values.ts';
-import { checkXlsxSize, preview, readRows, SpreadsheetTooLarge, UNSAFE_NUMBER } from './read.ts';
+import {
+	checkXlsxSize,
+	csvDelimiter,
+	preview,
+	readNumberedRows,
+	readRows,
+	SpreadsheetTooLarge,
+	UNSAFE_NUMBER
+} from './read.ts';
 
 async function workbook() {
 	const wb = new ExcelJS.Workbook();
@@ -27,6 +35,31 @@ describe('reading spreadsheets', () => {
 		expect(rows[1]).toEqual(['9506000134352', 'NB-2611', '2028-04-30', '7K4M9QX2TB8D']);
 		expect(rows[2][1]).toBe('NB-2612');
 		expect(rows[2][3]).toBe(UNSAFE_NUMBER);
+	});
+
+	it("keeps a semicolon inside a cell of a comma file, and knows each row's line", async () => {
+		const csv = new TextEncoder().encode(
+			'GTIN,Brand,Generic\n9506000134352,Malarex,Artemether; Lumefantrine\n\n,,\n9506000134353,Paxolin,Paracetamol\n'
+		);
+		expect(csvDelimiter(csv)).toBe(',');
+		const rows = [];
+		for await (const r of readNumberedRows(csv, 'csv')) rows.push(r);
+		// The blank line and the row of commas aren't rows; line numbers stay those of the file.
+		expect(rows).toEqual([
+			{ cells: ['GTIN', 'Brand', 'Generic'], line: 1 },
+			{ cells: ['9506000134352', 'Malarex', 'Artemether; Lumefantrine'], line: 2 },
+			{ cells: ['9506000134353', 'Paxolin', 'Paracetamol'], line: 5 }
+		]);
+		expect(csvDelimiter(new TextEncoder().encode('a\tb\tc\n1,2\t3\t4'))).toBe('\t');
+	});
+
+	it('gives repeated and blank column names their own name', async () => {
+		const csv = new TextEncoder().encode('Brand name,,Brand name\nA,B,C\n');
+		expect((await preview(csv, 'csv')).headers).toEqual([
+			'Brand name',
+			'Column 2',
+			'Brand name (2)'
+		]);
 	});
 
 	it('previews CSV with a byte-order mark and semicolons', async () => {

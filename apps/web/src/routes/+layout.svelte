@@ -1,13 +1,19 @@
 <script lang="ts">
+	import '@fontsource-variable/inter';
+	import '@fontsource-variable/plus-jakarta-sans';
 	import '../app.css';
 	import { afterNavigate } from '$app/navigation';
 	import favicon from '#lib/assets/favicon.svg';
 	import { markScrollRegions } from '#lib/ui/scroll-regions.ts';
+	import { guardSelectWheel } from '#lib/ui/select-wheel.ts';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();
 
-	afterNavigate(() => markScrollRegions());
+	afterNavigate(() => {
+		markScrollRegions();
+		guardSelectWheel();
+	});
 	$effect(() => {
 		let timer: ReturnType<typeof setTimeout>;
 		const onResize = () => {

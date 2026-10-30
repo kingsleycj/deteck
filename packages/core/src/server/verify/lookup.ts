@@ -1,6 +1,11 @@
 import { and, eq, inArray, lte, ne, sql } from 'drizzle-orm';
 import { looksLikeGs1, parseGs1 } from '../../gs1/element-string.ts';
-import { checkTypedSerial, looksLikeNafdacNumber, normaliseSerialKey } from '../../gs1/serial.ts';
+import {
+	checkTypedSerial,
+	looksLikeBatchNumber,
+	looksLikeNafdacNumber,
+	normaliseSerialKey
+} from '../../gs1/serial.ts';
 import type {
 	FormatProblem,
 	PublicBatch,
@@ -93,6 +98,7 @@ export function parseCheckInput(raw: string): CheckInput {
 		};
 	}
 	if (looksLikeNafdacNumber(input)) return { ok: false, problem: 'nafdac_number' };
+	if (looksLikeBatchNumber(input)) return { ok: false, problem: 'batch_number' };
 	// The pack says "SN 7K4M9QX2TB8D" and people copy the label too. A serial may itself start
 	// with SN, so the whole text is tried first.
 	const label = SERIAL_LABEL.exec(input);

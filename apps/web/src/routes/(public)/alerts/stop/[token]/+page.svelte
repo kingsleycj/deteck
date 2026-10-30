@@ -12,8 +12,8 @@
 <div class="shell shell-narrow">
 	<main class="stack center" style="--gap: 16px; align-items: center; padding: 40px 0">
 		<div style="width: 130px"><Mascot mood="thinking" /></div>
-		{#if form}
-			{#if form.stopped}
+		{#if form || !data.valid}
+			{#if form?.stopped}
 				<h1 style="font-size: 26px">{a.stoppedTitle}</h1>
 				<p class="muted">{a.stoppedBody}</p>
 			{:else}

@@ -18,14 +18,17 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const kind = String(data.get('kind') ?? '') as ImportKind;
 		if (!['products', 'batches_serials', 'distribution'].includes(kind))
-			return fail(400, { message: "Choose what's in this file." });
-		const file = await readFile(data.get('file'));
-		if (!file) return fail(400, { message: 'Choose a file to upload.' });
+			return fail(400, { kind, message: "Choose what's in this file." });
+		const chosen = data.get('file');
+		if (chosen instanceof File && chosen.name && chosen.size === 0)
+			return fail(400, { kind, message: `${chosen.name} is empty. Save it again with its rows.` });
+		const file = await readFile(chosen);
+		if (!file) return fail(400, { kind, message: 'Choose a file to upload.' });
 		let created: Awaited<ReturnType<typeof createImportJob>>;
 		try {
 			created = await createImportJob(access.actor, access.manufacturer.id, kind, file);
 		} catch (error) {
-			if (error instanceof ImportError) return fail(400, { message: error.message });
+			if (error instanceof ImportError) return fail(400, { kind, message: error.message });
 			throw error;
 		}
 		// The same file was uploaded before: open that import and say so.

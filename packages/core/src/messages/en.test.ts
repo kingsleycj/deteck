@@ -8,6 +8,7 @@ import {
 	resultCopy
 } from './en.ts';
 import type { ResultFlag, SerialResultCode, VerificationResult } from '../verify/types.ts';
+import { en } from './dict/en.ts';
 
 const base: VerificationResult = {
 	v: 1,
@@ -111,8 +112,7 @@ describe('result wording', () => {
 						verified: false
 					}
 				],
-				recordedSteps: 2,
-				gaps: 0
+				recordedSteps: 2
 			},
 			'Northbridge'
 		);
@@ -126,5 +126,14 @@ describe('result wording', () => {
 		const copy = resultCopy({ ...base, code: 'UNRECOGNISED', reason: 'not_found' });
 		expect(copy.nextStep).toBe('Ask a pharmacist before you use it.');
 		expect(copy.reasons?.join(' ')).toContain('9 products from 2 manufacturers');
+	});
+});
+
+describe('landing page wording', () => {
+	const sentences = (value: unknown): string[] =>
+		typeof value === 'string' ? [value] : Object.values(value as object).flatMap(sentences);
+
+	it('keeps every sentence within the tone rules', () => {
+		for (const text of sentences(en.landing)) expect(breaksToneRules(text), text).toBe(false);
 	});
 });

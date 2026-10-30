@@ -39,7 +39,7 @@
 		</h1>
 		<p class="small muted">{[data.company.town, data.company.state].filter(Boolean).join(', ')}</p>
 	</div>
-	{#if ['approved', 'changes_requested', 'live'].includes(status)}
+	{#if !data.company.editBlocked}
 		<a href="/workspace/import" class="btn btn-primary">Import data</a>
 	{/if}
 </div>
@@ -130,9 +130,8 @@
 					Import in this order: drugs first, because batches, serials and supply chain records point
 					to them.
 				</p>
-				{#if ['approved', 'changes_requested', 'live'].includes(status)}<a
-						href="/workspace/import"
-						class="btn btn-primary">Import your data</a
+				{#if !data.company.editBlocked}<a href="/workspace/import" class="btn btn-primary"
+						>Import your data</a
 					>{/if}
 			</div>
 		{:else}

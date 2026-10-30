@@ -27,7 +27,8 @@ async function load(id: string): Promise<Manufacturer> {
 }
 
 /** Contact plus every admin member, deduplicated. */
-async function recipients(m: Manufacturer): Promise<string[]> {
+/** Who hears DETECK's decisions about a company: its contact and every admin of its team. */
+export async function recipients(m: Manufacturer): Promise<string[]> {
 	const admins = await ctx()
 		.db.select({ email: user.email })
 		.from(member)

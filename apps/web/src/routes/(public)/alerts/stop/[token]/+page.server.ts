@@ -1,8 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
-import { unsubscribeAlert } from '@deteck/core/server/alerts.ts';
+import { isStopToken, unsubscribeAlert } from '@deteck/core/server/alerts.ts';
 
 // Stopping happens on a button press, so link previews in email apps can't unsubscribe anyone.
-export const load: PageServerLoad = () => ({});
+// A broken link says so straight away, instead of asking first.
+export const load: PageServerLoad = ({ params }) => ({ valid: isStopToken(params.token) });
 
 export const actions: Actions = {
 	default: async ({ params }) => ({ stopped: await unsubscribeAlert(params.token) })

@@ -243,7 +243,6 @@ describe('business accounts', () => {
 				'Riverside Pharmacy Ltd'
 			]);
 			expect(j.steps[2]).toMatchObject({ confirmed: true, date: '2026-10-01' });
-			expect(j.gaps).toBe(0);
 
 			// Batch-level shipments: the confirming business is added to the batch list.
 			const batchDistributor = await makeParty({ name: 'Northgate Wholesale', role: 'wholesaler' });

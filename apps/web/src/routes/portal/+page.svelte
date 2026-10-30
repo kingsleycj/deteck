@@ -48,8 +48,9 @@
 	<section class="panel" style="border-color: var(--red)">
 		<h2>Recalled stock you received</h2>
 		<p class="small muted">
-			These batches were recalled or withdrawn after you recorded receiving them. Take them off your
-			shelves and follow the recall instructions.
+			These batches were recalled or withdrawn, and the records show you received some of their
+			packs (your own receipts or the supplier's records). Take them off your shelves and follow the
+			recall instructions.
 		</p>
 		<ul>
 			{#each data.recalled as r, i (i)}

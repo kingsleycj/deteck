@@ -6,11 +6,11 @@ import { serialExactHmac } from '../crypto.ts';
 import { auditLog, importJob, manufacturer, pack, packVoid, product } from '../db/schema.ts';
 import { sendEmail } from '../email/index.ts';
 import { emailTemplates } from '../email/templates.ts';
-import { fileKind, readRows } from '../imports/read.ts';
+import { fileKind, readNumberedRows } from '../imports/read.ts';
 import { getObject } from '../storage.ts';
 import { clearCoverageCache } from '../verify/lookup.ts';
 import { notifyStaff } from './register.ts';
-import { ReviewError } from './review.ts';
+import { recipients, ReviewError } from './review.ts';
 import { goLiveChecklist } from './summary.ts';
 import { emitEvent } from '../webhooks.ts';
 
@@ -76,12 +76,13 @@ async function problemRowNumbers(problemsKey: string | null): Promise<Set<number
 }
 
 /**
- * Re-reads 20 random rows from the latest serial import and checks they are on record. Rows the
- * import held back as problems, and rows for other companies' drugs, are left out.
+ * Re-reads 20 random rows from the company's latest serial imports (up to five files, so the main
+ * file is sampled even when a small one came last) and checks they are on record. Rows the imports
+ * held back as problems, and rows for other companies' drugs, are left out.
  */
 export async function spotCheck(manufacturerId: string, sampleSize = 20): Promise<SpotCheck> {
 	const { db } = ctx();
-	const [job] = await db
+	const jobs = await db
 		.select()
 		.from(importJob)
 		.where(
@@ -92,15 +93,9 @@ export async function spotCheck(manufacturerId: string, sampleSize = 20): Promis
 			)
 		)
 		.orderBy(desc(importJob.committedAt))
-		.limit(1);
-	if (!job) return { fileName: null, sampled: 0, found: 0 };
-	if (job.fileDeletedAt) return { fileName: job.fileName, sampled: 0, found: 0, fileDeleted: true };
-	const kind = fileKind(job.fileName, '');
-	const headers = job.headers ?? [];
-	const gtinIdx = headers.indexOf(job.mapping?.gtin ?? '\0');
-	const serialIdx = headers.indexOf(job.mapping?.serial ?? '\0');
-	if (!kind || gtinIdx < 0 || serialIdx < 0)
-		return { fileName: job.fileName, sampled: 0, found: 0 };
+		.limit(5);
+	if (jobs.length === 0) return { fileName: null, sampled: 0, found: 0 };
+	const names = jobs.map((j) => j.fileName).join(', ');
 	const own = new Set(
 		(
 			await db
@@ -109,42 +104,52 @@ export async function spotCheck(manufacturerId: string, sampleSize = 20): Promis
 				.where(eq(product.manufacturerId, manufacturerId))
 		).map((p) => p.gtin)
 	);
-	const problems = await problemRowNumbers(job.problemsKey);
-	// The file can be gone from storage before it's marked deleted (removed by hand, or a storage
-	// problem): say it can't be re-read rather than failing the review page.
-	const body = await getObject(job.fileKey).catch(() => null);
-	if (!body) return { fileName: job.fileName, sampled: 0, found: 0, fileDeleted: true };
 
-	// Reservoir sampling over distinct serials keeps memory flat for large files.
+	// Reservoir sampling over distinct serials, across the files, keeps memory flat.
 	const sample: { gtin: string; serial: string }[] = [];
 	const picked = new Set<string>();
 	let seen = 0;
-	let first = true;
-	let rowNumber = 1;
-	for await (const row of readRows(body, kind)) {
-		if (first) {
-			first = false;
-			continue;
-		}
-		rowNumber++;
-		if (problems.has(rowNumber)) continue;
-		const gtin = toGtin14(row[gtinIdx] ?? '');
-		const serial = (row[serialIdx] ?? '').trim();
-		if (!gtin || !own.has(gtin) || !serial || picked.has(`${gtin}|${serial}`)) continue;
-		seen++;
-		if (sample.length < sampleSize) {
-			sample.push({ gtin, serial });
-			picked.add(`${gtin}|${serial}`);
-		} else {
-			const j = Math.floor(Math.random() * seen);
-			if (j < sampleSize) {
-				picked.delete(`${sample[j].gtin}|${sample[j].serial}`);
-				sample[j] = { gtin, serial };
+	let readable = 0;
+	for (const job of jobs) {
+		if (job.fileDeletedAt) continue;
+		const kind = fileKind(job.fileName, '');
+		const headers = job.headers ?? [];
+		const gtinIdx = headers.indexOf(job.mapping?.gtin ?? '\0');
+		const serialIdx = headers.indexOf(job.mapping?.serial ?? '\0');
+		if (!kind || gtinIdx < 0 || serialIdx < 0) continue;
+		// The file can be gone from storage before it's marked deleted (removed by hand, or a
+		// storage problem): skip it rather than failing the review page.
+		const body = await getObject(job.fileKey).catch(() => null);
+		if (!body) continue;
+		readable++;
+		// Problem rows are numbered by their line in the file, as the import numbered them.
+		const problems = await problemRowNumbers(job.problemsKey);
+		let first = true;
+		for await (const { cells: row, line } of readNumberedRows(body, kind)) {
+			if (first) {
+				first = false;
+				continue;
+			}
+			if (problems.has(line)) continue;
+			const gtin = toGtin14(row[gtinIdx] ?? '');
+			const serial = (row[serialIdx] ?? '').trim();
+			if (!gtin || !own.has(gtin) || !serial || picked.has(`${gtin}|${serial}`)) continue;
+			seen++;
+			if (sample.length < sampleSize) {
+				sample.push({ gtin, serial });
 				picked.add(`${gtin}|${serial}`);
+			} else {
+				const j = Math.floor(Math.random() * seen);
+				if (j < sampleSize) {
+					picked.delete(`${sample[j].gtin}|${sample[j].serial}`);
+					sample[j] = { gtin, serial };
+					picked.add(`${gtin}|${serial}`);
+				}
 			}
 		}
 	}
-	if (sample.length === 0) return { fileName: job.fileName, sampled: 0, found: 0 };
+	if (readable === 0) return { fileName: names, sampled: 0, found: 0, fileDeleted: true };
+	if (sample.length === 0) return { fileName: names, sampled: 0, found: 0 };
 	const found = await db
 		.select({ n: sql<number>`count(*)::int` })
 		.from(pack)
@@ -159,7 +164,7 @@ export async function spotCheck(manufacturerId: string, sampleSize = 20): Promis
 				sql`not exists (select 1 from ${packVoid} v where v.pack_id = ${pack}.id)`
 			)
 		);
-	return { fileName: job.fileName, sampled: sample.length, found: found[0].n };
+	return { fileName: names, sampled: sample.length, found: found[0].n };
 }
 
 /**
@@ -256,13 +261,19 @@ export async function decideGoLive(
 		decision: decision === 'approve' ? 'live' : 'changes_requested',
 		note: note.trim() || null
 	});
-	await sendEmail(
-		emailTemplates.goLiveDecision({
-			to: m.contactEmail,
-			company: m.companyName,
-			approved: decision === 'approve',
-			note: note.trim(),
-			url: `${ctx().config.origin}/workspace`
-		})
-	).catch((error) => console.error('[email] go-live decision', error));
+	// The same people as for the application decision: the contact may have left the team.
+	const to = await recipients(m);
+	await Promise.allSettled(
+		to.map((email) =>
+			sendEmail(
+				emailTemplates.goLiveDecision({
+					to: email,
+					company: m.companyName,
+					approved: decision === 'approve',
+					note: note.trim(),
+					url: `${ctx().config.origin}/workspace`
+				})
+			).catch((error) => console.error('[email] go-live decision', error))
+		)
+	);
 }

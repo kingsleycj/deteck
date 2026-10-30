@@ -32,41 +32,69 @@ function prepare() {
 	prepared = true;
 }
 
-async function tryRead(image: Uint8Array): Promise<string | null> {
+async function tryRead(image: Uint8Array, harder: boolean): Promise<string | null> {
 	const results = await readBarcodes(image, {
 		formats: ['DataMatrix', 'QRCode'],
-		tryHarder: true,
-		tryRotate: true,
+		tryHarder: harder,
+		tryRotate: harder,
 		maxNumberOfSymbols: 1
 	});
 	const hit = results.find((r) => r.isValid && r.text);
 	return hit ? hit.text : null;
 }
 
+/** Too many photos waiting to be read: the caller asks the person to try again shortly. */
+export class DecodeBusyError extends Error {}
+
+// The barcode reader runs on the main thread, so photos are read one at a time and only a few
+// may wait: a burst of uploads can't stall every other request on the server.
+const MAX_WAITING = 6;
+let running = false;
+const waiting: (() => void)[] = [];
+
+async function oneAtATime<T>(task: () => Promise<T>): Promise<T> {
+	if (running) {
+		if (waiting.length >= MAX_WAITING) throw new DecodeBusyError('Too many photos waiting');
+		await new Promise<void>((resolve) => waiting.push(resolve));
+	}
+	running = true;
+	try {
+		return await task();
+	} finally {
+		const next = waiting.shift();
+		if (next) next();
+		else running = false;
+	}
+}
+
 /**
  * Returns the decoded text (a GS1 element string for DataMatrix), or null. The photo is never
  * handed to the barcode reader as uploaded: it is opened with the pixel cap and shrunk first, so
- * a hostile image can't tie up the server.
+ * a hostile image can't tie up the server. A quick read comes first; the slower, more thorough
+ * one only when that finds nothing. Throws DecodeBusyError when too many photos are waiting.
  */
 export async function decodeCode(photo: Uint8Array): Promise<string | null> {
 	prepare();
 	if (!(await isAcceptableImage(photo))) return null;
-	for (const variant of [
-		(img: ReturnType<typeof openImage>) =>
-			img.resize({ width: 2400, height: 2400, fit: 'inside', withoutEnlargement: true }),
-		(img: ReturnType<typeof openImage>) =>
-			img
-				.resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-				.grayscale()
-				.normalise()
-	]) {
-		try {
-			const prepared = await variant(openImage(photo).rotate()).png().toBuffer();
-			const text = await tryRead(new Uint8Array(prepared));
-			if (text) return text;
-		} catch {
-			// Try the next variant.
+	return oneAtATime(async () => {
+		for (const [shrink, harder] of [
+			[(img: ReturnType<typeof openImage>) => img, false],
+			[(img: ReturnType<typeof openImage>) => img.grayscale().normalise(), true]
+		] as const) {
+			try {
+				const prepared = await shrink(
+					openImage(photo)
+						.rotate()
+						.resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+				)
+					.png()
+					.toBuffer();
+				const text = await tryRead(new Uint8Array(prepared), harder);
+				if (text) return text;
+			} catch {
+				// Try the next way.
+			}
 		}
-	}
-	return null;
+		return null;
+	});
 }

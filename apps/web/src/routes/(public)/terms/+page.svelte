@@ -19,7 +19,7 @@
 	{#if data.lang !== 'en'}<p class="notice small" lang={data.lang}>
 			{data.t.common.englishOnly}
 		</p>{/if}
-	<main class="prose">
+	<main class="prose" lang="en">
 		<p class="notice small">Draft for legal review before the pilot (OQ-06).</p>
 		<h1>Terms of use</h1>
 		<p class="muted small">Last updated 25 October 2026</p>

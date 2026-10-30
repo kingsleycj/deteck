@@ -1,4 +1,3 @@
-import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { buildJourney } from '@deteck/core/server/journey/build.ts';
 import { loadScan } from '@deteck/core/server/scan/session.ts';
@@ -7,8 +6,9 @@ import { publicView } from '@deteck/core/server/verify/check.ts';
 export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	setHeaders({ 'cache-control': 'private, no-store' });
 	const found = await loadScan(params.id);
-	// The result behind the scan lasts 30 minutes; without it the page can't say what was checked.
-	if (!found || !found.result) error(404, 'This scan has expired. Check the serial again.');
+	// The result behind the scan lasts 30 minutes; without it the page can't say what was checked,
+	// so it says the check has expired (in the visitor's language), as an expired result does.
+	if (!found || !found.result) return { expired: true as const };
 	const { session, result } = found;
 	const journey =
 		result && result.code === 'VALID' && result.journeyAvailable
@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	const waiting = ['collecting', 'queued', 'processing'].includes(session.status);
 	const stale = waiting && Date.now() - session.createdAt.getTime() > 120_000;
 	return {
+		expired: false as const,
 		status: stale ? 'done' : session.status,
 		outcome: stale ? 'CANT_TELL' : session.outcome,
 		categories: (session.categories ?? []).map((c) => ({

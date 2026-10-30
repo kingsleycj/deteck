@@ -90,6 +90,11 @@ function readToken(purpose: 'confirm' | 'stop', value: string): string | null {
 	return expected.length === given.length && timingSafeEqual(expected, given) ? id : null;
 }
 
+/** Whether a stop link is one DETECK made (its signature only: nothing is looked up or changed). */
+export function isStopToken(value: string): boolean {
+	return readToken('stop', value) !== null;
+}
+
 export function stopUrl(id: string) {
 	return `${ctx().config.origin}/alerts/stop/${token('stop', id)}`;
 }

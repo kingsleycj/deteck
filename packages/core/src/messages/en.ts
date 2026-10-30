@@ -23,6 +23,7 @@ export const formatProblem: Record<FormatProblem, string> = {
 	too_long: en.format.too_long,
 	bad_characters: en.format.bad_characters,
 	nafdac_number: en.format.nafdac_number,
+	batch_number: en.format.batch_number,
 	bad_code: en.format.bad_code
 };
 

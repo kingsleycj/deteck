@@ -6,7 +6,16 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import './job-definitions.ts';
 import { ctx } from './context.ts';
-import { custodyEvent, document, importJob, manufacturer, recallAlert, user } from './db/schema.ts';
+import {
+	batch,
+	custodyEvent,
+	document,
+	importJob,
+	manufacturer,
+	product,
+	recallAlert,
+	user
+} from './db/schema.ts';
 import { sentEmails } from './email/index.ts';
 import { SYSTEM_ACTOR } from './audit.ts';
 import { CatalogueError, setBatchStatus } from './catalogue.ts';
@@ -145,10 +154,9 @@ describe('journeys', () => {
 			'Riverside Pharmacy'
 		]);
 		expect(j.steps[1]).toMatchObject({ confirmed: true });
-		expect(j.gaps).toBe(0);
 	});
 
-	it("treats a sender with the manufacturer's own name as the manufacturer, not a gap", async () => {
+	it("treats a sender with the manufacturer's own name as the manufacturer", async () => {
 		const live = await makeLivePack('7K4M9QX2TB8D');
 		// The file named the manufacturer itself as the sender: DETECK recorded it as a business.
 		const itself = await makeParty({ name: 'NORTHBRIDGE PHARMA', role: 'distributor' });
@@ -163,7 +171,6 @@ describe('journeys', () => {
 			eventDate: '2026-09-01'
 		});
 		const j = await journeyOf('7K4M9QX2TB8D');
-		expect(j.gaps).toBe(0);
 		expect(j.steps.map((s) => (s.kind === 'party' ? s.name : s.kind))).toEqual([
 			'manufacturer',
 			'Lakeside Medical Supply'
@@ -255,7 +262,7 @@ describe('imports', () => {
 		await expect(getObject(first)).rejects.toThrow();
 	});
 
-	it('warns about serials another manufacturer uses, short number serials and expiries all on the 1st', async () => {
+	it('refuses a serial another manufacturer uses, without leaving its new batch behind', async () => {
 		const other = await makeLivePack('00012345');
 		expect(other.manufacturer.id).not.toBe(manufacturerId);
 		const done = await importFile(manufacturerId, 'batches_serials', [
@@ -265,20 +272,29 @@ describe('imports', () => {
 			[gtin, 'NB-0003', '2028-06-01', '12347']
 		]);
 		expect(done.counts).toMatchObject({
-			serialsAdded: 3,
-			sharedSerials: 1,
-			shortNumericSerials: 1,
-			expiryOnThe1st: 3
+			serialsAdded: 2,
+			problems: 1,
+			batchesCreated: 2,
+			shortNumericSerials: 1
 		});
-		expect(await sharedSerialCount(manufacturerId)).toBe(1);
-		// Allowed, but once both are live a typed check of the shared serial asks which batch is on
-		// the pack.
+		expect(done.counts?.sharedSerials).toBeUndefined();
+		const [reason] = (await readProblemRows(done)).map((p) => p.problem);
+		expect(reason).toContain('Another manufacturer on DETECK already uses this serial');
+		// NB-0001 had no other row, so it isn't left empty on DETECK.
+		const lots = await ctx()
+			.db.select({ lot: batch.lot })
+			.from(batch)
+			.innerJoin(product, eq(product.id, batch.productId))
+			.where(eq(product.manufacturerId, manufacturerId));
+		expect(lots.map((l) => l.lot)).not.toContain('NB-0001');
+		expect(await sharedSerialCount(manufacturerId)).toBe(0);
+		// Once this company is live too, the other company's pack still checks Valid.
 		await ctx()
 			.db.update(manufacturer)
 			.set({ status: 'live' })
 			.where(eq(manufacturer.id, manufacturerId));
 		clearCoverageCache();
-		expect((await check('00012345')).code).toBe('NEEDS_BATCH');
+		expect((await check('00012345')).code).toBe('VALID');
 	});
 });
 

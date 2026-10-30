@@ -5,7 +5,8 @@
 		state: 'ok' | 'warn' | 'bad';
 		detail?: string;
 	}
-	let { items }: { items: Item[] } = $props();
+	/** `fix`: where to go to fix an item that isn't done, by item key. */
+	let { items, fix = {} }: { items: Item[]; fix?: Record<string, string> } = $props();
 	const mark = { ok: '✓', warn: '!', bad: '✕' };
 </script>
 
@@ -19,6 +20,9 @@
 				>
 				{item.label}
 				{#if item.detail}<br /><span class="small muted">{item.detail}</span>{/if}
+				{#if item.state !== 'ok' && fix[item.key]}<br /><a class="small" href={fix[item.key]}
+						>Fix this →</a
+					>{/if}
 			</span>
 		</li>
 	{/each}

@@ -1,6 +1,10 @@
-# Render Blueprint (D-06): the website, the background worker, a nightly backup and Postgres, in
-# Frankfurt. Cloudflare sits in front (DNS, TLS, WAF, Turnstile); files go to Cloudflare R2.
-# Not deployed yet. docs/DEPLOY.md walks through the first deployment.
+# Render Blueprint (D-06, B-81): the website (which runs the background jobs too, for now), a
+# nightly backup and Postgres, in Frankfurt. Cloudflare sits in front (DNS, TLS, WAF, Turnstile);
+# files go to Cloudflare R2. Not deployed yet. docs/DEPLOY.md walks through the first deployment.
+#
+# Costs $7 a month (docs/COSTS.md): the website is on Render's free plan, the database is $6 and
+# the backup job $1. docs/DEPLOY.md, "Moving off the free plan", is the change to make before
+# real pharmacies use DETECK.
 #
 # Settings Render can't know (your keys and addresses) are NOT listed here: Render ignores
 # "fill this in" values inside an environment group. Before the first deploy, add them by hand in
@@ -39,6 +43,9 @@ envVarGroups:
         value: resend
       - key: FEATURE_PACKAGING_AI
         value: 'off'
+      # "Report a suspected fake" is switched off for now; 'on' brings back the form and pages.
+      - key: FEATURE_REPORTS
+        value: 'off'
       - key: SCAN_MODEL
         value: claude-opus-5-5
       - key: WHATSAPP_TEMPLATE_SUBSCRIBED
@@ -61,46 +68,19 @@ services:
     name: deteck-web
     runtime: node
     region: frankfurt
-    plan: 0.5c-512mb
+    # Render's free plan for now (B-81). It sleeps after 15 minutes without visitors; the uptime
+    # check on /healthz every 5 minutes keeps it awake, and the 750 free hours a month cover one
+    # website running all month. It has no pre-deploy step and no Shell. The paid plan is
+    # 0.5c-512mb ($7 a month).
+    plan: free
     autoDeploy: false
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    # Plain node (no pnpm needed at this step). Migrations take a lock, so the worker can run them
-    # too during the same deploy.
-    preDeployCommand: node packages/core/scripts/migrate.ts
-    startCommand: node apps/web/build/index.js
+    # The free plan has no pre-deploy step, so migrations run just before the website starts. They
+    # take a lock, so two copies starting together take turns. On the paid plan, move them back
+    # to preDeployCommand.
+    startCommand: node packages/core/scripts/migrate.ts && node apps/web/build/index.js
     healthCheckPath: /healthz
-    maxShutdownDelaySeconds: 60
-    envVars:
-      - fromGroup: deteck-shared
-      - key: DATABASE_URL
-        fromDatabase:
-          name: deteck-db
-          property: connectionString
-      # The worker runs the jobs; the website only queues them.
-      - key: JOBS_IN_WEB
-        value: 'false'
-      # Cloudflare in front: trust its headers for the protocol and the client IP (and set
-      # EDGE_SECRET so requests that skip Cloudflare are refused).
-      - key: PROTOCOL_HEADER
-        value: x-forwarded-proto
-      - key: ADDRESS_HEADER
-        value: cf-connecting-ip
-      - key: XFF_DEPTH
-        value: '1'
-      # Manufacturer spreadsheets and reference photos. Public forms are capped at 20 MB in code.
-      - key: BODY_SIZE_LIMIT
-        value: 60M
-
-  - type: worker
-    name: deteck-worker
-    runtime: node
-    region: frankfurt
-    plan: 0.5c-512mb
-    autoDeploy: false
-    buildCommand: corepack enable && pnpm install --frozen-lockfile
-    preDeployCommand: node packages/core/scripts/migrate.ts
-    startCommand: node apps/worker/src/index.ts
-    # A running import may need a few minutes to finish before the old worker stops.
+    # A running import may need a few minutes to finish before the old copy stops.
     maxShutdownDelaySeconds: 300
     envVars:
       - fromGroup: deteck-shared
@@ -108,6 +88,21 @@ services:
         fromDatabase:
           name: deteck-db
           property: connectionString
+      # The website runs the background jobs itself for now (B-81). When use grows, add back a
+      # worker service (plan 0.5c-512mb, buildCommand without `pnpm build`, startCommand
+      # `node apps/worker/src/index.ts`, maxShutdownDelaySeconds 300, the same envVars) and set
+      # this to 'false'.
+      - key: JOBS_IN_WEB
+        value: 'true'
+      - key: PROTOCOL_HEADER
+        value: x-forwarded-proto
+      # The visitor's address for the rate limits: once Cloudflare is in front, add
+      # ADDRESS_HEADER=cf-connecting-ip together with EDGE_SECRET (SETUP-KEYS.md, section 4,
+      # step 8). Without EDGE_SECRET anyone could type that header, so the app refuses to start
+      # with one and not the other.
+      # Manufacturer spreadsheets and reference photos. Public forms are capped at 20 MB in code.
+      - key: BODY_SIZE_LIMIT
+        value: 60M
 
   # Nightly backup of the whole database to a separate R2 bucket (BACKUP_S3_BUCKET), kept as long
   # as that bucket's rules say. Render's own backups only go back a few days.
@@ -115,6 +110,7 @@ services:
     name: deteck-backup
     runtime: node
     region: frankfurt
+    # Billed by the second it runs, with Render's $1 a month minimum (there's no free cron plan).
     plan: 0.5c-512mb
     schedule: '30 1 * * *' # 02:30 in Lagos
     buildCommand: corepack enable && pnpm install --frozen-lockfile

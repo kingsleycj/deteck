@@ -51,8 +51,9 @@ export const actions: Actions = {
 			'Verification removed.'
 		);
 	},
+	// Merging rewrites public journeys and can't be undone: a correction, so for admins.
 	merge: async (event) => {
-		const { actor } = requireStaff(event);
+		const { actor } = requireStaff(event, ['admin']);
 		const d = await event.request.formData();
 		return run(
 			() => mergeParty(actor, String(d.get('id')), String(d.get('into'))),

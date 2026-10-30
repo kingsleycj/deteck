@@ -34,7 +34,7 @@
 					type="email"
 					autocomplete="username"
 					required
-					value={form?.email ?? ''}
+					defaultValue={form?.email ?? ''}
 				/>
 			</div>
 			<Turnstile siteKey={data.turnstile} />

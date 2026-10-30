@@ -4,6 +4,7 @@
 
 	let { data, form }: PageProps = $props();
 	const method = $derived(form?.method ?? 'totp');
+	const next = $derived(form?.next ?? data.next);
 </script>
 
 <svelte:head><title>Enter your code · DETECK</title></svelte:head>
@@ -28,7 +29,7 @@
 		</p>{/if}
 
 	<form method="post" action="?/{method}" class="stack" style="--gap: 14px">
-		<input type="hidden" name="next" value={data.next} />
+		<input type="hidden" name="next" value={next} />
 		<div class="field">
 			<label for="code">{method === 'backup' ? 'Backup code' : 'Sign-in code'}</label>
 			<input
@@ -41,7 +42,7 @@
 				required
 			/>
 		</div>
-		<label class="row small" style="--gap: 8px"
+		<label class="option"
 			><input type="checkbox" name="trust" /> Trust this device for 30 days</label
 		>
 		<button class="btn btn-primary btn-block">Verify and sign in</button>
@@ -51,10 +52,11 @@
 		<summary>Can't use your authenticator app?</summary>
 		<div class="stack" style="--gap: 10px; margin-top: 12px">
 			<form method="post" action="?/backup" class="row">
-				<input type="hidden" name="next" value={data.next} />
+				<input type="hidden" name="next" value={next} />
 				<input
 					name="code"
 					class="input"
+					aria-label="Backup code"
 					placeholder="Backup code"
 					style="max-width: 220px"
 					autocomplete="off"

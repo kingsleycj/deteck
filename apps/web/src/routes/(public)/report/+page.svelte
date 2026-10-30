@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import Icon from '#lib/ui/Icon.svelte';
 	import Mascot from '#lib/ui/Mascot.svelte';
@@ -24,14 +25,14 @@
 		<a href={data.from ? `/r/${data.from}` : '/check'} class="back" aria-label={t.common.back}
 			><Icon name="back" /></a
 		>
-		<span>{rp.title}</span>
+		<h1 class="report-title">{rp.title}</h1>
 	</header>
 
 	<div class="hero-row" style="margin-top: 0">
 		<div class="hero-mascot" style="flex-basis: 70px; width: 70px">
 			<Mascot mood={form?.message ? 'concerned' : 'thinking'} />
 		</div>
-		<p class="bubble bubble-left">
+		<p class="bubble bubble-left" role={form?.message ? 'alert' : undefined}>
 			{form?.message ?? rp.intro}
 		</p>
 	</div>
@@ -60,11 +61,14 @@
 					/>
 				</div>
 			{/if}
-			<div class="field">
-				<label for="photos">{fmt(rp.photosLabel, { n: data.maxPhotos })}</label>
-				<input id="photos" name="photos" type="file" accept="image/*" multiple />
-				<p class="help">{rp.photosHelp}</p>
-			</div>
+			<Upload
+				id="photos"
+				name="photos"
+				title={fmt(rp.photosLabel, { n: data.maxPhotos })}
+				hint={rp.photosHelp}
+				accept="image/*"
+				multiple
+			/>
 		</section>
 
 		<section class="card stack" style="--gap: 12px">
@@ -123,13 +127,8 @@
 			</div>
 		</section>
 
-		<label class="row small" style="--gap: 8px; align-items: flex-start"
-			><input
-				type="checkbox"
-				name="shareConsent"
-				style="margin-top: 3px"
-				checked={v.shareConsent !== false}
-			/>
+		<label class="option"
+			><input type="checkbox" name="shareConsent" checked={v.shareConsent === true} />
 			<span>{rp.consent}</span></label
 		>
 		<button class="btn btn-primary btn-block">{rp.submit}</button>
@@ -137,3 +136,10 @@
 	</form>
 	<SiteFooter />
 </div>
+
+<style>
+	.report-title {
+		font-size: 16px;
+		letter-spacing: 0;
+	}
+</style>

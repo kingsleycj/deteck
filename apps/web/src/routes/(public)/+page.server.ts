@@ -1,7 +1,9 @@
 import type { PageServerLoad } from './$types';
 import { ctx } from '@deteck/core/server/context.ts';
 
-export const load: PageServerLoad = ({ setHeaders }) => {
-	setHeaders({ 'cache-control': 'public, max-age=300' });
-	return { contactEmail: ctx().config.contactEmail ?? null };
+// No shared cache: the page is in the visitor's language (cookie or browser setting), and a cached
+// copy would show the old language for minutes after someone switches.
+export const load: PageServerLoad = () => {
+	const config = ctx().config;
+	return { contactEmail: config.contactEmail ?? null, showreel: config.showreel ?? null };
 };

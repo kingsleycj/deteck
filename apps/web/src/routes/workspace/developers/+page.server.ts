@@ -1,5 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { ctx } from '@deteck/core/server/context.ts';
 import {
 	API_SCOPES,
 	ApiKeyError,
@@ -28,7 +29,10 @@ export const load: PageServerLoad = async (event) => {
 		keys,
 		endpoints: endpoints.map(({ secret: _s, ...e }) => e),
 		scopes: SCOPES_FOR.manufacturer.map((key) => ({ key, label: API_SCOPES[key] })),
-		events: Object.entries(WEBHOOK_EVENTS).map(([key, label]) => ({ key, label }))
+		// Reports of fakes are switched off for now (FEATURE_REPORTS), so their event isn't offered.
+		events: Object.entries(WEBHOOK_EVENTS)
+			.filter(([key]) => key !== 'report.received' || ctx().config.reportsEnabled)
+			.map(([key, label]) => ({ key, label }))
 	};
 };
 
@@ -104,7 +108,12 @@ export const actions: Actions = {
 		const { access, denied } = await admin(event);
 		if (denied) return denied;
 		const d = await event.request.formData();
-		await sendTest({ manufacturerId: access.manufacturer.id }, String(d.get('id')));
+		try {
+			await sendTest({ manufacturerId: access.manufacturer.id }, String(d.get('id')));
+		} catch (error) {
+			if (error instanceof WebhookError) return fail(400, { message: error.message });
+			throw error;
+		}
 		return { done: 'Test event sent. Its delivery appears below within a minute.' };
 	}
 };

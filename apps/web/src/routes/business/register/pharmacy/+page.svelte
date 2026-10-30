@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { markInvalidFields } from '#lib/client/fields.ts';
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 	import Turnstile from '#lib/ui/Turnstile.svelte';
 	import { NIGERIAN_STATES } from '@deteck/core/nigeria.ts';
 
@@ -14,6 +17,11 @@
 		['distributor', 'Distributor'],
 		['wholesaler', 'Wholesaler']
 	] as const;
+
+	// Each time the form comes back with problems, point screen readers (and the focus) at them.
+	$effect(() => {
+		if (form) markInvalidFields();
+	});
 </script>
 
 <svelte:head><title>Register a pharmacy, hospital or distributor · DETECK</title></svelte:head>
@@ -48,22 +56,27 @@
 			<div class="form-grid">
 				<div class="field span-2" class:field-error={e.name}>
 					<label for="name">Business name</label>
-					<input id="name" name="name" required value={v.name ?? ''} autocomplete="organization" />
+					<input
+						id="name"
+						name="name"
+						required
+						defaultValue={v.name ?? ''}
+						autocomplete="organization"
+					/>
 					{@render err('name')}
 				</div>
 				<div class="field" class:field-error={e.role}>
 					<label for="role">Type of business</label>
-					<select id="role" name="role" required>
+					<!-- defaultValue, not value: a type picked before the script loads is kept. -->
+					<select id="role" name="role" required defaultValue={v.role ?? data.role}>
 						<option value="">Choose one</option>
-						{#each roles as [value, label] (value)}<option {value} selected={v.role === value}
-								>{label}</option
-							>{/each}
+						{#each roles as [value, label] (value)}<option {value}>{label}</option>{/each}
 					</select>
 					{@render err('role')}
 				</div>
 				<div class="field" class:field-error={e.pcnLicence}>
 					<label for="pcnLicence">PCN premises licence no.</label>
-					<input id="pcnLicence" name="pcnLicence" required value={v.pcnLicence ?? ''} />
+					<input id="pcnLicence" name="pcnLicence" required defaultValue={v.pcnLicence ?? ''} />
 					{@render err('pcnLicence')}
 				</div>
 				<div class="field span-2" class:field-error={e.address}>
@@ -72,44 +85,44 @@
 						id="address"
 						name="address"
 						required
-						value={v.address ?? ''}
+						defaultValue={v.address ?? ''}
 						autocomplete="street-address"
 					/>
 					{@render err('address')}
 				</div>
 				<div class="field" class:field-error={e.state}>
 					<label for="state">State</label>
-					<select id="state" name="state" required>
-						<option value="">Choose a state</option>
-						{#each NIGERIAN_STATES as s (s)}<option value={s} selected={v.state === s}>{s}</option
-							>{/each}
+					<!-- Untouched when the page's script loads, as on the manufacturer form: no value
+					     attributes, and defaultValue only marks the server's choice. -->
+					<select id="state" name="state" required defaultValue={v.state ?? ''}>
+						<option label="Choose a state"></option>
+						{#each NIGERIAN_STATES as s (s)}<option>{s}</option>{/each}
 					</select>
 					{@render err('state')}
 				</div>
 				<div class="field">
 					<label for="town">Town or area</label>
-					<input id="town" name="town" value={v.town ?? ''} />
+					<input id="town" name="town" defaultValue={v.town ?? ''} />
 				</div>
 				<div class="field">
 					<label for="cacRc">CAC reg. no. (optional)</label>
-					<input id="cacRc" name="cacRc" value={v.cacRc ?? ''} />
+					<input id="cacRc" name="cacRc" defaultValue={v.cacRc ?? ''} />
 				</div>
 				<div class="field" class:field-error={e.gln}>
 					<label for="gln">GS1 GLN (optional)</label>
-					<input id="gln" name="gln" inputmode="numeric" value={v.gln ?? ''} />
+					<input id="gln" name="gln" inputmode="numeric" defaultValue={v.gln ?? ''} />
 					{@render err('gln')}
 				</div>
-				<div class="field span-2" class:field-error={e.pcnLicenceFile}>
-					<label for="pcnLicenceFile">PCN premises licence</label>
-					<input
+				<div class="field span-2">
+					<Upload
 						id="pcnLicenceFile"
 						name="pcnLicenceFile"
-						type="file"
+						title="PCN premises licence"
+						hint="PDF, JPG or PNG, under 10 MB"
 						accept="application/pdf,image/jpeg,image/png"
 						required
+						error={e.pcnLicenceFile}
 					/>
-					<p class="help">PDF, JPG or PNG, under 10 MB.</p>
-					{@render err('pcnLicenceFile')}
 				</div>
 			</div>
 		</section>
@@ -123,7 +136,7 @@
 						id="contactName"
 						name="contactName"
 						required
-						value={v.contactName ?? ''}
+						defaultValue={v.contactName ?? ''}
 						autocomplete="name"
 					/>
 					{@render err('contactName')}
@@ -135,7 +148,7 @@
 						name="contactEmail"
 						type="email"
 						required
-						value={v.contactEmail ?? ''}
+						defaultValue={v.contactEmail ?? ''}
 						autocomplete="email"
 					/>
 					{@render err('contactEmail')}
@@ -146,19 +159,18 @@
 						id="contactPhone"
 						name="contactPhone"
 						type="tel"
-						value={v.contactPhone ?? ''}
+						defaultValue={v.contactPhone ?? ''}
 						autocomplete="tel"
 					/>
 				</div>
 				<div></div>
 				<div class="field" class:field-error={e.password}>
 					<label for="password">Password</label>
-					<input
+					<PasswordInput
 						id="password"
 						name="password"
-						type="password"
 						required
-						minlength="10"
+						minlength={10}
 						autocomplete="new-password"
 					/>
 					<p class="help">At least 10 characters, with a number and a symbol.</p>
@@ -166,17 +178,14 @@
 				</div>
 				<div class="field" class:field-error={e.confirm}>
 					<label for="confirm">Confirm password</label>
-					<input id="confirm" name="confirm" type="password" required autocomplete="new-password" />
+					<PasswordInput id="confirm" name="confirm" required autocomplete="new-password" />
 					{@render err('confirm')}
 				</div>
 			</div>
 		</section>
 
-		<label
-			class="row small"
-			style="--gap: 8px; align-items: flex-start"
-			class:field-error={e.consent}
-			><input type="checkbox" name="consent" checked={v.consent === 'on'} style="margin-top: 3px" />
+		<label class="option" class:field-error={e.consent}
+			><input type="checkbox" name="consent" checked={v.consent === 'on'} />
 			<span
 				>I'm authorised to register this business, and I agree to DETECK's <a href="/terms">terms</a
 				>

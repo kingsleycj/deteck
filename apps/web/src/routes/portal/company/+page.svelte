@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import { formatDateTime } from '#lib/ui/status.ts';
 
@@ -90,18 +91,18 @@
 				style="--gap: 10px"
 			>
 				<div class="field">
-					<label for="kind">Kind</label>
+					<label for="kind">Type of document</label>
 					<select id="kind" name="kind">
 						<option value="pcn_premises_licence">PCN premises licence</option>
 						<option value="cac_certificate">CAC certificate</option>
 						<option value="other">Other document</option>
 					</select>
 				</div>
-				<label for="doc-file" class="visually-hidden">Choose a file</label>
-				<input
+				<Upload
 					id="doc-file"
 					name="file"
-					type="file"
+					title="The file"
+					hint="PDF, JPG or PNG, under 10 MB"
 					accept="application/pdf,image/jpeg,image/png"
 					required
 				/>

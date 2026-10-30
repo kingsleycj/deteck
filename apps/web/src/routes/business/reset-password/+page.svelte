@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 
 	let { data, form }: PageProps = $props();
 </script>
@@ -20,19 +21,18 @@
 			<input type="hidden" name="token" value={data.token} />
 			<div class="field">
 				<label for="password">New password</label>
-				<input
+				<PasswordInput
 					id="password"
 					name="password"
-					type="password"
 					autocomplete="new-password"
-					minlength="10"
+					minlength={10}
 					required
 					aria-describedby="pw-rules"
 				/>
 			</div>
 			<div class="field">
 				<label for="confirm">Confirm new password</label>
-				<input id="confirm" name="confirm" type="password" autocomplete="new-password" required />
+				<PasswordInput id="confirm" name="confirm" autocomplete="new-password" required />
 			</div>
 			<p id="pw-rules" class="help">At least 10 characters, with a number and a symbol.</p>
 			<button class="btn btn-primary btn-block">Save new password</button>

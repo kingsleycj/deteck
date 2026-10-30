@@ -116,7 +116,7 @@
 					<fieldset class="stack" style="--gap: 6px; border: 0; padding: 0; margin: 0">
 						<legend class="visually-hidden">Verdict</legend>
 						{#each Object.entries(data.labels) as [value, label] (value)}
-							<label class="row small" style="--gap: 8px"
+							<label class="option"
 								><input
 									type="radio"
 									name="label"

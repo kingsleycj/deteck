@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { confirmFirst } from '#lib/ui/confirm.ts';
 	import { formatNumber } from './status.ts';
 	import { formatDate, formatMonth } from '@deteck/core/messages/en.ts';
 	import { lagosToday } from '@deteck/core/dates.ts';
@@ -92,6 +93,7 @@
 											name="source"
 											class="input"
 											style="min-height: 40px"
+											aria-label="Issued by"
 											placeholder="Issued by (e.g. NAFDAC)"
 											required
 										/>
@@ -110,11 +112,16 @@
 										name="reason"
 										class="input"
 										style="min-height: 40px"
+										aria-label="Reason"
 										placeholder="Reason (shown to the public for recalls)"
 										required
 										minlength="3"
 									/>
-									<button class="btn btn-small {b.status === 'active' ? 'btn-danger' : ''}"
+									<button
+										class="btn btn-small {b.status === 'active' ? 'btn-danger' : ''}"
+										use:confirmFirst={b.status === 'active'
+											? `Recall batch ${b.lot}? Everyone who checks it sees the recall at once, and people signed up for alerts are told. Only DETECK can lift it.`
+											: `Reactivate batch ${b.lot}? Checks show it as Valid again, and people signed up for alerts are told.`}
 										>{b.status === 'active' ? 'Save recall' : 'Reactivate batch'}</button
 									>
 								</form>

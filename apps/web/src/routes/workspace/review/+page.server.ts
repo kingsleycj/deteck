@@ -7,7 +7,7 @@ import { goLiveChecklist } from '@deteck/core/server/manufacturers/summary.ts';
 
 export const load: PageServerLoad = async (event) => {
 	const { manufacturer: m } = await requireManufacturer(event);
-	return { checklist: await goLiveChecklist(m.id) };
+	return { checklist: await goLiveChecklist(m.id), checkedAt: new Date().toISOString() };
 };
 
 export const actions: Actions = {
@@ -15,6 +15,11 @@ export const actions: Actions = {
 		const access = await requireManufacturer(event);
 		if (!access.isAdmin)
 			return fail(403, { message: 'Only company admins can submit for review.' });
+		// With warnings left, the first press asks to confirm: go back and fix, or submit anyway.
+		const confirmed = (await event.request.formData()).get('confirmed') === 'yes';
+		const checklist = await goLiveChecklist(access.manufacturer.id);
+		if (!checklist.blocking && !confirmed && checklist.items.some((i) => i.state === 'warn'))
+			return { confirm: true };
 		try {
 			await submitForReview(access.actor, access.manufacturer.id);
 		} catch (error) {

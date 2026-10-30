@@ -30,11 +30,18 @@
 		const path = page.url.pathname;
 		return item.exact ? path === item.href : path === item.href || path.startsWith(`${item.href}/`);
 	}
+	const here = $derived(sections.flatMap((s) => s.items).find(current)?.label);
 </script>
 
 <div class="app">
 	<aside class="sidebar">
-		<a href="/business/home" class="brand"><Logo height={28} inverse /><span>{title}</span></a>
+		<div class="side-top">
+			<a href="/business/home" class="brand"><Logo height={28} inverse /><span>{title}</span></a>
+			<!-- Phones: the sections fold away behind this, so the page starts at the top. A checkbox
+			     and its label work without JavaScript. Wide screens always show the sections. -->
+			<label for="nav-open" class="nav-button">Menu{here ? ` · ${here}` : ''}</label>
+		</div>
+		<input id="nav-open" class="nav-open" type="checkbox" aria-label="Show the sections" />
 		<nav aria-label="Sections">
 			{#each sections as section (section.label)}
 				<span class="section">{section.label.toUpperCase()}</span>

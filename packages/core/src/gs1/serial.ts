@@ -38,5 +38,16 @@ export function checkTypedSerial(
  * type them by mistake, so the checker gives a specific hint.
  */
 export function looksLikeNafdacNumber(input: string): boolean {
-	return /^\s*[A-Z]?\d{1,2}\s*-\s*\d{3,5}\s*L?\s*$/i.test(input);
+	// With or without the label copied from the pack: "NAFDAC Reg. No. A4-1234", "Reg No: A4-1234".
+	const bare = input.replace(NAFDAC_LABEL, '');
+	return /^\s*[A-Z]?\d{1,2}\s*-\s*\d{3,5}\s*L?\s*$/i.test(bare);
+}
+
+const NAFDAC_LABEL =
+	/^\s*(?:NAFDAC(?:\s*REG(?:ISTRATION)?\.?)?(?:\s*(?:NO|NUMBER|N°)\.?)?|REG(?:ISTRATION)?\.?\s*(?:NO|NUMBER)\.?)\s*:?\s*/i;
+
+/** "LOT NB-2611", "Batch: NB-2611": the batch number, copied with its label instead of the serial. */
+export function looksLikeBatchNumber(input: string): boolean {
+	// A space or colon must follow the label: a serial may itself start with "BN" or "LOT".
+	return /^\s*(?:LOT|BATCH|B\/N|BN)(?:\s*(?:NO|NUMBER)\.?)?(?:\s+|\s*[:#]\s*)\S/i.test(input);
 }

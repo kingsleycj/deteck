@@ -20,8 +20,12 @@ export interface ServerConfig {
 	email: { driver: 'log' } | { driver: 'resend'; apiKey: string; from: string };
 	emailFrom: string;
 	packagingAi: 'off' | 'pilot' | 'public';
+	/** "Report a suspected fake" (public form, console and workspace pages). Off for now. */
+	reportsEnabled: boolean;
 	pilotAccessCode?: string;
 	contactEmail?: string;
+	/** The landing page film (a file on this site). Until it is set, the page shows a placeholder. */
+	showreel?: { video: string; poster?: string; captions?: string };
 	anthropicApiKey?: string;
 	scanModel: string;
 	/** Error tracking (Sentry). Off when unset. */
@@ -113,6 +117,20 @@ export function configFromEnv(env: EnvLike, options: { building?: boolean } = {}
 			problems.push('EMAIL_FROM must be an address on your verified sending domain');
 		if (str('FEATURE_PACKAGING_AI', 'off') !== 'off' && !str('ANTHROPIC_API_KEY', ''))
 			problems.push('FEATURE_PACKAGING_AI is on but ANTHROPIC_API_KEY is empty');
+		// A client address taken from a header (ADDRESS_HEADER=cf-connecting-ip) can be typed by
+		// anyone who reaches the server directly, which would reset every per-network limit. Only
+		// the edge secret proves a request came through Cloudflare.
+		const edgeSecret = str('EDGE_SECRET', '');
+		// ADDRESS_HEADER is read by the Node adapter itself, so it may only be in process.env.
+		const addressHeader = env.ADDRESS_HEADER ?? process.env.ADDRESS_HEADER ?? '';
+		if (addressHeader && edgeSecret.length < 32)
+			problems.push(
+				'ADDRESS_HEADER is set, so EDGE_SECRET must be set too (32+ characters, added by Cloudflare as x-deteck-edge)'
+			);
+		else if (edgeSecret && edgeSecret.length < 32)
+			problems.push('EDGE_SECRET must be at least 32 characters');
+		if (str('FEATURE_PACKAGING_AI', 'off') === 'pilot' && str('PILOT_ACCESS_CODE', '').length < 12)
+			problems.push("PILOT_ACCESS_CODE must be at least 12 characters, so it can't be guessed");
 		if (problems.length)
 			throw new Error(`Production settings are incomplete:\n- ${problems.join('\n- ')}`);
 	}
@@ -138,8 +156,16 @@ export function configFromEnv(env: EnvLike, options: { building?: boolean } = {}
 				: { driver: 'log' },
 		emailFrom,
 		packagingAi: str('FEATURE_PACKAGING_AI', 'off') as ServerConfig['packagingAi'],
+		reportsEnabled: str('FEATURE_REPORTS', 'off') === 'on',
 		pilotAccessCode: str('PILOT_ACCESS_CODE', '') || undefined,
 		contactEmail: str('CONTACT_EMAIL', '') || undefined,
+		showreel: str('SHOWREEL_URL', '')
+			? {
+					video: str('SHOWREEL_URL'),
+					poster: str('SHOWREEL_POSTER', '') || undefined,
+					captions: str('SHOWREEL_CAPTIONS', '') || undefined
+				}
+			: undefined,
 		anthropicApiKey: str('ANTHROPIC_API_KEY', '') || undefined,
 		scanModel: str('SCAN_MODEL', 'claude-opus-5-5'),
 		sentryDsn: str('SENTRY_DSN', '') || undefined,

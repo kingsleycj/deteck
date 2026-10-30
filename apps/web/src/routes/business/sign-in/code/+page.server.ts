@@ -31,6 +31,8 @@ async function verify(event: Parameters<Actions[string]>[0], method: Method) {
 		const expired = /expired|not found|invalid two factor cookie/i.test(error.message);
 		return fail(400, {
 			method,
+			// Kept for the next try: posting to ?/totp replaces the page's own ?next=.
+			next: String(data.get('next') ?? ''),
 			message: expired
 				? 'Your sign-in has timed out. Sign in again with your email and password.'
 				: method === 'backup'

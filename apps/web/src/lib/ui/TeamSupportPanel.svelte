@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { confirmFirst } from '#lib/ui/confirm.ts';
 	/**
 	 * A company's team, for DETECK staff. Admins can reset a member's two-step sign-in when they've
 	 * lost their phone and backup codes and their company has no other admin to do it.
@@ -29,7 +30,11 @@
 			{#if canReset && m.twoFactor}
 				<form method="post" action="?/reset2fa" style="margin-top: 4px">
 					<input type="hidden" name="userId" value={m.userId} />
-					<button class="btn btn-small">Reset two-step sign-in</button>
+					<button
+						class="btn btn-small"
+						use:confirmFirst={`Reset ${m.name}'s two-step sign-in? They're signed out and set it up again at their next sign-in.`}
+						>Reset two-step sign-in</button
+					>
 				</form>
 			{/if}
 		</div>

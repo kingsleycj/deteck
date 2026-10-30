@@ -19,7 +19,7 @@ export const POST = handler(async (event) => {
 		.db.select()
 		.from(manufacturer)
 		.where(eq(manufacturer.id, key!.manufacturerId!));
-	const blocked = editBlockedReason(m.status);
+	const blocked = editBlockedReason(m.status, m.statusBeforeSuspension);
 	if (blocked) throw new ApiProblem(403, 'not_allowed_now', blocked);
 	const input = await body<{ kind?: string; rows?: unknown; commit?: boolean }>(event);
 	if (!KINDS.includes(input.kind as ImportKind))

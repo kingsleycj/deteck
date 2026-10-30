@@ -8,6 +8,8 @@ export interface ManufacturerListRow {
 	state: string;
 	town: string | null;
 	status: string;
+	/** The reason given with the last decision, such as what DETECK asked for. */
+	statusReason: string | null;
 	products: number;
 	serials: number;
 	createdAt: Date;
@@ -25,12 +27,13 @@ export async function listManufacturers(
 		state: string;
 		factory_town: string | null;
 		status: string;
+		status_reason: string | null;
 		products: number;
 		serials: number;
 		created_at: Date;
 		submitted_for_review_at: Date | null;
 	}>(sql`
-		select m.id, m.company_name, m.state, m.factory_town, m.status, m.created_at, m.submitted_for_review_at,
+		select m.id, m.company_name, m.state, m.factory_town, m.status, m.status_reason, m.created_at, m.submitted_for_review_at,
 			(select count(*)::int from ${product} p where p.manufacturer_id = m.id) as products,
 			(select count(*)::int from ${pack} k join ${product} p on p.id = k.product_id where p.manufacturer_id = m.id and not exists (select 1 from ${packVoid} v where v.pack_id = k.id)) as serials
 		from ${manufacturer} m
@@ -43,6 +46,7 @@ export async function listManufacturers(
 		state: r.state,
 		town: r.factory_town,
 		status: r.status,
+		statusReason: r.status_reason,
 		products: r.products,
 		serials: r.serials,
 		createdAt: new Date(r.created_at),

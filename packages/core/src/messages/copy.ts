@@ -111,6 +111,7 @@ export function resultCopy(r: PublicResult, t: Messages): ResultCopy {
 				tone: 'valid',
 				badges: [res.valid.badge],
 				mood: 'happy',
+				title: res.valid.title,
 				bubble: fmt(res.valid.bubble, names)
 			};
 		}
@@ -212,17 +213,16 @@ export function journeySummary(j: Journey, manufacturerName: string, t: Messages
 	const s = t.journey.summary;
 	const names = partyNames(j);
 	switch (j.state) {
-		case 'TO_RETAIL': {
+		// Wherever the records end (a pharmacy, or a distributor), say what's recorded.
+		case 'TO_RETAIL':
+		case 'ENDS_BEFORE_RETAIL': {
 			const middle = names.slice(0, -1);
 			return fmt(s.toRetail, {
 				maker: manufacturerName,
 				via: middle.length ? fmt(s.via, { names: joinNames(middle, t) }) : '',
-				last: names.at(-1) ?? '',
-				gap: j.steps.some((st) => st.kind === 'gap') ? s.gap : ''
+				last: names.at(-1) ?? ''
 			});
 		}
-		case 'ENDS_BEFORE_RETAIL':
-			return fmt(s.endsBeforeRetail, { maker: manufacturerName, names: joinNames(names, t) });
 		case 'BATCH_LEVEL':
 			return plural(names.length, s.batchLevel, { maker: manufacturerName });
 		default:
@@ -234,9 +234,8 @@ export function journeyLinkLine(j: Journey | null, t: Messages): string {
 	const l = t.journey.link;
 	if (!j || j.state === 'NONE' || !j.lastHolder) return l.none;
 	const where = j.lastHolder.place ? `, ${j.lastHolder.place}` : '';
-	if (j.state === 'TO_RETAIL') return fmt(l.lastWith, { name: j.lastHolder.name, where });
 	if (j.state === 'BATCH_LEVEL') return plural(partyNames(j).length, l.suppliedTo);
-	return fmt(l.endsAt, { name: j.lastHolder.name, where });
+	return fmt(l.lastWith, { name: j.lastHolder.name, where });
 }
 
 export function stepLabel(
@@ -250,9 +249,8 @@ export function stepLabel(
 		return fmt(s.manufacturer, {
 			month: formatMonth(step.manufactureDate, t.common.notRecorded).toUpperCase()
 		});
-	if (step.kind === 'gap') return '';
 	const role = t.journey.roles[step.role].toUpperCase();
-	if (isLast && state === 'TO_RETAIL') {
+	if (isLast && (state === 'TO_RETAIL' || state === 'ENDS_BEFORE_RETAIL')) {
 		return step.date
 			? fmt(s.lastHolderSince, { date: formatDate(step.date).toUpperCase() })
 			: s.lastHolder;

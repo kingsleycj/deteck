@@ -17,7 +17,10 @@
 </script>
 
 <div class="auth">
-	<aside class="auth-side">
+	<aside class="auth-side smiles-lime">
+		<svg class="auth-swoosh" viewBox="12 28 40 22" aria-hidden="true"
+			><path d="M15 31 C 18 53, 46 53, 49 31 C 43 46, 21 46, 15 31 Z" /></svg
+		>
 		<a href="/" style="display: inline-flex"><Logo height={30} inverse /></a>
 		<p class="small" style="color: #c9cbd4">DETECK for business</p>
 		<h1>The records behind every check.</h1>

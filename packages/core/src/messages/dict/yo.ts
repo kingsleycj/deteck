@@ -26,9 +26,8 @@ export const yo: Messages = {
 		home: 'Ojú-ìwé àkọ́kọ́ Deteck',
 		main: 'Àwọn ojú-ìwé pàtàkì',
 		how: 'Bí ó ṣe ń ṣiṣẹ́',
-		pharmacies: 'Fún àwọn ilé ìtajà oògùn',
-		manufacturers: 'Fún àwọn ilé-iṣẹ́ tó ń ṣe oògùn',
-		badge: 'DETECK kò gba owó'
+		badge: 'DETECK kò gba owó',
+		menu: 'Àwọn àṣàyàn'
 	},
 
 	footer: {
@@ -55,7 +54,7 @@ export const yo: Messages = {
 		placeholder: 'àpẹẹrẹ: 7K4M 9QX2 TB8D',
 		hint: 'Ẹ wò ó lẹ́gbẹ̀ẹ́ barcode, lẹ́yìn **SN** tàbí **Serial**.',
 		submit: 'Ṣàyẹ̀wò oògùn',
-		scan: 'Fi kámẹ́rà ka kóòdù dípò bẹ́ẹ̀',
+		scan: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà',
 		footer:
 			'Àyẹ̀wò serial ń ṣiṣẹ́ lórí 2G àti 3G. Ẹ kò nílò àkáǹtì. DETECK kò gba owó; owó dátà yín yóò lọ bí ó ṣe máa ń lọ.',
 		humanPrompt:
@@ -72,7 +71,25 @@ export const yo: Messages = {
 		checkingTitle: 'A ń ṣàyẹ̀wò àkọsílẹ̀…',
 		checkingBody: 'Deteck ń fi serial yín wé àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é.',
 		retry: 'Tún gbìyànjú',
-		tryAgain: 'Gbìyànjú lẹ́ẹ̀kan sí i'
+		tryAgain: 'Gbìyànjú lẹ́ẹ̀kan sí i',
+		eyebrow: 'Olùṣàyẹ̀wò oògùn',
+		lede: 'Ẹ tẹ nọ́mbà serial tó wà lórí páálí. Deteck yóò fi wé àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é, yóò sì fi ibi tí ó ti kọjá hàn yín.',
+		scanNote: 'Ẹ lo kámẹ́rà yín, tàbí kí ẹ gbé fọ́tò páálí náà sókè.',
+		helloTitle: 'Ẹ n lẹ́, èmi ni Deteck.',
+		helloBody:
+			'Ẹ fún mi ní nọ́mbà serial, màá sì sọ èsì fún yín: bóyá ó bá àkọsílẹ̀ mu, ẹni tó ṣe é, àti ilé-iṣẹ́ tó kẹ́yìn tí wọ́n kọ sílẹ̀ pé ó wà lọ́dọ̀ rẹ̀.',
+		step1Title: '1 · Ó bá a mu?',
+		step1Text: 'Ó bá àkọsílẹ̀ ẹni tó ṣe é mu, tàbí kò bá a mu',
+		step2Title: '2 · Páálí',
+		step2Text: 'AI ń rí ìyàtọ̀ tí ojú lè rí',
+		step3Title: '3 · Ìrìn-àjò',
+		step3Text: 'Láti ọ̀dọ̀ ẹni tó ṣe é dé ilé-iṣẹ́ tó kẹ́yìn nínú àkọsílẹ̀',
+		checkingEyebrow: 'Ó ń ṣàyẹ̀wò',
+		tipsEyebrow: 'Ọ̀nà tí kò tọ́',
+		tipsTitle: 'Ibi tí ẹ ti lè rí serial',
+		tip1: 'Nítòsí barcode, lẹ́yìn **SN** tàbí **Serial**',
+		tip2: 'Kò ju lẹ́tà àti nọ́mbà 20 lọ, nígbà míì ní ìsọ̀rí-ìsọ̀rí',
+		tip3: 'Lẹ́tà O àti nọ́mbà 0 jọra, ẹ ṣàyẹ̀wò méjèèjì'
 	},
 
 	format: {
@@ -86,7 +103,9 @@ export const yo: Messages = {
 			'Ìyẹn jọ nọ́mbà ìforúkọsílẹ̀ NAFDAC. Kóòdù mìíràn ni serial, wọ́n sábà máa ń tẹ̀ ẹ́ lẹ́yìn SN nítòsí barcode.',
 		bad_code: 'A kò lè ka kóòdù yẹn. Ẹ tẹ serial tí wọ́n tẹ̀ lẹ́yìn SN dípò rẹ̀.',
 		mascot:
-			'Hmm, ìyẹn kò tíì jọ nọ́mbà serial. Ohun tí ẹ tẹ ṣì wà nínú àpótí, kí ẹ lè ṣàtúnṣe ibi tí kò tọ̀nà nìkan.'
+			'Hmm, ìyẹn kò tíì jọ nọ́mbà serial. Ohun tí ẹ tẹ ṣì wà nínú àpótí, kí ẹ lè ṣàtúnṣe ibi tí kò tọ̀nà nìkan.',
+		batch_number:
+			'Ìyẹn dà bí nọ́mbà batch (lẹ́yìn LOT tàbí BATCH). Serial jẹ́ kóòdù mìíràn, tí wọ́n sábà máa ń tẹ̀ lẹ́yìn SN nítòsí barcode.'
 	},
 
 	network: {
@@ -95,12 +114,16 @@ export const yo: Messages = {
 			'Àkọsílẹ̀ pẹ́ jù kí ó tó dáhùn. Serial yín ṣì wà nínú àpótí: ẹ tẹ "Ṣàyẹ̀wò oògùn" láti gbìyànjú lẹ́ẹ̀kan sí i.',
 		offlineTitle: 'N kò lè kàn sí àkọsílẹ̀',
 		offlineBody:
-			'Ó dà bí ẹni pé fóònù yín kò sí lórí ayélujára. Serial yín ṣì wà nínú àpótí, nítorí náà ẹ lè tẹ "Ṣàyẹ̀wò oògùn" lẹ́ẹ̀kan sí i nígbà tí ìsopọ̀ ayélujára bá padà.',
+			'Ìsopọ̀ yín já nígbà tí mo ń ṣàyẹ̀wò. Kò sí ohun tó sọnù: mo ti fi serial yín pamọ́, màá sì tún gbìyànjú ní kété tí ẹ bá padà sórí ayélujára.',
 		rateLimited: {
 			one: 'Àyẹ̀wò ti pọ̀ jù láàárín àkókò kúkúrú. Ẹ jọ̀wọ́, ẹ dúró fún ìṣẹ́jú {n}, kí ẹ tó gbìyànjú lẹ́ẹ̀kan sí i.',
 			other:
 				'Àyẹ̀wò ti pọ̀ jù láàárín àkókò kúkúrú. Ẹ jọ̀wọ́, ẹ dúró fún ìṣẹ́jú {n}, kí ẹ tó gbìyànjú lẹ́ẹ̀kan sí i.'
-		}
+		},
+		offlineEyebrow: 'Kò sí ìsopọ̀',
+		editSerial: 'Ṣàtúnṣe serial',
+		offlineNote:
+			'Ìṣàyẹ̀wò kan kì í lo data tó bí fọ́tò kan, nítorí náà àmì 2G tàbí 3G tí kò lágbára sábà máa ń tó.'
 	},
 
 	result: {
@@ -128,8 +151,8 @@ export const yo: Messages = {
 		pack: 'Páálí',
 		reasonsIntro: 'Ohun tó lè fà á nìyí:',
 		journeyLink: 'Ẹ wo ìrìn-àjò oògùn náà',
-		checkPackaging: 'Ṣàyẹ̀wò páálí (ìdánwò)',
-		scanCode: 'Fi kámẹ́rà ka kóòdù dípò bẹ́ẹ̀',
+		checkPackaging: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà',
+		scanCode: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà',
 		retype: 'Tẹ serial náà lẹ́ẹ̀kan sí i',
 		report: 'Ròyìn oògùn tí ẹ fura pé ayédèrú ni',
 		worried: 'Ṣé páálí yìí ṣì ń dà yín láàmú?',
@@ -148,6 +171,7 @@ export const yo: Messages = {
 
 		valid: {
 			badge: 'Ó BÁ ÀKỌSÍLẸ̀ MU',
+			title: 'Ó bá àkọsílẹ̀ mu',
 			bubble: 'Serial yìí bá àkọsílẹ̀ {maker} fún {product} mu.'
 		},
 		mismatch: {
@@ -221,7 +245,12 @@ export const yo: Messages = {
 			typeInstead: 'Ẹ tẹ serial yẹn sí ojú-ìwé àyẹ̀wò dípò kí ẹ fi kámẹ́rà kà á.',
 			typeToConfirm: 'Ẹ tẹ serial yẹn sí ojú-ìwé àyẹ̀wò, láti rí i dájú pé kámẹ́rà kà á dáadáa.',
 			nextStepKeep: 'Ẹ béèrè lọ́wọ́ pharmacist kí ẹ tó lò ó, kí ẹ sì tọ́jú páálí náà.'
-		}
+		},
+		serialChecked: 'Serial tí a ṣàyẹ̀wò',
+		checkAgain: 'Tún ṣàyẹ̀wò',
+		whatToDo: 'Ohun tí ẹ lè ṣe:',
+		notSure: 'Ẹ kò dá yín lójú?',
+		checkAnotherShort: 'Ṣàyẹ̀wò òmíràn'
 	},
 
 	alerts: {
@@ -297,17 +326,14 @@ export const yo: Messages = {
 		backAria: 'Padà sí àbájáde',
 		expiredBody: 'Ẹ tún ṣàyẹ̀wò serial náà láti rí ìrìn-àjò rẹ̀.',
 		batchLine: '{product} · Batch {lot}',
-		noneTitle: 'Kò tíì sí ìrìn-àjò tí a kọ sílẹ̀',
+		noneTitle: 'Ohun tí a ti kọ sílẹ̀ títí di báyìí',
 		whatWeKnow: 'Ohun tí a mọ̀',
 		madeBy: '{maker} ló ṣe é',
 		madeExpires: 'Wọ́n ṣe é ní {made} · Ọjọ́ ìparí: {expires}',
-		gap: 'Kò sí àkọsílẹ̀ fún ìgbésẹ̀ yìí',
-		gapBetween: 'Láàárín {after} àti {before}',
 		stepBatch: '{place} · Batch {lot} · Ọjọ́ ìparí: {expires}',
 		verified: 'DETECK ti fìdí rẹ̀ múlẹ̀',
 		confirmed: 'Ilé-iṣẹ́ yìí ti fìdí rẹ̀ múlẹ̀ pé àwọn gbà á',
 		unverified: 'DETECK kò tíì fìdí rẹ̀ múlẹ̀',
-		recordsEnd: 'Àkọsílẹ̀ parí síbí. Àwọn ìgbésẹ̀ tó tẹ̀lé kò tíì sí nínú àkọsílẹ̀ DETECK.',
 		sellerPrompt:
 			'Ṣé ibòmìíràn lẹ ti ń rà á? Àkọsílẹ̀ fi hàn pé páálí yìí wà lọ́dọ̀ {holder}. Bí ẹ bá ń rà á níbòmìíràn, ẹ béèrè lọ́wọ́ ẹni tó ń tà á ibi tí ó ti wá.',
 		batchPrompt:
@@ -315,26 +341,22 @@ export const yo: Messages = {
 		footnote:
 			'Ìrìn-àjò ń fi ohun tí àwọn ilé-iṣẹ́ tó ń ṣe oògùn kọ sílẹ̀ hàn. A kì í fi iye owó, iye ọjà, tàbí orúkọ òṣìṣẹ́ hàn rárá.',
 		summary: {
-			toRetail: 'Ó kúrò lọ́dọ̀ {maker}{via}, àkọsílẹ̀ tó kẹ́yìn sì fi hàn pé ó wà lọ́dọ̀ {last}.{gap}',
+			toRetail: 'Ó kúrò lọ́dọ̀ {maker}{via}, àkọsílẹ̀ tó kẹ́yìn sì fi hàn pé ó wà lọ́dọ̀ {last}.',
 			via: ' lọ sọ́dọ̀ {names}',
-			gap: ' Ìgbésẹ̀ kan lójú ọ̀nà kò sí nínú àkọsílẹ̀.',
-			endsBeforeRetail:
-				'Ó kúrò lọ́dọ̀ {maker} lọ sọ́dọ̀ {names}. Àkọsílẹ̀ parí síbẹ̀: àwọn ìgbésẹ̀ tó tẹ̀lé kò tíì sí nínú àkọsílẹ̀ DETECK.',
 			batchLevel: {
 				one: '{maker} pèsè batch yìí fún ilé-iṣẹ́ {n}. Àkọsílẹ̀ kò sọ èwo ni páálí yìí kọjá lọ́dọ̀ rẹ̀.',
 				other:
 					'{maker} pèsè batch yìí fún ilé-iṣẹ́ {n}. Àkọsílẹ̀ kò sọ èwo nínú wọn ni páálí yìí kọjá lọ́dọ̀ rẹ̀.'
 			},
-			none: 'Ilé-iṣẹ́ tó ṣe é kò tíì sọ ibi tí wọ́n kó batch yìí lọ, nítorí náà n kò lè fi hàn yín àwọn tí ó ti kọjá lọ́wọ́ wọn.'
+			none: 'Títí di báyìí, DETECK ní àkọsílẹ̀ ilé-iṣẹ́ tó ṣe batch yìí. Àwọn ilé-iṣẹ́ tó bá ṣe é lọ́wọ́ yóò hàn níbí nígbà tí wọ́n bá kọ wọ́n sílẹ̀.'
 		},
 		link: {
-			none: 'Kò tíì sí ìrìn-àjò tí a kọ sílẹ̀',
+			none: 'Wo ohun tí a ti kọ sílẹ̀ títí di báyìí',
 			lastWith: 'Àkọsílẹ̀ tó kẹ́yìn: ó wà lọ́dọ̀ {name}{where}',
 			suppliedTo: {
 				one: 'Wọ́n pèsè rẹ̀ fún ilé-iṣẹ́ {n} tó wà nínú àkọsílẹ̀',
 				other: 'Wọ́n pèsè rẹ̀ fún ilé-iṣẹ́ {n} tó wà nínú àkọsílẹ̀'
-			},
-			endsAt: 'Àkọsílẹ̀ parí lọ́dọ̀ {name}{where}'
+			}
 		},
 		step: {
 			manufacturer: 'ILÉ-IṢẸ́ TÓ ṢE É · WỌ́N ṢE É NÍ {month}',
@@ -348,12 +370,13 @@ export const yo: Messages = {
 			pharmacy: 'Ilé ìtajà oògùn',
 			hospital: 'Ilé ìwòsàn',
 			other: 'Ilé-iṣẹ́'
-		}
+		},
+		stepsCount: { one: 'Ìgbésẹ̀ {n} tí wọ́n kọ sílẹ̀', other: 'Ìgbésẹ̀ {n} tí wọ́n kọ sílẹ̀' }
 	},
 
 	scan: {
-		metaTitle: 'Ṣàyẹ̀wò pẹ̀lú kámẹ́rà · DETECK',
-		title: 'Ṣàyẹ̀wò pẹ̀lú kámẹ́rà',
+		metaTitle: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà · DETECK',
+		title: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà',
 		closeAria: 'Pa kámẹ́rà dé',
 		blockedBubble:
 			'Mo nílò kámẹ́rà yín láti ka kóòdù orí páálí. Ó dà bí ẹni pé kámẹ́rà ti wà ní pípa fún DETECK.',
@@ -381,7 +404,47 @@ export const yo: Messages = {
 		noPhoto: 'Ẹ kọ́kọ́ ya fọ́tò kóòdù náà, tàbí kí ẹ yan ọ̀kan.',
 		tooLarge: 'Fọ́tò yẹn tóbi jù. Ẹ gbìyànjú lẹ́ẹ̀kan sí i pẹ̀lú èyí tó kéré.',
 		unreadable:
-			'N kò lè ka kóòdù kankan nínú fọ́tò yìí. Ẹ mú páálí náà súnmọ́ kámẹ́rà, níbi tí ìmọ́lẹ̀ ti dáa, kí kóòdù onígun mẹ́rin náà wà ní àárín. Tàbí kí ẹ tẹ serial dípò bẹ́ẹ̀.'
+			'N kò lè ka kóòdù kankan nínú fọ́tò yìí. Ẹ mú páálí náà súnmọ́ kámẹ́rà, níbi tí ìmọ́lẹ̀ ti dáa, kí kóòdù onígun mẹ́rin náà wà ní àárín. Tàbí kí ẹ tẹ serial dípò bẹ́ẹ̀.',
+		cancel: 'Fagilé',
+		tabCamera: 'Lo kámẹ́rà',
+		tabUpload: 'Gbé fọ́tò sókè',
+		methodAria: 'Bí ẹ ṣe máa fi fọ́tò kún un',
+		photoOf: 'Fọ́tò {n} nínú 3 · {side}',
+		codeRead: 'Mo ti ka kóòdù · {serial}',
+		serialValid: 'Serial {serial}: Ó bá àkọsílẹ̀ mu',
+		sayFront: 'Ẹ di iwájú páálí mú ní títẹ́jú níwájú kámẹ́rà, níbi tí ìmọ́lẹ̀ wà.',
+		sayBack: 'Ẹ̀yìn rẹ̀ báyìí, kí kóòdù onígun mẹ́rin hàn. Láti ibẹ̀ ni mo ti ń ka kóòdù.',
+		sayLabel: 'Èyí tó kẹ́yìn: label tó ní nọ́mbà batch àti ọjọ́ ìparí.',
+		gotCode: 'Mo ti rí kóòdù.',
+		photosTitle: 'Fọ́tò fún ìṣàyẹ̀wò páálí',
+		taken: 'Ó ti yà',
+		takingNow: 'À ń yà á báyìí',
+		next: 'Tó kàn',
+		noCameraTitle: 'Kò sí kámẹ́rà?',
+		noCameraText:
+			'Ẹ yí padà sí **Gbé fọ́tò sókè**, kí ẹ fi fọ́tò iwájú, ẹ̀yìn àti label tó hàn kedere kún un. A máa ń dín fọ́tò kù kí a tó fi ránṣẹ́, láti ṣọ́ data.',
+		blocked:
+			'**Wọ́n ti dí kámẹ́rà yín tàbí kò sí.** Ẹ fàyè gbà á nínú ọ̀pá àdírẹ́sì browser yín, tàbí kí ẹ gbé fọ́tò tí ẹ fi fóònù yín yà sókè.',
+		uploadBubble:
+			'Fọ́tò láti fóònù yín náà ṣiṣẹ́. Ẹ rí i dájú pé ọ̀kọ̀ọ̀kan hàn kedere, ó sì fi gbogbo ẹ̀gbẹ́ hàn.',
+		rulesTitle: 'Òfin fọ́tò',
+		rule1: 'JPG tàbí PNG, tí kò ju MB 10 lọ ọ̀kọ̀ọ̀kan',
+		rule2: 'Gbogbo ẹ̀gbẹ́ páálí hàn',
+		rule3: 'Ìmọ́lẹ̀ tó dáa, kí ìmọ́lẹ̀ má tàn sí i tààrà',
+		added: 'Fọ́tò {n} nínú 3 ti wọlé',
+		reviewEyebrow: 'Fọ́tò 3 nínú 3',
+		reviewTitle: 'Fọ́tò náà dáa',
+		reviewText: 'Wọ́n hàn kedere, ìmọ́lẹ̀ tó, gbogbo páálí sì hàn.',
+		reviewBubble: 'Mo ti ṣetán láti fi wọ́n wé páálí ilé-iṣẹ́ náà.',
+		retakeOne: 'Tún fọ́tò kan yà',
+		retakePhoto: 'Tún fọ́tò yà',
+		uploadInstead: 'Gbé fọ́tò fóònù sókè dípò bẹ́ẹ̀',
+		neverUsed: 'A kì í lo fọ́tò tí kò hàn kedere, tó ṣókùnkùn tàbí tí wọ́n gé fún èsì.',
+		noCode:
+			'N kò lè ka kóòdù nínú àwọn fọ́tò wọ̀nyí. Ẹ tún ẹ̀yìn páálí yà, ní ìtòsí, kí kóòdù onígun mẹ́rin hàn. Tàbí kí ẹ tẹ serial dípò bẹ́ẹ̀.',
+		startCamera: 'Ṣí kámẹ́rà',
+		capture: 'Ya fọ́tò',
+		busy: 'À ń ka ọ̀pọ̀ fọ́tò lọ́wọ́lọ́wọ́. Ẹ dúró díẹ̀ kí ẹ sì tún gbìyànjú; fọ́tò yín ṣì wà níbí.'
 	},
 
 	packaging: {
@@ -551,103 +614,75 @@ export const yo: Messages = {
 	landing: {
 		metaTitle: 'Nípa DETECK · Ẹ fi oògùn wé àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é',
 		metaDescription:
-			'DETECK ń jẹ́ kí ẹnikẹ́ni ní Nàìjíríà fi nọ́mbà serial oògùn wé àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK, kí wọ́n sì rí ìrìn-àjò rẹ̀ tó wà nínú àkọsílẹ̀. Kò sí àkáǹtì, DETECK kò sì gba owó.',
-		navWho: 'Àwọn tí a ń sìn',
+			'DETECK ń jẹ́ kí ẹnikẹ́ni ní Nàìjíríà fi nọ́mbà serial oògùn wé àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK. Ọ̀fẹ́ ni àyẹ̀wò, kò sì sí àkáǹtì.',
 		navVision: 'Ìran wa',
-		eyebrow: 'Àyẹ̀wò oògùn fún Nàìjíríà · DETECK kò gba owó',
+		navFaq: 'Àwọn ìbéèrè',
+		signIn: 'Wọlé',
+		skip: 'Fò lọ sí àkóónú pàtàkì',
 		heroTitle: 'Ẹ ṣàyẹ̀wò kí ẹ tó gbẹ́kẹ̀lé.',
-		lede: 'Ẹ tẹ nọ́mbà serial tó wà lórí páálí oògùn, tàbí kí ẹ fi kámẹ́rà ka kóòdù rẹ̀. DETECK máa fi wé àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK, yóò sì fi hàn yín ẹni tó ṣe é àti ìrìn-àjò rẹ̀ títí dé ọ̀dọ̀ yín, bí àkọsílẹ̀ ṣe sọ.',
-		scanPack: 'Ka kóòdù páálí pẹ̀lú kámẹ́rà',
+		lede: 'Ẹ tẹ nọ́mbà serial tó wà lórí páálí oògùn. DETECK yóò fi wé àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é pín.',
+		scanPack: 'Ṣàyẹ̀wò síwájú pẹ̀lú kámẹ́rà',
 		seeHow: 'Ẹ wo bí ó ṣe ń ṣiṣẹ́',
 		heroBubble: 'Ẹ n lẹ́, Deteck ni mí. Mo wà níbí láti ràn yín lọ́wọ́.',
 		heroAlt:
-			'Obìnrin pharmacist ọmọ Nàìjíríà kan tó ń fi fóònù rẹ̀ ṣàyẹ̀wò páálí oògùn, nígbà tí oníbàárà kan ń dúró ní káńtà',
-		heroChip: 'Ó bá àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é mu',
-		heroChipSub: 'Àpẹẹrẹ · Ilé-iṣẹ́ tó ṣe é → Olùpínkiri → Ilé ìtajà oògùn',
-		runPharmacy: 'Ṣé ẹ ní ilé ìtajà oògùn?',
-		runPharmacyLink: 'Ẹ wo bí DETECK ṣe lè ràn yín lọ́wọ́',
-		step1Title: 'Ẹ tẹ kóòdù, tàbí kí ẹ fi kámẹ́rà kà á',
-		step1Text: 'Ẹ tẹ nọ́mbà serial tí wọ́n tẹ̀ sórí páálí, tàbí kí ẹ fi fóònù yín ka kóòdù oògùn náà.',
+			'Àwọn kápúsù oògùn nínú fọ́ìlì lẹ́gbẹ̀ẹ́ páálí oògùn tó ṣí sílẹ̀ lórí káńtà ilé-ìtajà oògùn',
+		heroNote: 'Ẹ kò nílò àkọọ́lẹ̀. Ìdáhùn máa ń dé láàrin ìṣẹ́jú-àáyá díẹ̀.',
+		trust: {
+			free: 'Ọ̀fẹ́ ni àyẹ̀wò',
+			network: 'Ó ń ṣiṣẹ́ lórí 2G àti 3G',
+			languages: 'Gẹ̀ẹ́sì, Pidgin, Haúsá, Yorùbá àti Ìgbò',
+			records: 'Ìdáhùn láti inú àkọsílẹ̀ ilé-iṣẹ́ tó ṣe oògùn náà'
+		},
+		reel: {
+			soon: 'Fíìmù náà ń bọ̀ láìpẹ́',
+			label: 'Fíìmù DETECK'
+		},
+		howTitle: 'Ìgbésẹ̀ mẹ́ta sí ìdáhùn tó ṣe kedere',
+		step1Title: 'Ẹ tẹ serial náà',
+		step1Text:
+			'Ẹ tẹ nọ́mbà serial tí wọ́n tẹ̀ sórí páálí. Tàbí kí ẹ ya fọ́tò páálí náà: DETECK yóò ka kóòdù rẹ̀, AI yóò sì ṣàyẹ̀wò páálí náà.',
 		step2Title: 'A ń ṣàyẹ̀wò àkọsílẹ̀',
-		step2Text:
-			'DETECK máa wá serial náà nínú àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK, títí kan ìrìn-àjò rẹ̀ láti ọ̀dọ̀ àwọn olùpínkiri dé àwọn ilé ìtajà oògùn, bí àkọsílẹ̀ ṣe sọ.',
+		step2Text: 'DETECK máa wá serial náà nínú àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK.',
 		step3Title: 'Deteck á sọ àbájáde fún yín',
 		step3Text:
-			'"Ó bá àkọsílẹ̀ mu" tàbí "A kò dá a mọ̀", ní èdè tó rọrùn, pẹ̀lú ìrìn-àjò oògùn náà tó wà nínú àkọsílẹ̀. Bí àkọsílẹ̀ kò bá tó láti mọ̀ dájú, Deteck á sọ bẹ́ẹ̀.',
-		whoLead: 'A ṣe é fún gbogbo ẹni tó ń rà, tó ń kó, tàbí tó ń fúnni ní oògùn.',
-		audiences: {
-			citizens: {
-				label: 'Àwọn ọmọ Nàìjíríà',
-				alt: 'Ìyá kan tó ń fi fóònù rẹ̀ ṣàyẹ̀wò páálí oògùn ní káńtà ilé ìtajà oògùn',
-				title: 'Ẹ ṣàyẹ̀wò kí ẹ tó rà á tàbí lò ó',
-				text: 'Ẹ tẹ nọ́mbà serial tó wà lórí oògùn, tàbí kí ẹ fi kámẹ́rà ka kóòdù rẹ̀, kí ẹ sì rí bóyá ó bá àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é mu.'
-			},
-			pharmacies: {
-				label: 'Àwọn ilé ìtajà oògùn',
-				alt: 'Obìnrin pharmacist kan tó ń fi fóònù rẹ̀ ṣàyẹ̀wò páálí oògùn',
-				title: 'Ẹ ṣàyẹ̀wò ohun tí ẹ gbà',
-				text: 'Ẹ ṣàyẹ̀wò oògùn tí ẹ gbà lọ́wọ́ àwọn olùpèsè, kí ẹ sì rí ilé-iṣẹ́ tó ṣe wọ́n àti ìtàn ìpínkiri wọn nínú àkọsílẹ̀, kí wọ́n tó dé orí pẹpẹ yín.'
-			},
-			hospitals: {
-				label: 'Ilé ìwòsàn àti ibùdó ìlera',
-				alt: 'Nọ́ọ̀sì kan tó ń ṣàyẹ̀wò páálí oògùn ní yàrá ìkẹ́rùsí ilé ìwòsàn',
-				title: 'Ẹ ṣàyẹ̀wò kí ẹ tó fún ẹnikẹ́ni ní oògùn',
-				text: 'Ẹ ṣàyẹ̀wò oògùn tí ibùdó yín gbà, kí ẹ tó pín wọn tàbí fún àwọn aláìsàn.'
-			},
-			distributors: {
-				label: 'Olùpínkiri àti olùtajà lódìdì',
-				alt: '',
-				title: 'Ẹ jẹ́ ara ìrìn-àjò tó wà nínú àkọsílẹ̀',
-				text: 'Nígbà tí ilé-iṣẹ́ tó ṣe oògùn bá kọ sílẹ̀ pé àwọn pèsè rẹ̀ fún yín, orúkọ ilé-iṣẹ́ yín á hàn nínú ìrìn-àjò oògùn náà, kí àwọn olùrà lè rí ibi tí ọjà náà kọjá lójú ọ̀nà, bí àkọsílẹ̀ ṣe fi hàn.'
-			},
-			manufacturers: {
-				label: 'Àwọn ilé-iṣẹ́ tó ń ṣe oògùn',
-				alt: 'Onímọ̀ ẹ̀rọ kan tó ń ṣàyẹ̀wò páálí oògùn níbi ẹ̀rọ tí wọ́n fi ń di oògùn sínú páálí',
-				title: 'Ẹ fi àlàyé oògùn yín ránṣẹ́',
-				text: 'Ẹ gbé àwọn oògùn yín, nọ́mbà serial, àkọsílẹ̀ ìpínkiri àti fọ́tò páálí yín sókè, kí àwọn ènìyàn lè fi oògùn yín wé àkọsílẹ̀ yín.'
-			}
+			'"Ó bá àkọsílẹ̀ mu" tàbí "A kò dá a mọ̀", ní èdè tó rọrùn. Bí àkọsílẹ̀ kò bá tó láti mọ̀ dájú, Deteck á sọ bẹ́ẹ̀.',
+		biz: {
+			registerManufacturer: 'Forúkọ ilé-iṣẹ́ tó ń ṣe oògùn sílẹ̀',
+			registerBusiness: 'Forúkọ ilé-ìtajà oògùn, ilé-ìwòsàn tàbí olùpínkiri sílẹ̀',
+			docs: 'Ìwé àlàyé API'
 		},
-		visionTitle:
-			'Kí gbogbo oògùn ní Nàìjíríà **ṣeé tọpasẹ̀** láti ilé-iṣẹ́ tí wọ́n ti ṣe é dé ọwọ́ yín.',
+		visionTitle: 'Ó yẹ kí ẹnikẹ́ni ní Nàìjíríà lè ṣàyẹ̀wò oògùn rẹ̀.',
+		visionAlt: 'Ọ̀dọ́bìnrin kan ń rẹ́rìn-ín bó ṣe ń wo fóònù rẹ̀ ní ilé kọfí kan ní Àbújá',
 		visionText:
-			'Gbogbo ọmọ Nàìjíríà ló yẹ kí ó mọ ibi tí oògùn wọn ti wá. DETECK ń so nọ́mbà serial páálí kọ̀ọ̀kan pọ̀ mọ́ àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é, kí ẹ lè ṣàyẹ̀wò irú oògùn tí ó jẹ́ àti ìrìn-àjò rẹ̀ tó wà nínú àkọsílẹ̀, dípò kí ẹ gbẹ́kẹ̀lé bí páálí ṣe rí nìkan.',
-		impactTitle: 'Àyípadà tí a ń ṣiṣẹ́ fún',
-		impact1Alt: 'Ìyá kan tó ń fi fóònù rẹ̀ ṣàyẹ̀wò páálí oògùn ní káńtà ilé ìtajà oògùn',
-		impact1Title: 'Ìdílé tó ní ìgbọ́kànlé',
-		impact1Text: 'Àwọn ènìyàn lè ṣàyẹ̀wò oògùn fúnra wọn kí wọ́n tó rà á tàbí lò ó.',
-		impact2Alt: 'Nọ́ọ̀sì kan tó ń fi tablet ṣàyẹ̀wò páálí oògùn lórí pẹpẹ ní yàrá ìkẹ́rùsí ilé ìwòsàn',
-		impact2Title: 'Pípín oògùn pẹ̀lú ìṣọ́ra',
-		impact2Text:
-			'Àwọn ilé ìtajà oògùn àti ilé ìwòsàn lè ṣàyẹ̀wò oògùn tí wọ́n gbà kí wọ́n tó pín wọn fún ènìyàn.',
-		impact3Alt:
-			'Onímọ̀ ẹ̀rọ kan tó wọ aṣọ ààbò yàrá mímọ́, tó ń ṣàyẹ̀wò páálí oògùn níbi ẹ̀rọ tí wọ́n fi ń di oògùn sínú páálí',
-		impact3Title: 'Àkọsílẹ̀ tí ẹnìkan ń dáhùn fún',
-		impact3Text:
-			'Àwọn ilé-iṣẹ́ tó ń ṣe oògùn ń forúkọ oògùn wọn sílẹ̀, kí àwọn ènìyàn lè fi wé àkọsílẹ̀ wọn.',
-		whyEyebrow: 'Ìdí tí ẹ fi nílò DETECK',
-		whyTitle: 'Ìdáhùn kan tó ṣe kedere, tó sì sọ òtítọ́ nípa ohun tó mọ̀.',
-		strengths: {
-			serial: 'Ó ń fi serial wé àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK',
-			journey:
-				'Ó ń fi ìrìn-àjò rẹ̀ láti ọ̀dọ̀ àwọn olùpínkiri dé àwọn ilé ìtajà oògùn hàn, bí àkọsílẹ̀ ṣe sọ',
-			packaging: 'Ó lè fi fọ́tò páálí wé páálí ilé-iṣẹ́ tó ṣe é (ìdánwò, fún àwọn oògùn kan)',
-			network:
-				'Àyẹ̀wò serial ń ṣiṣẹ́ lórí 2G àti 3G. DETECK kò gba owó; owó dátà yín yóò lọ bí ó ṣe máa ń lọ',
-			honest: 'Ó ń sọ òtítọ́ fún yín nígbà tí àlàyé kò bá tó láti mọ̀ dájú'
+			'DETECK ń so nọ́mbà serial páálí kọ̀ọ̀kan pọ̀ mọ́ àkọsílẹ̀ ilé-iṣẹ́ tó ṣe é, kí ẹ lè ṣàyẹ̀wò rẹ̀ fúnra yín, dípò kí ẹ gbẹ́kẹ̀lé bí páálí ṣe rí nìkan.',
+		faq: {
+			title: 'Àwọn ìbéèrè tí àwọn ènìyàn ń béèrè',
+			freeQ: 'Ṣé ó ń náni lówó?',
+			freeA:
+				'Ọ̀fẹ́ ni ṣíṣàyẹ̀wò oògùn, kò sì nílò àkọọ́lẹ̀. Owó dátà ilé-iṣẹ́ nẹ́tíwọ́ọ̀kì yín yóò wà bí ó ti máa ń rí, àyẹ̀wò serial kò sì lo dátà púpọ̀.',
+			validQ: 'Kí ni "Valid" túmọ̀ sí?',
+			validA:
+				'Ó túmọ̀ sí pé nọ́ńbà serial bá àkọsílẹ̀ tí ilé-iṣẹ́ tó ṣe é fún DETECK mu. DETECK kò lè ṣàyẹ̀wò ohun tó wà nínú páálí, nítorí náà tí ohunkóhun nípa rẹ̀ bá dààmú yín, ẹ béèrè lọ́wọ́ pharmacist.',
+			missingQ: 'Tí oògùn mi kò bá sí lórí DETECK ńkọ́?',
+			missingA:
+				'Kì í ṣe gbogbo ilé-iṣẹ́ ló ti pín àkọsílẹ̀ wọn. DETECK yóò sọ bẹ́ẹ̀ kedere, kò sì túmọ̀ sí pé ayédèrú ni oògùn náà. Pharmacist yín lè ràn yín lọ́wọ́.',
+			dataQ: 'Kí ló ń ṣẹlẹ̀ sí àlàyé mi?',
+			dataA:
+				'Àyẹ̀wò kò nílò orúkọ tàbí nọ́ńbà fóònù yín. DETECK ń tọ́jú ohun tó nílò nìkan láti dáhùn àyẹ̀wò àti láti dènà ìlòkulò; ìkéde ìpamọ́ sọ ohun tí ó jẹ́, àti fún ìgbà tó pẹ́ tó.'
 		},
 		verifyTitle: 'Ṣé páálí oògùn wà lọ́wọ́ yín? Ẹ ṣàyẹ̀wò rẹ̀ báyìí.',
 		verifyLabel: 'Nọ́mbà serial tó wà lórí páálí',
 		verifyButton: 'Ṣàyẹ̀wò rẹ̀',
 		verifyFine:
-			'Àyẹ̀wò serial ń ṣiṣẹ́ lórí 2G àti 3G. DETECK kò gba owó; owó dátà yín yóò lọ bí ó ṣe máa ń lọ. Àbájáde dá lórí àkọsílẹ̀ tí àwọn ilé-iṣẹ́ tó ń ṣe oògùn fún DETECK. Nígbà tí àlàyé kò bá tó láti mọ̀ dájú, Deteck á sọ fún yín.',
+			'Owó dátà yín yóò lọ bí ó ṣe máa ń lọ. Àbájáde dá lórí àkọsílẹ̀ tí àwọn ilé-iṣẹ́ tó ń ṣe oògùn fún DETECK. Nígbà tí àlàyé kò bá tó láti mọ̀ dájú, Deteck á sọ fún yín.',
 		footerLead: 'A ń kọ́ DETECK pẹ̀lú àwọn alábàáṣiṣẹ́pọ̀ káàkiri ètò ìpèsè oògùn ní Nàìjíríà.',
-		pilotPartner: 'Ẹ di alábàáṣiṣẹ́pọ̀ nínú ètò ìgbìyànjú wa',
-		registerCompany: 'Ẹ forúkọ ilé-iṣẹ́ yín sílẹ̀',
 		footerNav: 'Ìsàlẹ̀ ojú-ìwé',
 		footerProduct: 'Ọjà wa',
 		footerCompany: 'Ilé-iṣẹ́ wa',
+		footerBusiness: 'Fún ilé-iṣẹ́',
 		contact: 'Ẹ kàn sí wa',
+		photoCredit: 'Àwọn fọ́tò láti Unsplash àti Pexels',
 		legal:
-			'© 2026 DETECK. Àpẹẹrẹ ni orúkọ oògùn àti àkọsílẹ̀ tí a fi hàn. Àyẹ̀wò dá lórí àwọn ilé-iṣẹ́ tó ń ṣe oògùn tó kópa, tí wọ́n sì ń kọ oògùn wọn àti ìpínkiri wọn sílẹ̀. DETECK ń ṣàyẹ̀wò àkọsílẹ̀ àti, nínú ìdánwò (beta), bí páálí ṣe rí; kò lè dán ohun tó wà nínú páálí wò.'
+			'© 2026 DETECK. Àyẹ̀wò dá lórí àwọn ilé-iṣẹ́ tó ń ṣe oògùn tó kópa, tí wọ́n sì ń kọ oògùn wọn sílẹ̀. DETECK ń ṣàyẹ̀wò àkọsílẹ̀ àti, nínú ìdánwò (beta), bí páálí ṣe rí; kò lè dán ohun tó wà nínú páálí wò.'
 	}
 };

@@ -166,7 +166,7 @@ export async function goLiveChecklist(
 			state: products.length > 0 && withSupply === products.length ? 'ok' : 'warn',
 			detail:
 				withSupply < products.length
-					? 'People will see "No journey recorded yet" for the others'
+					? 'People checking the others see only the manufacturer\'s record, under "Recorded so far"'
 					: undefined
 		},
 		{

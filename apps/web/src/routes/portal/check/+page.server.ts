@@ -11,7 +11,10 @@ import { readFile } from '@deteck/core/server/uploads.ts';
 import { formatProblem } from '@deteck/core/messages/en.ts';
 import { assertBusinessApproved, requireBusiness } from '#lib/server/guards.ts';
 
-/** Codes from the text box, plus the first column of an uploaded CSV. */
+/** A spreadsheet's header cell ("Serial number", "Code", "SN"), not a code to check. */
+const HEADER = /^(serial(\s*(number|no\.?))?|codes?|sn|s\/n|gtin|scanned codes?)$/i;
+
+/** Codes from the text box, plus the first column of an uploaded CSV (without its header). */
 async function codesFrom(data: FormData) {
 	const typed = splitCodes(String(data.get('codes') ?? ''));
 	const file = await readFile(data.get('file'));
@@ -27,17 +30,25 @@ async function codesFrom(data: FormData) {
 				)
 				.filter((v): v is string => Boolean(v))
 		: [];
-	return [...typed, ...fromFile].slice(0, MAX_BATCH_CHECK);
+	if (fromFile.length && HEADER.test(fromFile[0])) fromFile.shift();
+	const all = [...typed, ...fromFile];
+	return { codes: all.slice(0, MAX_BATCH_CHECK), left: Math.max(0, all.length - MAX_BATCH_CHECK) };
 }
 
 export const actions: Actions = {
 	check: async (event) => {
 		const access = await requireBusiness(event);
 		assertBusinessApproved(access);
-		const codes = await codesFrom(await event.request.formData());
-		if (codes.length === 0) return fail(400, { message: 'Paste or upload at least one serial.' });
+		const data = await event.request.formData();
+		const typed = String(data.get('codes') ?? '').slice(0, 200_000);
+		const { codes, left } = await codesFrom(data);
+		if (codes.length === 0)
+			return fail(400, { typed, message: 'Paste or upload at least one serial.' });
 		const lines = await checkDelivery(access.business, codes);
 		return {
+			// Kept in the box, and saying when some lines weren't checked.
+			typed,
+			left,
 			checked: lines.map((l) => ({
 				input: l.input,
 				problem: l.problem ? formatProblem[l.problem as keyof typeof formatProblem] : null,
@@ -49,7 +60,8 @@ export const actions: Actions = {
 				maker: l.result?.manufacturer?.name ?? null,
 				lot: l.result?.batch?.lot ?? null,
 				expiry: l.result?.batch?.expiryDate ?? null,
-				heldElsewhere: l.heldElsewhere ?? null
+				heldElsewhere: l.heldElsewhere ?? null,
+				alreadyHere: l.alreadyHere ?? false
 			}))
 		};
 	},

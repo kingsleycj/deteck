@@ -77,7 +77,8 @@ export async function startJobs(
 
 /**
  * Stops taking jobs and waits for running ones (up to 4.5 minutes: an import may be committing).
- * The worker's shutdown window on Render is set to 5 minutes to match (render.yaml).
+ * The shutdown window on Render (the website's for now, the worker's once there is one) is set to
+ * 5 minutes to match (render.yaml).
  */
 export async function stopJobs() {
 	await boss?.stop({ graceful: true, timeout: 270_000 });

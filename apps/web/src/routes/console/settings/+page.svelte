@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import { formatDateTime } from '#lib/ui/status.ts';
 
@@ -35,11 +36,17 @@
 		method="post"
 		action="?/agreement"
 		enctype="multipart/form-data"
-		class="row"
-		style="--gap: 10px"
+		class="stack"
+		style="--gap: 10px; max-width: 520px"
 	>
-		<label for="agreement-file" class="visually-hidden">Agreement template file</label>
-		<input id="agreement-file" name="file" type="file" accept="application/pdf" required />
-		<button class="btn btn-primary btn-small">Publish</button>
+		<Upload
+			id="agreement-file"
+			name="file"
+			title="Agreement template"
+			hint="A PDF manufacturers download, sign and upload"
+			accept="application/pdf"
+			required
+		/>
+		<div><button class="btn btn-primary btn-small">Publish</button></div>
 	</form>
 </section>

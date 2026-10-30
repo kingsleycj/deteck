@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 
 	let { data, form }: PageProps = $props();
 	const verifying = $derived(form?.step === 'verify');
@@ -29,13 +30,7 @@
 		<form method="post" action="?/start" class="stack" style="--gap: 14px">
 			<div class="field">
 				<label for="password">Confirm your password</label>
-				<input
-					id="password"
-					name="password"
-					type="password"
-					autocomplete="current-password"
-					required
-				/>
+				<PasswordInput id="password" name="password" autocomplete="current-password" required />
 			</div>
 			<button class="btn btn-primary btn-block">Continue</button>
 		</form>

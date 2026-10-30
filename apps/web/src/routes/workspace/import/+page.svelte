@@ -1,7 +1,10 @@
 <script lang="ts">
+	import Upload from '#lib/ui/Upload.svelte';
 	import type { PageProps } from './$types';
 	import Mascot from '#lib/ui/Mascot.svelte';
 	import { formatDateTime, formatNumber, IMPORT_KIND, IMPORT_STATUS } from '#lib/ui/status.ts';
+
+	import { page } from '$app/state';
 
 	let { data, form }: PageProps = $props();
 </script>
@@ -19,31 +22,48 @@
 	<p class="notice">{data.company.editBlocked}</p>
 {:else}
 	{#if form?.message}<p class="notice notice-error" role="alert">{form.message}</p>{/if}
+	{#if page.url.searchParams.get('notice') === 'cancelled'}<p class="toast" role="status">
+			Import cancelled. Nothing from that file was saved.
+		</p>{/if}
 	<div class="two-col">
 		<form method="post" action="?/upload" enctype="multipart/form-data" class="panel">
 			<h2>Upload a file</h2>
 			<fieldset class="stack" style="--gap: 8px; border: 0; padding: 0; margin: 0">
 				<legend class="label" style="margin-bottom: 8px">What's in this file?</legend>
-				<label class="row" style="--gap: 8px"
-					><input type="radio" name="kind" value="products" required /> Drugs (product list)</label
+				<label class="option"
+					><input
+						type="radio"
+						name="kind"
+						value="products"
+						checked={form?.kind === 'products'}
+						required
+					/> Drugs (product list)</label
 				>
-				<label class="row" style="--gap: 8px"
-					><input type="radio" name="kind" value="batches_serials" /> Batches and serial numbers</label
+				<label class="option"
+					><input
+						type="radio"
+						name="kind"
+						value="batches_serials"
+						checked={form?.kind === 'batches_serials'}
+					/> Batches and serial numbers</label
 				>
-				<label class="row" style="--gap: 8px"
-					><input type="radio" name="kind" value="distribution" /> Supply chain records</label
+				<label class="option"
+					><input
+						type="radio"
+						name="kind"
+						value="distribution"
+						checked={form?.kind === 'distribution'}
+					/> Supply chain records</label
 				>
 			</fieldset>
-			<div class="file-drop" style="padding: 28px">
-				<label for="import-file" class="visually-hidden">File to import</label>
-				<input
-					id="import-file"
-					name="file"
-					type="file"
-					accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-					required
-				/>
-			</div>
+			<Upload
+				id="import-file"
+				name="file"
+				title="Your spreadsheet"
+				hint="CSV or Excel (.xlsx), up to 50 MB"
+				accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+				required
+			/>
 			<p class="help">
 				CSV or Excel (.xlsx), up to 50 MB, one sheet at a time. Import drugs first, then batches and
 				serials, then supply chain records. The original file and its problem rows are kept for 90

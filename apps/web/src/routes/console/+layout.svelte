@@ -21,7 +21,7 @@
 			label: 'Admin and monitoring',
 			items: [
 				{ href: '/console', label: 'Overview', exact: true },
-				{ href: '/console/reports', label: 'Reports of fakes' },
+				...(data.features.reports ? [{ href: '/console/reports', label: 'Reports of fakes' }] : []),
 				{ href: '/console/signals', label: 'Unusual checks' },
 				{ href: '/console/scans', label: 'Packaging scans' },
 				{ href: '/console/audit', label: 'Audit trail' },

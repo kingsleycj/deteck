@@ -1,5 +1,6 @@
 /* DETECK design tokens, ported from the UI artifacts and brand guidelines (D-07).
-   System fonts only, so the checker stays inside its data budget. */
+   Brand fonts are self-hosted (no third-party requests). Each downloads only the character ranges a
+   page uses, with font-display: swap, so text shows at once on a slow network. */
 :root {
 	--ink: #0b0b0f;
 	--ink-2: #1a1b21;
@@ -31,8 +32,11 @@
 	--radius-m: 18px;
 	--radius-l: 22px;
 	--radius-xl: 28px;
-	--font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--font-display: var(--font);
+	--font:
+		'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
+	/* Headings and the wordmark: Plus Jakarta Sans ExtraBold, tight (brand guidelines). */
+	--font-display: 'Plus Jakarta Sans Variable', var(--font);
 	--font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
 	color-scheme: light;
 }
@@ -44,6 +48,8 @@
 }
 html {
 	-webkit-text-size-adjust: 100%;
+	/* Section links (#how, #faq) land below the sticky header, not under it. */
+	scroll-padding-top: 88px;
 }
 body {
 	margin: 0;
@@ -62,7 +68,7 @@ h1,
 h2,
 h3 {
 	font-family: var(--font-display);
-	letter-spacing: -0.03em;
+	letter-spacing: -0.035em;
 	line-height: 1.15;
 	margin: 0;
 }
@@ -148,7 +154,20 @@ p {
 .topbar nav a {
 	text-decoration: none;
 }
+.topbar-signin {
+	display: none;
+	padding: 0 6px;
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
 @media (min-width: 900px) {
+	.topbar-signin {
+		display: flex;
+	}
+}
+/* The section links need the room: below 1200 px (and in longer languages) they'd wrap the header. */
+@media (min-width: 1200px) {
 	.topbar nav {
 		display: flex;
 	}
@@ -163,6 +182,13 @@ p {
 	font-size: 12px;
 	font-weight: 600;
 	white-space: nowrap;
+}
+/* Narrow phones: the public header keeps the logo and the language menu on one line (the badge
+   would push the menu's button inwards, and the menu would open off the screen's left edge). */
+@media (max-width: 399px) {
+	.topbar .pill {
+		display: none;
+	}
 }
 .back {
 	display: inline-flex;
@@ -285,6 +311,37 @@ p {
 	color: var(--ink);
 	font: 16px var(--font);
 }
+/* A checkbox or radio button with its words beside it, everywhere in the app: the box stays on
+   the first line and long words wrap next to it, never underneath. */
+.option {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	min-height: 32px;
+	font-size: 14px;
+	line-height: 1.45;
+	cursor: pointer;
+}
+.option > input[type='checkbox'],
+.option > input[type='radio'] {
+	margin: 1px 0 0;
+}
+.option > span {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+/* Checkboxes and radio buttons inside a field keep their own size (not a text box's). */
+.field input[type='checkbox'],
+.field input[type='radio'],
+input[type='checkbox'],
+input[type='radio'] {
+	width: 18px;
+	height: 18px;
+	min-height: 0;
+	padding: 0;
+	flex: 0 0 auto;
+	accent-color: var(--ink);
+}
 .field textarea {
 	padding: 12px 16px;
 	min-height: 96px;
@@ -341,6 +398,23 @@ p {
 	border: 1px solid #e6e7ec;
 	padding: 16px 18px;
 }
+/* The logo's boxed smile as a repeating pattern, on the brand's dark and lime colours (landing, business sign-in). */
+.smiles-ink {
+	background-color: var(--ink);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23262833' stroke-width='1.6'%3E%3Crect x='14' y='14' width='32' height='32' rx='8'/%3E%3C/g%3E%3Cpath fill='%23262833' d='M20.6 25 C 22.3 37.1 37.7 37.1 39.4 25 C 36.1 33.3 23.9 33.3 20.6 25 Z'/%3E%3Cpath fill='%23262833' d='M80.6 85 C 82.3 97.1 97.7 97.1 99.4 85 C 96.1 93.3 83.9 93.3 80.6 85 Z'/%3E%3C/svg%3E");
+	background-size: 120px 120px;
+}
+.smiles-lime {
+	background-color: var(--ink);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath fill='%23DCFC7E' fill-opacity='.09' d='M20.6 25 C 22.3 37.1 37.7 37.1 39.4 25 C 36.1 33.3 23.9 33.3 20.6 25 Z'/%3E%3Cpath fill='%23DCFC7E' fill-opacity='.09' d='M80.6 85 C 82.3 97.1 97.7 97.1 99.4 85 C 96.1 93.3 83.9 93.3 80.6 85 Z'/%3E%3C/svg%3E");
+	background-size: 120px 120px;
+}
+.smiles-ink-on-lime {
+	background-color: var(--lime);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23C4E866' stroke-width='1.6'%3E%3Crect x='14' y='14' width='32' height='32' rx='8'/%3E%3C/g%3E%3Cpath fill='%23C4E866' d='M20.6 25 C 22.3 37.1 37.7 37.1 39.4 25 C 36.1 33.3 23.9 33.3 20.6 25 Z'/%3E%3Cpath fill='%23C4E866' d='M80.6 85 C 82.3 97.1 97.7 97.1 99.4 85 C 96.1 93.3 83.9 93.3 80.6 85 Z'/%3E%3C/svg%3E");
+	background-size: 120px 120px;
+}
+
 .hero {
 	position: relative;
 	overflow: hidden;
@@ -360,6 +434,28 @@ p {
 }
 .hero-info {
 	background: var(--peri);
+}
+/* The round "take photo" button inside a camera view (both ways of verifying by scan). */
+.shutter {
+	position: absolute;
+	bottom: 22px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 78px;
+	height: 78px;
+	border-radius: 50%;
+	border: 4px solid var(--white);
+	background: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+.shutter span {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background: var(--lime);
 }
 .hero-row {
 	margin-top: 12px;
@@ -430,6 +526,13 @@ p {
 .facts > div:nth-last-child(2):not(.wide) {
 	border-bottom: 0;
 }
+/* Three short facts side by side (the result page: NAFDAC number, batch, expiry). */
+.facts.facts-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.facts.facts-3 > div:nth-last-child(3):not(.wide) {
+	border-bottom: 0;
+}
 .facts dt {
 	font-size: 12px;
 	color: var(--text-3);
@@ -438,6 +541,8 @@ p {
 	margin: 3px 0 0;
 	font-size: 15px;
 	font-weight: 600;
+	/* Long emails and codes wrap inside their card instead of widening a phone screen. */
+	overflow-wrap: anywhere;
 }
 .facts dd.big {
 	font-size: 18px;
@@ -566,11 +671,6 @@ p {
 .timeline li:last-child::after {
 	display: none;
 }
-.timeline li.gap::before {
-	background: var(--white);
-	border-color: var(--text-4);
-	border-style: dashed;
-}
 .timeline li.end::before {
 	background: var(--lime);
 	border-color: var(--ink);
@@ -609,6 +709,15 @@ p {
 }
 
 /* ------------------------------------------------------------ responsive layouts */
+/* Shown only on wide screens (desktop details that would crowd a phone). */
+.wide-only {
+	display: none;
+}
+@media (min-width: 900px) {
+	.wide-only {
+		display: inline;
+	}
+}
 .grid-2 {
 	display: grid;
 	gap: 18px;
@@ -624,16 +733,63 @@ p {
 	}
 }
 
+/* ------------------------------------------------------------ the desktop app frame
+   The public app's desktop designs (D1 to D16): a light page, one big rounded panel, a white header
+   bar and the content in a grid inside it. Phones keep the plain page. */
+.desk-only {
+	display: none;
+}
+@media (min-width: 1024px) {
+	.phone-only {
+		display: none !important;
+	}
+	.desk-only {
+		display: revert;
+	}
+	body:has(.app-frame) {
+		background: #f4f4f1;
+	}
+	.shell.app-frame {
+		width: calc(100% - 40px);
+		max-width: 1600px;
+		min-height: calc(100vh - 40px);
+		margin: 20px auto;
+		padding: 0;
+		gap: 0;
+		border-radius: 32px;
+		background: var(--paper);
+		overflow: hidden;
+	}
+	.shell.app-frame > .topbar,
+	.shell.app-frame > .page-head {
+		padding: 20px 36px;
+		background: var(--white);
+		gap: 18px;
+	}
+	.shell.app-frame > main {
+		flex: 1 1 auto;
+		padding: 24px 36px 32px;
+	}
+	.shell.app-frame > .notice {
+		margin: 18px 36px 0;
+	}
+	.shell.app-frame > .site-footer {
+		padding: 16px 36px 22px;
+	}
+}
+
 /* ------------------------------------------------------------ checking overlay (progressive enhancement) */
 .checking-overlay {
 	position: fixed;
 	inset: 0;
 	z-index: 20;
+	/* Small phones: the "no connection" panel is taller than the screen. */
+	overflow-y: auto;
 	background: var(--paper);
 	display: none;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: safe center;
 	gap: 18px;
 	padding: 24px;
 	text-align: center;
@@ -678,6 +834,11 @@ p {
 .prose {
 	max-width: 720px;
 	padding: 8px 0 32px;
+}
+/* Long code words (API paths, field names) wrap instead of widening a phone screen. */
+.prose .mono,
+.prose code {
+	overflow-wrap: anywhere;
 }
 .prose h1 {
 	font-size: clamp(28px, 4vw, 38px);

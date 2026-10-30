@@ -15,6 +15,7 @@ import { ctx } from './context.ts';
 import { randomId } from './crypto.ts';
 import { webhookDelivery, webhookEndpoint } from './db/schema.ts';
 import { enqueue } from './jobs.ts';
+import { consume } from './rate-limit.ts';
 import { companyActive, NOT_ACTIVE_MESSAGE, type CompanyRef } from './owner-status.ts';
 
 /** Every event DETECK can send, with the wording shown when choosing them. */
@@ -98,6 +99,11 @@ for (const [net, prefix] of [
 	['::', 96],
 	// NAT64 prefixes that can lead to private IPv4 networks.
 	['64:ff9b:1::', 48],
+	// IPv4-translated (::ffff:0:a.b.c.d), 6to4 (2002::/16) and Teredo (2001::/32) can all carry
+	// a private IPv4 address inside.
+	['::ffff:0:0:0', 96],
+	['2002::', 16],
+	['2001::', 32],
 	['100::', 64],
 	['2001:db8::', 32],
 	['fc00::', 7],
@@ -157,6 +163,9 @@ export async function checkWebhookUrl(raw: string): Promise<URL> {
 	return url;
 }
 
+/** Webhooks per company. */
+export const MAX_ENDPOINTS = 5;
+
 export async function createEndpoint(
 	actor: Actor,
 	owner: WebhookOwner,
@@ -168,6 +177,16 @@ export async function createEndpoint(
 			? { type: 'manufacturer', manufacturerId: owner.manufacturerId }
 			: { type: 'business', businessId: owner.businessId };
 	if (!(await companyActive(company))) throw new WebhookError(NOT_ACTIVE_MESSAGE);
+	// Every event goes to every endpoint, with retries: a few are plenty, and a cap stops one
+	// account turning DETECK into a flood aimed at someone else's server.
+	const existing = await ctx().db.$count(
+		webhookEndpoint,
+		and(ownerWhere(owner), eq(webhookEndpoint.active, true))
+	);
+	if (existing >= MAX_ENDPOINTS)
+		throw new WebhookError(
+			`You can have up to ${MAX_ENDPOINTS} webhooks. Remove one you no longer use first.`
+		);
 	const url = await checkWebhookUrl(input.url);
 	const events = input.events.filter((e) => e in WEBHOOK_EVENTS);
 	if (events.length === 0) throw new WebhookError('Choose at least one event.');
@@ -243,6 +262,11 @@ export async function removeEndpoint(
 /** Sends a "webhook.test" event so the receiver can check its set-up. */
 export async function sendTest(owner: WebhookOwner, id: string) {
 	const row = await ownedEndpoint(owner, id);
+	const limited = await consume([
+		{ key: `webhook-test:${row.id}:h`, windowSeconds: 3600, max: 10 }
+	]);
+	if (!limited.ok)
+		throw new WebhookError('That is a lot of test sends for one hour. Try again a little later.');
 	// One try: the person is waiting to see whether their receiver works, not for retries.
 	await queueDelivery(row.id, 'webhook.test', { message: 'This is a test from DETECK.' }, 0);
 }

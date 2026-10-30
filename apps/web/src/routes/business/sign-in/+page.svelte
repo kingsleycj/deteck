@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
+	import PasswordInput from '#lib/ui/PasswordInput.svelte';
 
 	let { data, form }: PageProps = $props();
 </script>
@@ -60,7 +61,7 @@
 				type="email"
 				autocomplete="username"
 				required
-				value={form?.email ?? ''}
+				defaultValue={form?.email ?? ''}
 			/>
 		</div>
 		<div class="field">
@@ -68,15 +69,9 @@
 				<label for="password">Password</label>
 				<a href="/business/forgot" class="small">Forgot password?</a>
 			</div>
-			<input
-				id="password"
-				name="password"
-				type="password"
-				autocomplete="current-password"
-				required
-			/>
+			<PasswordInput id="password" name="password" autocomplete="current-password" required />
 		</div>
-		<label class="row small" style="--gap: 8px"
+		<label class="option"
 			><input type="checkbox" name="remember" /> Keep me signed in on this device</label
 		>
 		<button class="btn btn-primary btn-block">Sign in</button>

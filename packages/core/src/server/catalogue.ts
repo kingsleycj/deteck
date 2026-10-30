@@ -235,6 +235,9 @@ export async function setBatchStatus(
 	else if (row.batch.status !== 'active') await queueRecallLifted(batchId);
 }
 
+/** The statuses DETECK staff can choose for a drug. */
+export const PRODUCT_CHOICES: readonly string[] = ['active', 'flagged', 'deactivated'];
+
 /** US-06.2: DETECK staff flag or deactivate a product, with a required reason. */
 export async function setProductStatus(
 	actor: Actor,
@@ -242,10 +245,18 @@ export async function setProductStatus(
 	status: 'active' | 'flagged' | 'deactivated',
 	reason: string
 ) {
+	// Only these three can be chosen: "pending_review" and "rejected" come from the review itself,
+	// and either would hide every pack of a live drug from the public.
+	if (!PRODUCT_CHOICES.includes(status)) throw new CatalogueError('Choose a status.');
 	if (reason.trim().length < 3) throw new CatalogueError('A reason is required.');
 	const { db } = ctx();
 	const [p] = await db.select().from(product).where(eq(product.id, productId));
 	if (!p) throw new CatalogueError('Drug not found.');
+	// A new or turned-down drug is approved first: flagging it would make it public unreviewed.
+	if ((p.status === 'pending_review' || p.status === 'rejected') && status === 'flagged')
+		throw new CatalogueError(
+			'Approve this drug first: flagging it would make it public unreviewed.'
+		);
 	// Turning down a new drug keeps it hidden ("rejected"), rather than paused and visible.
 	const stored = p.status === 'pending_review' && status === 'deactivated' ? 'rejected' : status;
 	await db.transaction(async (tx) => {

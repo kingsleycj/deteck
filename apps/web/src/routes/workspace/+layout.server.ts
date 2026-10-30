@@ -8,6 +8,7 @@ export const load: LayoutServerLoad = async (event) => {
 	const m = access.manufacturer;
 	return {
 		contactEmail: ctx().config.contactEmail ?? null,
+		features: { reports: ctx().config.reportsEnabled },
 		access: {
 			userName: access.user.name,
 			roleLabel: access.onBehalf
@@ -27,7 +28,7 @@ export const load: LayoutServerLoad = async (event) => {
 			state: m.state,
 			town: m.factoryTown,
 			/** Why imports and edits are closed right now, or null. */
-			editBlocked: editBlockedReason(m.status),
+			editBlocked: editBlockedReason(m.status, m.statusBeforeSuspension),
 			/** Team invites, API keys and webhooks: from DETECK's approval on. */
 			toolsOpen: MANUFACTURER_OK.has(m.status)
 		}

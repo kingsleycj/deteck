@@ -8,12 +8,28 @@
 	grid-template-columns: 1fr;
 }
 .auth-side {
+	position: relative;
+	overflow: hidden;
 	display: none;
-	background: var(--ink);
+	background-color: var(--ink);
 	color: var(--white);
 	padding: 40px;
 	flex-direction: column;
 	gap: 24px;
+}
+.auth-side > * {
+	position: relative;
+}
+/* The logo's smile, large and lime, behind the mascot (brand guidelines). */
+.auth-side > .auth-swoosh {
+	position: absolute;
+	width: 600px;
+	max-width: none;
+	left: -80px;
+	bottom: -110px;
+	fill: var(--lime);
+	opacity: 0.2;
+	pointer-events: none;
 }
 .auth-side h1 {
 	font-size: 40px;
@@ -45,8 +61,12 @@
 	.auth {
 		grid-template-columns: minmax(380px, 0.9fr) 1.1fr;
 	}
+	/* Long forms scroll; the side panel stays in view. */
 	.auth-side {
 		display: flex;
+		position: sticky;
+		top: 0;
+		height: 100vh;
 	}
 }
 
@@ -116,6 +136,55 @@
 	color: var(--lime);
 	font-weight: 700;
 	margin-top: 8px;
+}
+.side-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.nav-open {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+.nav-button {
+	display: none;
+}
+@media (max-width: 999px) {
+	.sidebar {
+		padding: 14px 16px;
+		gap: 12px;
+	}
+	.nav-button {
+		display: inline-flex;
+		align-items: center;
+		min-height: 40px;
+		padding: 0 14px;
+		border-radius: 999px;
+		border: 1px solid #3a3c46;
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--white);
+		cursor: pointer;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 60%;
+	}
+	.sidebar:has(.nav-open:checked) .nav-button {
+		background: var(--lime);
+		color: var(--ink);
+		border-color: var(--lime);
+	}
+	.sidebar:has(.nav-open:focus-visible) .nav-button {
+		outline: 2px solid var(--lime);
+		outline-offset: 2px;
+	}
+	.nav-open:not(:checked) ~ nav,
+	.nav-open:not(:checked) ~ .who {
+		display: none;
+	}
 }
 .app-main {
 	padding: 22px 20px 48px;
@@ -213,13 +282,17 @@
 	color: #c9cbd4;
 }
 
+/* Its own font and spacing, so a chip inside a heading doesn't take the heading's tight tracking. */
 .chip {
 	display: inline-flex;
 	align-items: center;
 	padding: 3px 10px;
 	border-radius: 999px;
+	font-family: var(--font);
 	font-size: 12px;
 	font-weight: 700;
+	letter-spacing: normal;
+	line-height: 1.4;
 	white-space: nowrap;
 	background: var(--grey-150);
 	color: var(--text-2);
@@ -498,4 +571,16 @@ table.data td .sub {
 details summary {
 	cursor: pointer;
 	font-weight: 600;
+}
+
+/* A page's search box, at the right of its title on wide screens, full width on phones. */
+.page-search {
+	flex: 1 1 320px;
+	display: flex;
+	justify-content: flex-end;
+}
+@media (max-width: 700px) {
+	.page-search {
+		justify-content: stretch;
+	}
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SearchField from '#lib/ui/SearchField.svelte';
 	import type { PageProps } from './$types';
 	import {
 		formatDateTime,
@@ -18,16 +19,13 @@
 		<p class="crumbs">DETECK team console</p>
 		<h1>Drugs and batches</h1>
 	</div>
-	<form method="get" class="row" style="--gap: 8px">
-		<input
-			class="input"
-			name="q"
+	<form method="get" class="page-search" role="search">
+		<SearchField
 			value={data.q}
+			label="Search drugs"
 			placeholder="Name, NAFDAC no., GTIN, manufacturer or batch"
-			aria-label="Search drugs"
-			style="min-width: 320px"
+			wide
 		/>
-		<button class="btn btn-small">Search</button>
 	</form>
 </div>
 

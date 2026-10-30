@@ -105,6 +105,28 @@ describe('new drugs from a live manufacturer wait for review', () => {
 		expect(await ctx().db.$count(webhookDelivery)).toBe(1);
 	});
 
+	it('only takes the statuses staff can choose, and never publishes an unreviewed drug', async () => {
+		const id = await productId();
+		// The review's own states can't be set by hand: either would hide a live drug's packs.
+		for (const status of ['rejected', 'pending_review'])
+			await expect(
+				setProductStatus(STAFF, id, status as 'active', 'Trying to hide it')
+			).rejects.toBeInstanceOf(CatalogueError);
+		// Flagging a new drug would make it public before anyone approved it.
+		await expect(setProductStatus(STAFF, id, 'flagged', 'Looks odd')).rejects.toBeInstanceOf(
+			CatalogueError
+		);
+		const [p] = await ctx().db.select().from(product).where(eq(product.id, id));
+		expect(p.status).toBe('pending_review');
+		// Nor a drug DETECK turned down.
+		await setProductStatus(STAFF, id, 'deactivated', 'Not on the NAFDAC register');
+		await expect(setProductStatus(STAFF, id, 'flagged', 'Second look')).rejects.toBeInstanceOf(
+			CatalogueError
+		);
+		const [rejected] = await ctx().db.select().from(product).where(eq(product.id, id));
+		expect(rejected.status).toBe('rejected');
+	});
+
 	it('requires a reason', async () => {
 		await expect(setProductStatus(STAFF, await productId(), 'active', ' ')).rejects.toBeInstanceOf(
 			CatalogueError

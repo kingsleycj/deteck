@@ -50,6 +50,8 @@ const PUBLIC_BODY_LIMIT = 20 * 1024 * 1024;
 
 /** Areas that need to know who is signed in. The public checker never does. */
 const SESSION_PATHS = ['/business', '/console', '/workspace', '/portal', '/files'];
+/** Signed-in areas where spreadsheets and documents are uploaded (bigger bodies allowed). */
+const UPLOAD_PATHS = ['/console', '/workspace', '/portal'];
 
 /** True when the request came through Cloudflare (it adds the shared secret header). */
 function fromEdge(header: string | null, secret: string) {
@@ -59,7 +61,13 @@ function fromEdge(header: string | null, secret: string) {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const path = event.url.pathname;
+	// Decoded, as the router sees it: "/%77orkspace" is "/workspace" for every check below.
+	let path: string;
+	try {
+		path = decodeURI(event.url.pathname);
+	} catch {
+		return new Response('Bad request', { status: 400 });
+	}
 	// With EDGE_SECRET set, only requests through Cloudflare are served: nobody can reach the
 	// server's own address directly and fake the visitor IP header that rate limits rely on.
 	// Render's health check calls the server directly, so /healthz stays open.
@@ -70,22 +78,36 @@ export const handle: Handle = async ({ event, resolve }) => {
 		!fromEdge(event.request.headers.get('x-deteck-edge'), edgeSecret)
 	)
 		return new Response('Forbidden', { status: 403 });
+	// Reports of fakes are switched off for now (FEATURE_REPORTS). Their layouts answer page visits
+	// with the "Not found" page; form actions and the photo addresses skip those layouts, so they
+	// are refused here.
+	if (
+		!serverContext.config.reportsEnabled &&
+		/^\/(report|console\/reports|workspace\/reports)(\/|$)/.test(path) &&
+		(event.request.method !== 'GET' || path.includes('/photo/'))
+	)
+		return new Response('Not found', { status: 404 });
 	// Every sign-in flow calls Better Auth on the server, with DETECK's lockout and audit rules.
 	// Its own HTTP API would skip those rules, so it isn't exposed.
 	if (path === '/api/auth' || path.startsWith('/api/auth/'))
 		return new Response('Not found', { status: 404 });
 	const businessArea = SESSION_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 	// Large bodies only where signed-in people upload spreadsheets and documents (and the
-	// manufacturer API). A public form needs at most a few photos.
-	if (
-		!businessArea &&
-		!path.startsWith('/api/v1/manufacturer') &&
-		event.request.method === 'POST' &&
-		Number(event.request.headers.get('content-length') ?? 0) > PUBLIC_BODY_LIMIT
-	)
-		return new Response('That upload is too large. Use smaller photos (under 20 MB in total).', {
-			status: 413
-		});
+	// manufacturer API). A public form, registration included, needs at most a few photos or
+	// documents. A body without a declared size (streamed) is refused there: its size can't be
+	// checked before it's read, and browsers always declare it for forms.
+	const uploadArea =
+		UPLOAD_PATHS.some((p) => path === p || path.startsWith(`${p}/`)) ||
+		path.startsWith('/api/v1/manufacturer');
+	if (!uploadArea && event.request.method === 'POST') {
+		const length = event.request.headers.get('content-length');
+		if (length === null && event.request.body)
+			return new Response('Length required', { status: 411 });
+		if (Number(length ?? 0) > PUBLIC_BODY_LIMIT)
+			return new Response('That upload is too large. Use smaller photos (under 20 MB in total).', {
+				status: 413
+			});
+	}
 	if (businessArea) {
 		const session = await auth.api.getSession({ headers: event.request.headers });
 		if (session) {

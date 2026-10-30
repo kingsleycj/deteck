@@ -26,9 +26,8 @@ export const pcm: Messages = {
 		home: 'Deteck home',
 		main: 'Main',
 		how: 'How e dey work',
-		pharmacies: 'For pharmacies',
-		manufacturers: 'For manufacturers',
-		badge: 'DETECK no dey charge you'
+		badge: 'DETECK no dey charge you',
+		menu: 'Menu'
 	},
 
 	footer: {
@@ -55,7 +54,7 @@ export const pcm: Messages = {
 		placeholder: 'Like 7K4M 9QX2 TB8D',
 		hint: 'Look near di barcode. E dey after **SN** or **Serial**.',
 		submit: 'Check medicine',
-		scan: 'Scan di code instead',
+		scan: 'Check am more with scan',
 		footer:
 			'Serial check dey work for 2G and 3G. You no need account. DETECK no dey charge you; your network go still collect di normal data money.',
 		humanPrompt:
@@ -72,7 +71,25 @@ export const pcm: Messages = {
 		checkingTitle: 'I dey check di records…',
 		checkingBody: 'Deteck dey compare your serial with di manufacturer records.',
 		retry: 'Try am again',
-		tryAgain: 'Try again'
+		tryAgain: 'Try again',
+		eyebrow: 'Medicine checker',
+		lede: 'Type di serial number wey dey di pack. Deteck go check am with di manufacturer records and show you where e don pass.',
+		scanNote: 'Use your camera, or upload photos of di pack.',
+		helloTitle: 'Hi, na me be Deteck.',
+		helloBody:
+			'Give me di serial number and I go tell you di result: whether e match, who make am, and di last business wey dem record am with.',
+		step1Title: '1 · E match?',
+		step1Text: 'E match di maker records, or e no match',
+		step2Title: '2 · Packaging',
+		step2Text: 'AI dey find difference wey eye fit see',
+		step3Title: '3 · Journey',
+		step3Text: 'From di maker reach di last business wey dem record',
+		checkingEyebrow: 'Checking',
+		tipsEyebrow: 'Wrong format',
+		tipsTitle: 'Where you go see di serial',
+		tip1: 'Near di barcode, after **SN** or **Serial**',
+		tip2: 'E no pass 20 letters and numbers, sometimes dem group am',
+		tip3: 'Letter O and number 0 resemble each other, check both'
 	},
 
 	format: {
@@ -86,7 +103,9 @@ export const pcm: Messages = {
 			'Dat one resemble NAFDAC registration number. Di serial na different code; e dey usually after SN, near di barcode.',
 		bad_code: 'We no fit read dat code. Type di serial wey dey after SN instead.',
 		mascot:
-			'Hmm, dat one never look like serial number. Wetin you type still dey di box, so na only di wrong part you go correct.'
+			'Hmm, dat one never look like serial number. Wetin you type still dey di box, so na only di wrong part you go correct.',
+		batch_number:
+			'E be like say na di batch number (after LOT or BATCH). Di serial na different code, wey dem dey usually print after SN near di barcode.'
 	},
 
 	network: {
@@ -95,11 +114,15 @@ export const pcm: Messages = {
 			'Di records delay too much before dem answer. Your serial still dey di box: press Check medicine to try again.',
 		offlineTitle: 'I no fit reach di records',
 		offlineBody:
-			'E be like say your phone no dey online. Your serial still dey di box, so wen network come back, you fit press Check again.',
+			'Your connection cut as I dey check. Nothing lost: I don keep your serial, and I go try again as your network come back.',
 		rateLimited: {
 			one: 'Too many checks for short time. Abeg wait {n} minute, then try again.',
 			other: 'Too many checks for short time. Abeg wait {n} minutes, then try again.'
-		}
+		},
+		offlineEyebrow: 'No connection',
+		editSerial: 'Change di serial',
+		offlineNote:
+			'One check no dey use data reach to load one photo, so even weak 2G or 3G signal dey usually enough.'
 	},
 
 	result: {
@@ -127,8 +150,8 @@ export const pcm: Messages = {
 		pack: 'Pack',
 		reasonsIntro: 'Dis kind tin fit happen wen:',
 		journeyLink: 'See di medicine journey',
-		checkPackaging: 'Check di packaging (beta)',
-		scanCode: 'Scan di code instead',
+		checkPackaging: 'Check am more with scan',
+		scanCode: 'Check am more with scan',
 		retype: 'Type di serial again',
 		report: 'Report pack wey fit be fake',
 		worried: 'Dis pack still dey worry you?',
@@ -147,6 +170,7 @@ export const pcm: Messages = {
 
 		valid: {
 			badge: 'E MATCH RECORDS',
+			title: 'E match di records',
 			bubble: 'Dis serial match di records wey {maker} get for {product}.'
 		},
 		mismatch: {
@@ -222,7 +246,12 @@ export const pcm: Messages = {
 			typeInstead: 'Type dat serial for di check page. No use scan.',
 			typeToConfirm: 'Type dat serial for di check page, make you sure say di scan read am well.',
 			nextStepKeep: 'Ask pharmacist before you use am, and keep di pack.'
-		}
+		},
+		serialChecked: 'Serial wey we check',
+		checkAgain: 'Check am again',
+		whatToDo: 'Wetin to do:',
+		notSure: 'You no sure?',
+		checkAnotherShort: 'Check another one'
 	},
 
 	alerts: {
@@ -299,17 +328,14 @@ export const pcm: Messages = {
 		backAria: 'Go back to result',
 		expiredBody: 'Check di serial again to see im journey.',
 		batchLine: '{product} · Batch {lot}',
-		noneTitle: 'Dem never record any journey',
+		noneTitle: 'Wetin dem don record so far',
 		whatWeKnow: 'Wetin we sabi',
 		madeBy: 'Na {maker} make am',
 		madeExpires: 'Date wey dem make am: {made} · Expiry: {expires}',
-		gap: 'No record for dis step',
-		gapBetween: 'For di middle of {after} and {before}',
 		stepBatch: '{place} · Batch {lot} · Expiry: {expires}',
 		verified: 'DETECK don verify am',
 		confirmed: 'Dis business don confirm say e receive am',
 		unverified: 'DETECK never verify am',
-		recordsEnd: 'Di records end for here. Di steps wey follow never dey DETECK.',
 		sellerPrompt:
 			'You dey buy am from another place? Di records show say dis pack dey with {holder}. If na another place you dey buy am, ask di seller where e come from.',
 		batchPrompt:
@@ -317,26 +343,22 @@ export const pcm: Messages = {
 		footnote:
 			'Di journey dey show wetin manufacturers don record. We no dey show price, quantity or staff names at all.',
 		summary: {
-			toRetail: 'E comot from {maker}{via} and di last place wey dem record am na {last}.{gap}',
+			toRetail: 'E comot from {maker}{via} and di last place wey dem record am na {last}.',
 			via: ' go {names},',
-			gap: ' One step for di road no dey di records.',
-			endsBeforeRetail:
-				'E comot from {maker} go {names}. Di records end for there: di steps wey follow never dey DETECK.',
 			batchLevel: {
 				one: '{maker} supply dis batch give {n} business. Di records no talk which one hold dis pack.',
 				other:
 					'{maker} supply dis batch give {n} businesses. Di records no talk which one hold dis pack.'
 			},
-			none: 'Di manufacturer never share where dem send dis batch go, so I no fit show who don hold am.'
+			none: 'For now, DETECK get di manufacturer record for dis batch. Di businesses wey handle am go show here once dem record dem.'
 		},
 		link: {
-			none: 'Dem never record any journey',
+			none: 'See wetin dem don record so far',
 			lastWith: 'Di last place wey dem record am: {name}{where}',
 			suppliedTo: {
 				one: 'Dem supply am give {n} business wey dey di records',
 				other: 'Dem supply am give {n} businesses wey dey di records'
-			},
-			endsAt: 'Di records end for {name}{where}'
+			}
 		},
 		step: {
 			manufacturer: 'MANUFACTURER · DEM MAKE AM {month}',
@@ -350,12 +372,13 @@ export const pcm: Messages = {
 			pharmacy: 'Pharmacy',
 			hospital: 'Hospital',
 			other: 'Business'
-		}
+		},
+		stepsCount: { one: '{n} step wey dem record', other: '{n} steps wey dem record' }
 	},
 
 	scan: {
-		metaTitle: 'Scan di code to check · DETECK',
-		title: 'Scan di code to check',
+		metaTitle: 'Check am more with scan · DETECK',
+		title: 'Check am more with scan',
 		closeAria: 'Close di scanner',
 		blockedBubble: 'I need your camera to scan di pack. E be like say camera dey off for DETECK.',
 		turnOnTitle: 'On di camera',
@@ -382,7 +405,47 @@ export const pcm: Messages = {
 		noPhoto: 'First, snap or choose photo of di code.',
 		tooLarge: 'Dat photo too big. Try again with smaller one.',
 		unreadable:
-			'I no fit read any code for dis photo. Bring di pack closer, for where light dey well, make di square code dey di middle. Or type di serial instead.'
+			'I no fit read any code for dis photo. Bring di pack closer, for where light dey well, make di square code dey di middle. Or type di serial instead.',
+		cancel: 'Cancel',
+		tabCamera: 'Use camera',
+		tabUpload: 'Upload photos',
+		methodAria: 'How you go add di photos',
+		photoOf: 'Photo {n} of 3 · {side}',
+		codeRead: 'I don read di code · {serial}',
+		serialValid: 'Serial {serial}: E match records',
+		sayFront: 'Hold di front of di pack flat for di camera, where light dey well.',
+		sayBack: 'Now di back, make di square code show. Na from there I go read di code.',
+		sayLabel: 'Last one: di label wey get di batch number and expiry date.',
+		gotCode: 'I don get di code.',
+		photosTitle: 'Photos for di packaging check',
+		taken: 'E don snap',
+		takingNow: 'Dey snap am now',
+		next: 'Next',
+		noCameraTitle: 'No camera?',
+		noCameraText:
+			'Switch go **Upload photos** and add clear pictures of di front, back and label. We dey shrink di photos before we send dem, to save data.',
+		blocked:
+			'**Your camera dey blocked or e no dey.** Allow am for your browser address bar, or upload photos wey you snap with your phone.',
+		uploadBubble:
+			'Photos from your phone go work too. Make sure each one clear well and show di whole side.',
+		rulesTitle: 'Photo rules',
+		rule1: 'JPG or PNG, each one no pass 10 MB',
+		rule2: 'Make di whole side of di pack show',
+		rule3: 'Light dey well, no glare',
+		added: '{n} of 3 photos don enter',
+		reviewEyebrow: '3 of 3 photos',
+		reviewTitle: 'Di photos fine',
+		reviewText: 'Dem clear, light dey well and di whole pack show.',
+		reviewBubble: 'I don ready to compare dem with di manufacturer packaging.',
+		retakeOne: 'Snap one photo again',
+		retakePhoto: 'Snap am again',
+		uploadInstead: 'Upload phone photo instead',
+		neverUsed: 'We no dey use photo wey blur, dark or cut for result.',
+		noCode:
+			'I no fit read di code for these photos. Snap di back of di pack again, closer, make di square code show. Or type di serial instead.',
+		startCamera: 'On di camera',
+		capture: 'Snap photo',
+		busy: 'Plenty photos dey read now now. Wait small and try again; your photos still dey here.'
 	},
 
 	packaging: {
@@ -550,104 +613,75 @@ export const pcm: Messages = {
 	landing: {
 		metaTitle: 'About DETECK · Check if medicine match di manufacturer records',
 		metaDescription:
-			'With DETECK, anybody for Nigeria fit check if medicine serial number match di records wey im manufacturer share, and see di journey wey dem record for am. You no need account, and DETECK no dey charge you.',
-		navWho: 'Who we dey serve',
+			'With DETECK, anybody for Nigeria fit check if medicine serial number match di records wey im manufacturer share. E free to check, and you no need account.',
 		navVision: 'Our vision',
-		eyebrow: 'Medicine check for Nigeria · DETECK no dey charge you',
+		navFaq: 'Questions',
+		signIn: 'Sign in',
+		skip: 'Jump go di main content',
 		heroTitle: 'Check am before you trust am.',
-		lede: 'Type di serial number wey dey medicine pack, or scan im code. DETECK go check am with di records wey im manufacturer share, then show you who make am and di road wey e follow reach you, as dem record am.',
-		scanPack: 'Scan pack',
+		lede: 'Type di serial number wey dey di medicine pack. DETECK go check am with di records wey di manufacturer share.',
+		scanPack: 'Check am more with scan',
 		seeHow: 'See how e dey work',
 		heroBubble: 'Hello, na me be Deteck. I dey here to help you.',
-		heroAlt:
-			'One Nigerian woman pharmacist dey use im phone check medicine box, while customer dey wait for di counter',
-		heroChip: 'E match records: di manufacturer records get dis serial',
-		heroChipSub: 'Na example · Manufacturer → Distributor → Pharmacy',
-		runPharmacy: 'You get pharmacy?',
-		runPharmacyLink: 'See how DETECK fit help you',
-		step1Title: 'Type or scan di code',
+		heroAlt: 'Capsules for foil strips near one open medicine box for pharmacy counter',
+		heroNote: 'You no need account. Di answer go come for few seconds.',
+		trust: {
+			free: 'E free to check',
+			network: 'E dey work for 2G and 3G',
+			languages: 'English, Pidgin, Hausa, Yorùbá and Igbo',
+			records: 'Di answer dey come from di manufacturer own records'
+		},
+		reel: {
+			soon: 'Di film dey come soon',
+			label: 'DETECK film'
+		},
+		howTitle: 'Three steps to clear answer',
+		step1Title: 'Type di serial',
 		step1Text:
-			'Type di serial number wey dem print for di pack, or use your phone scan di product code.',
+			'Type di serial number wey dem print for di pack. Or snap di pack: DETECK go read di code and AI go compare di packaging.',
 		step2Title: 'We go check di records',
-		step2Text:
-			'DETECK go find di serial for di records wey im manufacturer share, plus di journey wey dem record as e pass through distributors and pharmacies.',
+		step2Text: 'DETECK go find di serial for di records wey im manufacturer share.',
 		step3Title: 'Deteck go tell you di result',
 		step3Text:
-			'"E match records" or "We no find am", for simple words, plus di journey wey dem record for di medicine. If di records no enough to dey sure, Deteck go tell you.',
-		whoLead: 'We build am for everybody wey dey buy, move or give out medicine.',
-		audiences: {
-			citizens: {
-				label: 'Nigerian people',
-				alt: 'One mama dey use im phone check medicine box for pharmacy counter',
-				title: 'Check am before you buy or use am',
-				text: 'Type di serial number wey dey medicine, or scan im code, and see whether e match di manufacturer records.'
-			},
-			pharmacies: {
-				label: 'Pharmacies',
-				alt: 'One woman pharmacist dey use im phone check medicine box',
-				title: 'Check wetin you receive',
-				text: 'Check medicine wey suppliers bring give you, and see di manufacturer and distribution history wey dem record for am, before e reach your shelf.'
-			},
-			hospitals: {
-				label: 'Hospitals & health centres',
-				alt: 'One nurse dey check medicine boxes for hospital store',
-				title: 'Check am before you dispense',
-				text: 'Check di medicines wey your hospital or clinic receive, before una dispense dem or give dem to patients.'
-			},
-			distributors: {
-				label: 'Distributors & wholesale sellers',
-				alt: '',
-				title: 'Join di journey wey dem dey record',
-				text: 'Wen manufacturer record say e supply you, your business go show for dat medicine journey, so buyers fit see where dem record di stock as e dey move.'
-			},
-			manufacturers: {
-				label: 'Manufacturers',
-				alt: 'One technician dey inspect medicine boxes for packaging line',
-				title: 'Share una product data',
-				text: 'Upload una products, serial numbers, supply chain records and packaging photos, so people fit check una medicines with una records.'
-			}
+			'"E match records" or "We no find am", for simple words. If di records no enough to dey sure, Deteck go tell you.',
+		biz: {
+			registerManufacturer: 'Register manufacturer',
+			registerBusiness: 'Register pharmacy, hospital or distributor',
+			docs: 'API documentation'
 		},
-		visionTitle: 'Every medicine for Nigeria, **wey you fit trace** from factory reach your hand.',
+		visionTitle: 'Anybody for Nigeria suppose fit check im medicine.',
+		visionAlt: 'One young woman dey smile as she dey look her phone for one café for Abuja',
 		visionText:
-			'Every Nigerian suppose fit know where im medicine come from. DETECK dey connect di serial number of each pack to im manufacturer records, so you fit check which medicine e be and di journey wey dem record for am. No be only how di packaging look you go depend on.',
-		impactTitle: 'Di change wey we dey work for',
-		impact1Alt: 'One mama dey use im phone check medicine box for pharmacy counter',
-		impact1Title: 'Families wey get confidence',
-		impact1Text: 'People fit check medicine by demself before dem buy am or use am.',
-		impact2Alt: 'One nurse dey use tablet computer check medicine boxes for hospital store shelf',
-		impact2Title: 'Dispense with care',
-		impact2Text:
-			'Pharmacies and hospitals fit check di medicines wey dem receive before dem dispense dem.',
-		impact3Alt:
-			'One technician wey wear cleanroom suit dey inspect medicine boxes for packaging line',
-		impact3Title: 'Records wey somebody go answer for',
-		impact3Text:
-			'Manufacturers dey register dia products, so people fit check dem with di manufacturer records.',
-		whyEyebrow: 'Why DETECK',
-		whyTitle: 'One clear answer wey dey talk true about wetin e know.',
-		strengths: {
-			serial: 'E dey check di serial with di records wey im manufacturer share with DETECK',
-			journey: 'E dey show di journey wey dem record, through distributors and pharmacies',
-			packaging:
-				'E fit compare photos of di pack with di manufacturer packaging (beta, for some products)',
-			network:
-				'Serial check dey work for 2G and 3G. DETECK no dey charge you; your network go still collect normal data money',
-			honest: 'E go tell you true wen information no reach to dey sure'
+			'DETECK dey connect di serial number of each pack to im manufacturer records, so you fit check am yourself. No be only how di packaging look you go depend on.',
+		faq: {
+			title: 'Questions wey people dey ask',
+			freeQ: 'E dey cost money?',
+			freeA:
+				'To check medicine na free and you no need account. Your network normal data money go still apply, but serial check no dey use plenty data.',
+			validQ: 'Wetin "Valid" mean?',
+			validA:
+				'E mean say di serial match di records wey di manufacturer share with DETECK. DETECK no fit test wetin dey inside pack, so if anything about am worry you, ask pharmacist.',
+			missingQ: 'Wetin happen if my medicine no dey DETECK?',
+			missingA:
+				'No be every manufacturer don share dia records. DETECK go talk am clear, and e no mean say di medicine na fake. Your pharmacist fit help you.',
+			dataQ: 'Wetin dey happen to my details?',
+			dataA:
+				'Check no need your name or phone number. DETECK dey keep only wetin e need to answer checks and stop abuse; di privacy notice talk wetin and for how long.'
 		},
 		verifyTitle: 'Pack dey your hand? Check am now.',
 		verifyLabel: 'Serial number wey dey di pack',
 		verifyButton: 'Check am',
 		verifyFine:
-			'Serial check dey work for 2G and 3G. DETECK no dey charge you; your network go still collect normal data money. Di result depend on di records wey manufacturers share with DETECK. Wen information no reach to dey sure, Deteck go tell you.',
+			'Your network go still collect normal data money. Di result depend on di records wey manufacturers share with DETECK. Wen information no reach to dey sure, Deteck go tell you.',
 		footerLead:
 			'We dey build DETECK with partners from every corner of Nigeria medicine supply chain.',
-		pilotPartner: 'Join as pilot partner',
-		registerCompany: 'Register una company',
 		footerNav: 'Footer',
 		footerProduct: 'Product',
 		footerCompany: 'Company',
+		footerBusiness: 'For business',
 		contact: 'Contact us',
+		photoCredit: 'Photos from Unsplash and Pexels',
 		legal:
-			'© 2026 DETECK. Di product names and records wey you see here na examples. Di checks depend on whether di manufacturers wey join dey record dia products and supply chain. DETECK dey check records and, for di beta, how pack look; e no fit test wetin dey inside pack.'
+			'© 2026 DETECK. Di checks depend on whether di manufacturers wey join dey record dia products. DETECK dey check records and, for di beta, how pack look; e no fit test wetin dey inside pack.'
 	}
 };

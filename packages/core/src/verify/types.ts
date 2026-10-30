@@ -81,4 +81,10 @@ export type PublicResult = Omit<
 };
 
 export type FormatProblem =
-	'empty' | 'too_short' | 'too_long' | 'bad_characters' | 'nafdac_number' | 'bad_code';
+	| 'empty'
+	| 'too_short'
+	| 'too_long'
+	| 'bad_characters'
+	| 'nafdac_number'
+	| 'batch_number'
+	| 'bad_code';

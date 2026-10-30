@@ -10,11 +10,11 @@
 	<a href="/" aria-label={t.nav.home} style="display: inline-flex"><Logo height={28} /></a>
 	<nav aria-label={t.nav.main}>
 		<a href="/#how">{t.nav.how}</a>
-		<a href="/#who">{t.nav.pharmacies}</a>
-		<a href="/business">{t.nav.manufacturers}</a>
+		<a href="/#faq">{t.landing.navFaq}</a>
 	</nav>
 	<div class="row" style="--gap: 8px">
 		<span class="pill">{t.nav.badge}</span>
 		<LanguageMenu />
+		<a class="topbar-signin" href="/business/sign-in">{t.landing.signIn}</a>
 	</div>
 </header>

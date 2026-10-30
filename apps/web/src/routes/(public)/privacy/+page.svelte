@@ -19,7 +19,7 @@
 	{#if data.lang !== 'en'}<p class="notice small" lang={data.lang}>
 			{data.t.common.englishOnly}
 		</p>{/if}
-	<main class="prose">
+	<main class="prose" lang="en">
 		<p class="notice small">
 			Draft for legal review before the pilot (OQ-06). It describes how the service is built today.
 		</p>

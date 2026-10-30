@@ -347,7 +347,6 @@ describe('imports (F-05, US-05.2 and US-05.3)', () => {
 		if (!input.ok) throw new Error();
 		const journey = await buildJourney(await lookup(input, { packagingEnabled: false }));
 		expect(journey.state).not.toBe('NONE');
-		expect(journey.steps.some((st) => st.kind === 'gap')).toBe(false);
 	});
 
 	it('saves nothing when an import fails part-way', async () => {

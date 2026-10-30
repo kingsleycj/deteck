@@ -148,15 +148,14 @@ function finish(state: Journey['state'], steps: JourneyStep[]): Journey {
 		lastHolder: last
 			? { name: last.name, role: last.role, place: last.place, date: last.date }
 			: undefined,
-		recordedSteps: steps.filter((s) => s.kind !== 'gap').length,
-		gaps: steps.filter((s) => s.kind === 'gap').length
+		recordedSteps: steps.length
 	};
 }
 
 /** Builds the public journey for a Valid result (decisions.md D-08, journey rules). */
 export async function buildJourney(result: VerificationResult): Promise<Journey> {
 	if (result.code !== 'VALID' || !result.batch || !result.manufacturer) {
-		return { state: 'NONE', steps: [], recordedSteps: 0, gaps: 0 };
+		return { state: 'NONE', steps: [], recordedSteps: 0 };
 	}
 
 	const packEvents = result.packId
@@ -221,15 +220,10 @@ export async function buildJourney(result: VerificationResult): Promise<Journey>
 			const fromIsManufacturer =
 				!from || from.role === 'manufacturer' || sameCompany(from.name, result.manufacturer.name);
 			const sameAsPrevious = from && previousHolder && from.id === previousHolder.id;
-			// Gap rule: the sender is not the last recorded holder, so a hand-off is missing.
-			if (from && !sameAsPrevious && !(fromIsManufacturer && !previousHolder)) {
-				steps.push({
-					kind: 'gap',
-					afterName: previousHolder?.name ?? result.manufacturer.name,
-					beforeName: from.name
-				});
+			// A sender the records haven't named before is shown as a step of its own. Nothing is shown
+			// for what isn't recorded: supply chains take many routes.
+			if (from && !sameAsPrevious && !(fromIsManufacturer && !previousHolder))
 				steps.push(partyStep(from, null));
-			}
 			steps.push(partyStep(to, event.eventDate, event.eventType === 'received'));
 			previousHolder = to;
 		}
@@ -245,7 +239,7 @@ export async function buildJourney(result: VerificationResult): Promise<Journey>
 		)
 	);
 	if (batchEvents.length === 0) {
-		return { state: 'NONE', steps: [manufacturerStep(result)], recordedSteps: 1, gaps: 0 };
+		return { state: 'NONE', steps: [manufacturerStep(result)], recordedSteps: 1 };
 	}
 	const parties = await loadParties(batchEvents.map((e) => e.toPartyId));
 	const firstDate = new Map<string, string>();

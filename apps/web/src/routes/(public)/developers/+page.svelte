@@ -63,7 +63,7 @@ function fromDeteck(body, headers, secret) {
 	{#if data.lang !== 'en'}<p class="notice small" lang={data.lang}>
 			{data.t.common.englishOnly}
 		</p>{/if}
-	<main class="prose">
+	<main class="prose" lang="en">
 		<h1>The DETECK API</h1>
 		<p>
 			Everything the DETECK website does with serials is also available to your own systems: a
@@ -168,8 +168,9 @@ function fromDeteck(body, headers, secret) {
 			<span class="mono">GET /api/v1/manufacturer/imports/{'{id}'}</span> until its status is
 			<span class="mono">committed</span> (or <span class="mono">ready</span> when only checking).
 			It lists the counts and the first 100 problem rows with reasons. Sending exactly the same rows
-			again returns the first import, so retrying is safe. Up to 50,000 rows a request. Recall or
-			withdraw a batch with <span class="mono">POST /api/v1/manufacturer/batch-status</span>.
+			again returns the first import, so you can retry without importing twice. Up to 50,000 rows a
+			request. Recall or withdraw a batch with
+			<span class="mono">POST /api/v1/manufacturer/batch-status</span>.
 		</p>
 
 		<h2>Pharmacies and distributors: check a delivery</h2>

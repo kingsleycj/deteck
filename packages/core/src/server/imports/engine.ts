@@ -41,8 +41,9 @@ import { enqueue } from '../jobs.ts';
 import { deleteObject, getObject, putObject, storageKey } from '../storage.ts';
 import { emitEvent } from '../webhooks.ts';
 import { clearCoverageCache } from '../verify/lookup.ts';
-import { fileKind, preview, readRows, SpreadsheetTooLarge, UNSAFE_NUMBER } from './read.ts';
+import { fileKind, preview, readNumberedRows, SpreadsheetTooLarge, UNSAFE_NUMBER } from './read.ts';
 import { today } from '../time.ts';
+import { lagosToday } from '../../dates.ts';
 
 export const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 const CHUNK = 1000;
@@ -216,6 +217,15 @@ export async function createImportJob(
 			);
 			return row;
 		})
+		.then(async (row) => {
+			// The failed or cancelled import it replaces kept the file and its problem report, which
+			// hold full serials: remove them now, or nothing would delete them later.
+			if (existing) {
+				await deleteObject(existing.fileKey).catch(() => undefined);
+				if (existing.problemsKey) await deleteObject(existing.problemsKey).catch(() => undefined);
+			}
+			return row;
+		})
 		.catch(async (error) => {
 			// The same file uploaded twice at the same moment: the other upload won, use it.
 			const code =
@@ -250,8 +260,12 @@ export async function loadJob(id: string, manufacturerId?: string): Promise<Job 
 	return row ?? null;
 }
 
-/** Saves the column matches and moves the job to checking. */
-export async function saveMapping(job: Job, mapping: Record<string, string>) {
+/**
+ * Saves the column matches and moves the job to checking. Returns false when the check had
+ * already been started (a double click, or a second tab): the caller just shows the import.
+ */
+export async function saveMapping(job: Job, mapping: Record<string, string>): Promise<boolean> {
+	if (job.status === 'validating') return false;
 	if (!['uploaded', 'ready', 'failed'].includes(job.status))
 		throw new ImportError('This import is already running.');
 	const headers = job.headers ?? [];
@@ -264,10 +278,15 @@ export async function saveMapping(job: Job, mapping: Record<string, string>) {
 	if (missing.length)
 		throw new ImportError(`Match these fields first: ${missing.map((f) => f.label).join(', ')}.`);
 	const { db } = ctx();
-	await db
+	// One atomic claim: of two clicks at the same moment, only one starts the check.
+	const claimed = await db
 		.update(importJob)
 		.set({ mapping: clean, status: 'validating', error: null })
-		.where(eq(importJob.id, job.id));
+		.where(
+			and(eq(importJob.id, job.id), inArray(importJob.status, ['uploaded', 'ready', 'failed']))
+		)
+		.returning({ id: importJob.id });
+	if (claimed.length === 0) return false;
 	await db
 		.insert(importMapping)
 		.values({
@@ -280,6 +299,7 @@ export async function saveMapping(job: Job, mapping: Record<string, string>) {
 			target: [importMapping.manufacturerId, importMapping.kind, importMapping.headerSignature],
 			set: { mapping: clean, updatedAt: new Date() }
 		});
+	return true;
 }
 
 export async function markCommitting(job: Job) {
@@ -357,7 +377,7 @@ async function productBatches(tx: Tx, productIds: string[]) {
 interface Processor {
 	chunk(rows: RowIn[]): Promise<void>;
 	/** Called once after the last row, for counts that need the whole file. */
-	finish?(): void;
+	finish?(): void | Promise<void>;
 }
 
 /**
@@ -372,6 +392,17 @@ function productsProcessor(
 	context: { live: boolean; actor: Actor }
 ): Processor {
 	const seen = new Set<string>();
+	/** Longest sensible value of each drug field: a longer one is almost always a pasting mistake. */
+	const MAX_FIELD: Record<string, number> = {
+		brandName: 120,
+		genericName: 200,
+		strength: 60,
+		dosageForm: 60,
+		packSize: 60,
+		nafdacRegNo: 20
+	};
+	/** Letters and digits, a dash, letters and digits: "A4-1234", "04-1234L", "B4-12345". */
+	const NAFDAC_SHAPE = /^[A-Z0-9]{1,3}\s*-\s*[A-Z0-9]{3,8}$/i;
 	const required: [string, string][] = [
 		['brandName', 'brand name'],
 		['genericName', 'generic name'],
@@ -392,6 +423,20 @@ function productsProcessor(
 				const missing = required.filter(([k]) => !row.v[k]?.trim()).map(([, label]) => label);
 				if (missing.length) {
 					problems.add(row, `Missing ${missing.join(', ')}.`);
+					continue;
+				}
+				const tooLong = required
+					.filter(([k]) => (row.v[k]?.trim().length ?? 0) > MAX_FIELD[k])
+					.map(([k, label]) => `${label} (up to ${MAX_FIELD[k]} characters)`);
+				if (tooLong.length) {
+					problems.add(row, `Too long: ${tooLong.join(', ')}.`);
+					continue;
+				}
+				if (!NAFDAC_SHAPE.test(row.v.nafdacRegNo.trim())) {
+					problems.add(
+						row,
+						"The NAFDAC number doesn't look like one (for example A4-1234 or 04-1234L)."
+					);
 					continue;
 				}
 				if (seen.has(gtin)) {
@@ -505,6 +550,12 @@ async function batchesProcessor(
 	const numericLengths = new Map<string, Map<number, number>>();
 	/** product id + serial key → exact serial seen first, to catch "AB-1234" next to "ab1234". */
 	const keysSeen = new Map<string, string>();
+	/** Batches this import created, and whether any of their rows were kept: empty ones go. */
+	const createdHere = new Map<string, { kept: boolean; onThe1st: boolean }>();
+	const keep = (batchId: string) => {
+		const c = createdHere.get(batchId);
+		if (c) c.kept = true;
+	};
 	return {
 		async chunk(rows) {
 			const serialRows: {
@@ -546,6 +597,10 @@ async function batchesProcessor(
 					}
 					if (mfg >= expiry) {
 						problems.add(row, 'The manufacture date is on or after the expiry date.');
+						continue;
+					}
+					if (mfg > lagosToday()) {
+						problems.add(row, 'The manufacture date is in the future.');
 						continue;
 					}
 				}
@@ -601,9 +656,12 @@ async function batchesProcessor(
 						)[0];
 					batches.set(k, b);
 					counts.batchesCreated = (counts.batchesCreated ?? 0) + 1;
+					if (created)
+						createdHere.set(created.id, { kept: false, onThe1st: expiry.endsWith('-01') });
 				}
 
 				if (!serial) {
+					keep(b.id);
 					counts.ready = (counts.ready ?? 0) + 1;
 					continue;
 				}
@@ -678,10 +736,11 @@ async function batchesProcessor(
 					);
 				}
 			}
-			const fresh = serialRows.filter((r) => !onDeteck.has(r.hex) && !lookAlike.has(r));
-			if (fresh.length === 0) return;
-			// Another company may use the same serial. That's allowed (serials are only unique per
-			// drug), but a typed check then has to ask which batch is on the pack, so say so.
+			const unique = serialRows.filter((r) => !onDeteck.has(r.hex) && !lookAlike.has(r));
+			if (unique.length === 0) return;
+			// A serial another manufacturer already uses is refused: a typed check couldn't tell the
+			// two packs apart, so one company could otherwise blur another's answers. It's another
+			// company's serial, so the problem list shows only its end.
 			const shared = await tx
 				.select({ key: pack.serialKeyHmac })
 				.from(pack)
@@ -690,16 +749,21 @@ async function batchesProcessor(
 					and(
 						inArray(
 							pack.serialKeyHmac,
-							fresh.map((r) => r.key)
+							unique.map((r) => r.key)
 						),
 						ne(product.manufacturerId, job.manufacturerId)
 					)
 				);
-			if (shared.length) {
-				const keys = new Set(shared.map((x) => x.key.toString('hex')));
-				counts.sharedSerials =
-					(counts.sharedSerials ?? 0) + fresh.filter((r) => keys.has(r.key.toString('hex'))).length;
-			}
+			const sharedKeys = new Set(shared.map((x) => x.key.toString('hex')));
+			for (const r of unique)
+				if (sharedKeys.has(r.key.toString('hex')))
+					problems.add(
+						r.row,
+						"Another manufacturer on DETECK already uses this serial, so a typed check couldn't tell the two packs apart. It wasn't added: contact DETECK if both packs really carry it.",
+						serialColumn
+					);
+			const fresh = unique.filter((r) => !sharedKeys.has(r.key.toString('hex')));
+			if (fresh.length === 0) return;
 			const inserted = await tx
 				.insert(pack)
 				.values(
@@ -718,6 +782,7 @@ async function batchesProcessor(
 			for (const r of fresh) {
 				if (added.has(r.hex) && !firstSeen.has(r.hex)) {
 					firstSeen.add(r.hex);
+					keep(r.batchId);
 					counts.serialsAdded = (counts.serialsAdded ?? 0) + 1;
 					counts.ready = (counts.ready ?? 0) + 1;
 				} else {
@@ -725,7 +790,26 @@ async function batchesProcessor(
 				}
 			}
 		},
-		finish() {
+		async finish() {
+			// A new batch whose every row was refused would sit empty (and count as missing supply
+			// chain records on the go-live checklist): remove it.
+			const empty = [...createdHere].filter(([, c]) => !c.kept);
+			if (empty.length) {
+				const ids = empty.map(([id]) => id);
+				await tx
+					.delete(batch)
+					.where(
+						and(
+							inArray(batch.id, ids),
+							sql`not exists (select 1 from ${pack} where ${pack.batchId} = ${batch.id})`
+						)
+					);
+				counts.batchesCreated = (counts.batchesCreated ?? 0) - ids.length;
+				if (!counts.batchesCreated) delete counts.batchesCreated;
+				newBatches -= ids.length;
+				newBatchesOnThe1st -= empty.filter(([, c]) => c.onThe1st).length;
+				for (const [k, b] of batches) if (ids.includes(b.id)) batches.delete(k);
+			}
 			// Excel drops leading zeros from numbers: 000123 becomes 123. Serials of digits shorter
 			// than the usual length for their drug may have lost theirs.
 			let short = 0;
@@ -859,7 +943,8 @@ async function distributionProcessor(
 				from?: PartyInput;
 			};
 			const pending: Pending[] = [];
-			const today = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10);
+			// Today in Nigeria: a record can't say the stock was shipped tomorrow.
+			const today = lagosToday();
 			for (const row of rows) {
 				const p = resolveProduct(row, products);
 				if (typeof p === 'string') {
@@ -1123,17 +1208,25 @@ export async function runImport(
 						? await batchesProcessor(tx, job, counts, problems)
 						: await distributionProcessor(tx, job, counts, problems);
 			let first = true;
-			let rowNumber = 1;
 			let chunk: RowIn[] = [];
-			for await (const raw of readRows(body, kind)) {
+			for await (const { cells: raw, line: rowNumber } of readNumberedRows(body, kind)) {
 				if (first) {
 					first = false;
 					continue;
 				}
-				rowNumber++;
 				const v: Record<string, string> = {};
 				for (const [field, i] of Object.entries(index))
 					if (i >= 0) v[field] = (raw[i] ?? '').trim();
+				// More filled cells than the header: the columns no longer line up (an unquoted comma
+				// inside a cell split it), so every value after it would land in the wrong column.
+				if (raw.length > headers.length && raw.slice(headers.length).some((c) => c !== '')) {
+					problems.add(
+						{ rowNumber, raw, v },
+						"This row has more cells than the header row, so its columns don't line up. A comma inside a cell may have split it: put text with commas in quotes."
+					);
+					counts.rows++;
+					continue;
+				}
 				chunk.push({ rowNumber, raw, v });
 				if (chunk.length >= CHUNK) {
 					await processor.chunk(chunk);
@@ -1151,7 +1244,7 @@ export async function runImport(
 				await processor.chunk(chunk);
 				counts.rows += chunk.length;
 			}
-			processor.finish?.();
+			await processor.finish?.();
 			counts.problems = problems.count;
 			if (mode === 'dry_run') throw DRY_RUN;
 

@@ -24,7 +24,7 @@ async function setUpTwoFactor(page: Page, email: string, password: string) {
 async function signIn(page: Page, email: string, password: string) {
 	await page.goto('/business/sign-in');
 	await page.getByLabel('Work email').fill(email);
-	await page.getByLabel('Password').fill(password);
+	await page.getByLabel('Password', { exact: true }).fill(password);
 	await page.getByRole('button', { name: 'Sign in' }).click();
 }
 
@@ -47,6 +47,27 @@ test('a DETECK admin accepts the invite and must set up two-step sign-in', async
 	await setUpTwoFactor(page, STAFF.email, STAFF.password);
 	await expect(page).toHaveURL(/\/console$/);
 	await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
+});
+
+test('a state picked before the page script loads stays picked, and survives an error', async ({
+	page
+}) => {
+	// Hold the script back, as a slow phone does, and pick the state in the meantime.
+	await page.route(/\/_app\/immutable\/.*\.js$/, async (route) => {
+		await new Promise((r) => setTimeout(r, 1500));
+		await route.continue();
+	});
+	await page.goto('/business/register', { waitUntil: 'domcontentloaded' });
+	const stateSelect = page.getByLabel('State');
+	await stateSelect.selectOption('Kano');
+	await expect(page.getByRole('button', { name: 'Show password' }).first()).toBeVisible();
+	await expect(stateSelect).toHaveValue('Kano');
+	await page.unrouteAll();
+
+	// Sent with problems: the form comes back with the same state still chosen.
+	await page.getByRole('button', { name: 'Submit application' }).click();
+	await expect(page.getByText(/things? to fix/)).toBeVisible();
+	await expect(stateSelect).toHaveValue('Kano');
 });
 
 test('a manufacturer registers and waits for review', async ({ page }) => {
@@ -84,7 +105,8 @@ test('DETECK approves the application with a reason', async ({ page }) => {
 	await signInWithCode(page, STAFF.email, STAFF.password);
 	await page.goto('/console/applications');
 	await page
-		.getByRole('row', { name: /Meridian E2E Life Sciences/ })
+		.getByRole('listitem')
+		.filter({ hasText: 'Meridian E2E Life Sciences' })
 		.getByRole('link', { name: 'Review' })
 		.click();
 	await page.getByLabel('Approve: they can add data').check();
@@ -125,7 +147,7 @@ async function commit(page: Page) {
 test('the manufacturer imports drugs, serials and supply chain records', async ({ page }) => {
 	await signInWithCode(page, MAKER.email, MAKER.password);
 	await page.goto('/workspace/company');
-	await page.getByLabel('Document').selectOption('data_sharing_agreement');
+	await page.getByLabel('Type of document').selectOption('data_sharing_agreement');
 	await page.locator('input[name=file]').setInputFiles({
 		name: 'agreement.pdf',
 		mimeType: 'application/pdf',
@@ -187,7 +209,15 @@ test('the manufacturer imports drugs, serials and supply chain records', async (
 
 	await page.goto('/workspace/review');
 	await page.getByRole('button', { name: 'Submit for go-live review' }).click();
-	await expect(page.getByText('Submitted. A DETECK reviewer')).toBeVisible();
+	// With items still to finish (not blocking), DETECK asks first, so the team can go back.
+	const submitted = page.getByText('Submitted. A DETECK reviewer');
+	const anyway = page.getByRole('button', { name: 'Submit anyway' });
+	await expect(submitted.or(anyway)).toBeVisible();
+	if (await anyway.isVisible()) {
+		await expect(page.getByRole('link', { name: 'Go back and make changes' })).toBeVisible();
+		await anyway.click();
+	}
+	await expect(submitted).toBeVisible();
 });
 
 test('DETECK reviews the data and approves go-live', async ({ page }) => {
@@ -230,7 +260,7 @@ test('the manufacturer adds its packaging photos', async ({ page }) => {
 		.setInputFiles({ name: 'front.jpg', mimeType: 'image/jpeg', buffer: Buffer.from(small.bytes) });
 	await page
 		.getByLabel('Photo of the front')
-		.locator('..')
+		.locator('xpath=ancestor::form[1]')
 		.getByRole('button', { name: 'Upload' })
 		.click();
 	await expect(page.getByText(/Too small \(600 px\)/)).toBeVisible();
@@ -245,7 +275,7 @@ test('the manufacturer adds its packaging photos', async ({ page }) => {
 			buffer: Buffer.from(photo.bytes)
 		});
 		await input
-			.locator('..')
+			.locator('xpath=ancestor::form[1]')
 			.getByRole('button', { name: /^(Upload|Replace)$/ })
 			.click();
 		await expect(page.getByText(/✓ Passed/)).toHaveCount(i + 1);
@@ -286,11 +316,11 @@ test('the public can check the packaging by photo (beta)', async ({ page }) => {
 	await page.getByLabel('Serial number').fill('E2EPACK00001');
 	await page.getByRole('button', { name: 'Check medicine' }).click();
 	await page
-		.getByRole('link', { name: 'Check the packaging (beta)' })
+		.getByRole('link', { name: 'Verify further by scan' })
 		.filter({ visible: true })
 		.first()
 		.click();
-	await expect(page).toHaveURL(/\/scan\/photos/);
+	await expect(page).toHaveURL(/\/scan\?from=/);
 	const photo = await packPhoto();
 	for (const side of ['front', 'back', 'label']) {
 		await page.locator(`#photo-${side}`).setInputFiles({
@@ -299,7 +329,7 @@ test('the public can check the packaging by photo (beta)', async ({ page }) => {
 			buffer: Buffer.from(photo.bytes)
 		});
 	}
-	await expect(page.getByText('✓ Clear')).toHaveCount(3);
+	await expect(page.getByText('✓ Clear').filter({ visible: true })).toHaveCount(3);
 	await page.getByRole('button', { name: 'Check the packaging' }).click();
 	// No AI provider in e2e: the stub always answers "can't tell", never a guess.
 	await expect(page.getByRole('heading', { name: "I can't tell from these photos" })).toBeVisible({

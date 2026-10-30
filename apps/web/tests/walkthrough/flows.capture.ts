@@ -32,7 +32,7 @@ async function shot(page: Page, name: string, options: { full?: boolean } = {}) 
 async function signIn(page: Page, email: string, password: string) {
 	await page.goto('/business/sign-in');
 	await page.getByLabel('Work email').fill(email);
-	await page.getByLabel('Password').fill(password);
+	await page.getByLabel('Password', { exact: true }).fill(password);
 	await page.getByRole('button', { name: 'Sign in' }).click();
 }
 
@@ -157,7 +157,8 @@ test('a manufacturer joins and goes live', async ({ page }) => {
 	await signInWithCode(page, STAFF.email, STAFF.password);
 	await page.goto('/console/applications');
 	await page
-		.getByRole('row', { name: /Meridian Demo Life Sciences/ })
+		.getByRole('listitem')
+		.filter({ hasText: 'Meridian Demo Life Sciences' })
 		.getByRole('link', { name: 'Review' })
 		.click();
 	await page.getByLabel('Approve: they can add data').check();
@@ -167,7 +168,7 @@ test('a manufacturer joins and goes live', async ({ page }) => {
 
 	await signInWithCode(page, MAKER.email, MAKER.password);
 	await page.goto('/workspace/company');
-	await page.getByLabel('Document').selectOption('data_sharing_agreement');
+	await page.getByLabel('Type of document').selectOption('data_sharing_agreement');
 	await page.locator('input[name=file]').setInputFiles({
 		name: 'agreement.pdf',
 		mimeType: 'application/pdf',
@@ -237,6 +238,11 @@ test('a manufacturer joins and goes live', async ({ page }) => {
 	await page.goto('/workspace/review');
 	await shot(page, '25-golive-checklist', { full: true });
 	await page.getByRole('button', { name: 'Submit for go-live review' }).click();
+	// Items still to finish (not blocking): DETECK asks first.
+	await page.getByRole('button', { name: 'Submit anyway' }).waitFor();
+	await shot(page, '25b-golive-confirm');
+	await page.getByRole('button', { name: 'Submit anyway' }).click();
+	await expect(page.getByText('Submitted. A DETECK reviewer')).toBeVisible();
 
 	await signInWithCode(page, STAFF.email, STAFF.password);
 	await page.goto('/console/applications');
@@ -263,7 +269,7 @@ test('a manufacturer joins and goes live', async ({ page }) => {
 			buffer: Buffer.from(photo.bytes)
 		});
 		await input
-			.locator('..')
+			.locator('xpath=ancestor::form[1]')
 			.getByRole('button', { name: /^(Upload|Replace)$/ })
 			.click();
 		await expect(page.getByText(/✓ Passed/).last()).toBeVisible();
@@ -278,7 +284,7 @@ test('the public packaging check (beta)', async ({ page }) => {
 	await page.setViewportSize(PHONE);
 	await check(page, 'DEMOPACK0001');
 	await page
-		.getByRole('link', { name: 'Check the packaging (beta)' })
+		.getByRole('link', { name: 'Verify further by scan' })
 		.filter({ visible: true })
 		.first()
 		.click();
@@ -291,7 +297,7 @@ test('the public packaging check (beta)', async ({ page }) => {
 		});
 	}
 	await page.getByRole('checkbox').check();
-	await expect(page.getByText('✓ Clear')).toHaveCount(3);
+	await expect(page.getByText('✓ Clear').filter({ visible: true })).toHaveCount(3);
 	await shot(page, '30-packaging-photos-public', { full: true });
 	await page.getByRole('button', { name: 'Check the packaging' }).click();
 	await expect(page.getByRole('heading', { name: "I can't tell from these photos" })).toBeVisible({

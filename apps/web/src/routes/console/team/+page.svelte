@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { confirmFirst, confirmSubmit } from '#lib/ui/confirm.ts';
 	import type { PageProps } from './$types';
 	import { formatDateTime } from '#lib/ui/status.ts';
 
@@ -52,7 +53,16 @@
 					{#if data.staff.isAdmin}
 						<td>
 							{#if s.id !== data.staff.userId}
-								<form method="post" action="?/role" class="row" style="--gap: 6px">
+								<form
+									method="post"
+									action="?/role"
+									class="row"
+									style="--gap: 6px"
+									use:confirmSubmit={{
+										message: `Remove ${s.name} from the DETECK team? They can be restored later from "Removed team members".`,
+										when: (f) => new FormData(f).get('role') === 'remove'
+									}}
+								>
 									<input type="hidden" name="userId" value={s.id} />
 									<select
 										name="role"
@@ -72,6 +82,7 @@
 										<button
 											class="btn btn-small"
 											title="For a team member who lost their phone and backup codes"
+											use:confirmFirst={`Reset ${s.name}'s two-step sign-in? They're signed out and set it up again at their next sign-in.`}
 											>Reset two-step sign-in</button
 										>
 									</form>
@@ -90,7 +101,11 @@
 					><td>{roleName(i.role)}</td><td>—</td><td>—</td>{#if data.staff.isAdmin}<td
 							><form method="post" action="?/cancelInvite">
 								<input type="hidden" name="email" value={i.email} />
-								<button class="btn btn-small">Cancel invite</button>
+								<button
+									class="btn btn-small"
+									use:confirmFirst={'Cancel this invite? Its link stops working.'}
+									>Cancel invite</button
+								>
 							</form></td
 						>{/if}</tr
 				>

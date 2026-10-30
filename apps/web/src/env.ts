@@ -17,6 +17,14 @@ const oneOf =
 		throw new Error(`${name} must be one of: ${allowed.join(', ')}`);
 	};
 
+/** A file on this site, e.g. `/media/film.mp4`: the content security policy only plays our own files. */
+const sitePath = (name: string) => (value: string | undefined) => {
+	if (!value) return undefined;
+	if (!value.startsWith('/') || value.startsWith('//'))
+		throw new Error(`${name} must be a path on this site, starting with "/"`);
+	return value;
+};
+
 const positiveInt = (name: string, fallback: number) => (value: string | undefined) => {
 	if (!value) return fallback;
 	const n = Number(value);
@@ -66,6 +74,23 @@ export const variables = defineEnvVars({
 	FEATURE_PACKAGING_AI: {
 		description: '`off`, `pilot` or `public`.',
 		schema: oneOf('FEATURE_PACKAGING_AI', ['off', 'pilot', 'public'] as const, 'off')
+	},
+	FEATURE_REPORTS: {
+		description: '`on` shows "Report a suspected fake" and the reports pages. `off` for now.',
+		schema: oneOf('FEATURE_REPORTS', ['off', 'on'] as const, 'off')
+	},
+	SHOWREEL_URL: {
+		description:
+			'The landing page film, e.g. `/media/deteck-film.mp4` (put the file in `apps/web/static/media/`). Unset: the page keeps a placeholder.',
+		schema: sitePath('SHOWREEL_URL')
+	},
+	SHOWREEL_POSTER: {
+		description: 'Still image shown before the film plays, e.g. `/media/deteck-film.webp`.',
+		schema: sitePath('SHOWREEL_POSTER')
+	},
+	SHOWREEL_CAPTIONS: {
+		description: 'English captions for the film (WebVTT), e.g. `/media/deteck-film.en.vtt`.',
+		schema: sitePath('SHOWREEL_CAPTIONS')
 	},
 	PILOT_ACCESS_CODE: { schema: optional },
 	CONTACT_EMAIL: {

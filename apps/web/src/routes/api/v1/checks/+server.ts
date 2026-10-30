@@ -3,6 +3,7 @@ import { resultCopy } from '@deteck/core/messages/copy.ts';
 import { messages } from '@deteck/core/messages/i18n.ts';
 import { apiCheck, publicView } from '@deteck/core/server/verify/check.ts';
 import { ApiProblem, body, caller, handler, json, OPTIONS } from '#lib/server/api.ts';
+import { visitorState } from '#lib/server/requester.ts';
 
 /**
  * POST /api/v1/checks: check a typed serial ({ "serial": "…" }) or a scanned code ({ "code": "…" }).
@@ -22,7 +23,7 @@ export const POST: RequestHandler = handler(async (event) => {
 	if (!raw)
 		throw new ApiProblem(400, 'missing_serial', 'Send { "serial": "…" } or { "code": "…" }.');
 	const outcome = await apiCheck(raw.slice(0, 200), {
-		state: event.request.headers.get('cf-region'),
+		state: visitorState(event),
 		lot: typeof input.lot === 'string' ? input.lot.slice(0, 40) : undefined
 	});
 	const t = messages(event.locals.lang);

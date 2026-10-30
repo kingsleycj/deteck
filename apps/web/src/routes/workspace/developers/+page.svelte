@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { confirmFirst } from '#lib/ui/confirm.ts';
+	import ChoiceList from '#lib/ui/ChoiceList.svelte';
 	import type { PageProps } from './$types';
 	import ApiKeys from '#lib/ui/ApiKeys.svelte';
 	import { formatDateTime } from '#lib/ui/status.ts';
@@ -61,7 +63,9 @@
 							>
 						</form>
 						<form method="post" action="?/removeWebhook">
-							<input type="hidden" name="id" value={e.id} /><button class="btn btn-small"
+							<input type="hidden" name="id" value={e.id} /><button
+								class="btn btn-small"
+								use:confirmFirst={`Remove the webhook to ${e.url}? It stops getting events.`}
 								>Remove</button
 							>
 						</form>
@@ -107,15 +111,14 @@
 					placeholder="https://erp.example.com/deteck"
 				/>
 			</div>
-			<fieldset class="field span-2" style="border: 0; padding: 0; margin: 0">
-				<legend class="label">Events</legend>
-				{#each data.events as ev (ev.key)}
-					<label class="row small" style="--gap: 6px"
-						><input type="checkbox" name="events" value={ev.key} checked />
-						<span><span class="mono">{ev.key}</span> · {ev.label}</span></label
-					>
-				{/each}
-			</fieldset>
+			<div class="span-2">
+				<ChoiceList
+					name="events"
+					legend="Events"
+					help="DETECK calls your address when one of the ticked events happens."
+					options={data.events.map((ev) => ({ value: ev.key, label: ev.label, code: ev.key }))}
+				/>
+			</div>
 			<div class="span-2"><button class="btn btn-primary btn-small">Add webhook</button></div>
 		</form>
 	{/if}
