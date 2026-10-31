@@ -70,8 +70,9 @@ services:
     region: frankfurt
     # Render's free plan for now (B-81). It sleeps after 15 minutes without visitors; the uptime
     # check on /healthz every 5 minutes keeps it awake, and the 750 free hours a month cover one
-    # website running all month. It has no pre-deploy step and no Shell. The paid plan is
-    # 0.5c-512mb ($7 a month).
+    # website running all month. It has no pre-deploy step and no Shell, and Render stops the old
+    # copy 30 seconds into a deploy or restart (a longer maxShutdownDelaySeconds is refused). The
+    # paid plan is 0.5c-512mb ($7 a month).
     plan: free
     autoDeploy: false
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
@@ -80,8 +81,6 @@ services:
     # to preDeployCommand.
     startCommand: node packages/core/scripts/migrate.ts && node apps/web/build/index.js
     healthCheckPath: /healthz
-    # A running import may need a few minutes to finish before the old copy stops.
-    maxShutdownDelaySeconds: 300
     envVars:
       - fromGroup: deteck-shared
       - key: DATABASE_URL
