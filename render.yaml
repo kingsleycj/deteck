@@ -2,9 +2,9 @@
 # nightly backup and Postgres, in Frankfurt. Cloudflare sits in front (DNS, TLS, WAF, Turnstile);
 # files go to Cloudflare R2. Not deployed yet. docs/DEPLOY.md walks through the first deployment.
 #
-# Costs $7 a month (docs/COSTS.md): the website is on Render's free plan, the database is $6 and
-# the backup job $1. docs/DEPLOY.md, "Moving off the free plan", is the change to make before
-# real pharmacies use DETECK.
+# Costs about $7.30 a month: the website is on Render's free plan, the database is $6.30 and the
+# backup job $1. docs/DEPLOY.md, "Moving off the free plan", is the change to make before real
+# pharmacies use DETECK.
 #
 # Settings Render can't know (your keys and addresses) are NOT listed here: Render ignores
 # "fill this in" values inside an environment group. Before the first deploy, add them by hand in
@@ -125,5 +125,8 @@ databases:
   - name: deteck-db
     region: frankfurt
     plan: 0.1c-256mb
+    # Set on purpose: left out, Render gives this plan 15 GB, which took it from $6.30 to $10.50 a
+    # month. Storage can grow later (to 5 GB, 10 GB and so on) but can never shrink.
+    diskSizeGB: 1
     postgresMajorVersion: '18'
     databaseName: deteck
