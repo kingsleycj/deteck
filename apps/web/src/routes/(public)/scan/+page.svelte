@@ -1,13 +1,16 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { PageProps } from './$types';
 	import Icon from '#lib/ui/Icon.svelte';
 	import Mascot from '#lib/ui/Mascot.svelte';
 	import PageHead from '#lib/ui/PageHead.svelte';
 	import Rich from '#lib/ui/Rich.svelte';
 	import Upload from '#lib/ui/Upload.svelte';
-	import CodeScan from './CodeScan.svelte';
+	import PackagingStart from './PackagingStart.svelte';
 	import { photoQuality, setInputFile, shrinkPhoto } from '#lib/client/images.ts';
 	import { fmt } from '#lib/i18n.ts';
 
@@ -41,6 +44,16 @@
 	);
 	const serverMessage = $derived(form && form !== dismissed ? (form.message ?? null) : null);
 	let camera: 'idle' | 'starting' | 'live' | 'blocked' | 'unsupported' = $state('idle');
+	// The first screen comes before the photos. ?start=upload opens the photos step without
+	// JavaScript, and a sent form that came back stays on it.
+	let started = $state(false);
+	const startedByLink = $derived(page.url.searchParams.get('start') === 'upload');
+	const stage = $derived(started || startedByLink || form ? 'photos' : 'start');
+	const uploadHref = $derived.by(() => {
+		const params = new SvelteURLSearchParams(page.url.searchParams.toString());
+		params.set('start', 'upload');
+		return `?${params}`;
+	});
 	let code = $state('');
 	let sending = $state(false);
 	let video: HTMLVideoElement | undefined = $state();
@@ -84,8 +97,8 @@
 	onMount(() => {
 		ready = true;
 		// No camera API (or a desktop without one): stay on the upload tab.
-		if (typeof navigator.mediaDevices?.getUserMedia === 'function') method = 'camera';
-		else camera = 'unsupported';
+		if (typeof navigator.mediaDevices?.getUserMedia !== 'function') camera = 'unsupported';
+		else if (!startedByLink) method = 'camera';
 	});
 
 	async function start() {
@@ -195,7 +208,7 @@
 					: s.next;
 </script>
 
-<svelte:head><title>{s.metaTitle}</title></svelte:head>
+<Seo title={s.metaTitle} description={s.metaDescription} path="/scan" multilingual />
 
 <div class="shell app-frame">
 	<PageHead {back} backLabel={t.scan.closeAria} title={s.title} close>
@@ -204,8 +217,22 @@
 		{/snippet}
 	</PageHead>
 
-	{#if data.mode === 'code'}
-		<main><CodeScan {form} /></main>
+	{#if stage === 'start'}
+		<main>
+			<PackagingStart
+				{uploadHref}
+				camera={ready && camera !== 'unsupported'}
+				onCamera={() => {
+					started = true;
+					useMethod('camera');
+					start();
+				}}
+				onUpload={() => {
+					started = true;
+					useMethod('upload');
+				}}
+			/>
+		</main>
 	{:else}
 		<main class="scan" class:is-review={review}>
 			<section class="scan-main">
@@ -373,7 +400,6 @@
 			<aside class="scan-side">
 				{#if review}
 					<div class="review-panel" class:review-warn={serverMessage}>
-						<p class="review-eyebrow">{s.reviewEyebrow}</p>
 						<h1>{serverMessage && problemSide ? s.retakeOne : s.reviewTitle}</h1>
 						{#if !serverMessage}<p>{s.reviewText}</p>{/if}
 						<div class="say">
@@ -824,17 +850,6 @@
 	}
 	.review-warn {
 		background: var(--peach);
-	}
-	.review-warn .review-eyebrow {
-		color: var(--peach-ink);
-	}
-	.review-eyebrow {
-		margin: 0;
-		font-size: 12px;
-		font-weight: 800;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--lime-ink);
 	}
 	.review-panel h1 {
 		margin-top: 10px;

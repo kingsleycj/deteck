@@ -321,6 +321,7 @@ test('the public can check the packaging by photo (beta)', async ({ page }) => {
 		.first()
 		.click();
 	await expect(page).toHaveURL(/\/scan\?from=/);
+	await page.getByRole('link', { name: /Upload 3 photos of the pack/ }).click();
 	const photo = await packPhoto();
 	for (const side of ['front', 'back', 'label']) {
 		await page.locator(`#photo-${side}`).setInputFiles({

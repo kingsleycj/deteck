@@ -31,8 +31,13 @@
 	opacity: 0.2;
 	pointer-events: none;
 }
-.auth-side h1 {
+.auth-side .auth-tagline {
+	margin: 0;
+	font-family: var(--font-display);
 	font-size: 40px;
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.035em;
 	color: var(--white);
 }
 .auth-side p {

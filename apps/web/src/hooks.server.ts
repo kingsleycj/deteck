@@ -159,8 +159,17 @@ export const handle: Handle = async ({ event, resolve }) => {
 	for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
 		if (!response.headers.has(name)) response.headers.set(name, value);
 	}
+	if (NOINDEX.test(path) && !response.headers.has('x-robots-tag'))
+		response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 	return response;
 };
+
+/**
+ * Kept out of search results (B-85): signed-in areas, a person's results, scans and alerts, the
+ * pilot link, and the sign-in steps. /business and the registration forms stay searchable.
+ */
+const NOINDEX =
+	/^\/(?:console|workspace|portal|files|api|r|scan\/[^/]+|alerts|pilot|report|language|healthz)(?:\/|$)|^\/business\/(?!register(?:\/|$))/;
 
 export const handleError: HandleServerError = (caught) => {
 	if (caught.kind === 'unknown') {

@@ -60,11 +60,31 @@ test('the link opens on the landing page, which leads to the checker', async ({ 
 	await expect(page.getByRole('heading', { name: 'Check your medicine' })).toBeVisible();
 });
 
+test('the contact page sends a message to the DETECK team', async ({ page }) => {
+	// "Partner with us" on the landing page opens it with the subject chosen.
+	await page.goto('/contact?topic=partnering');
+	await expect(page.getByRole('heading', { name: 'Contact us', level: 1 })).toBeVisible();
+	await expect(page.getByLabel('What is it about?')).toHaveValue('partnering');
+	// Sent empty: the form comes back saying what to fix.
+	await page.getByRole('button', { name: 'Send message' }).click();
+	await expect(page.getByRole('alert')).toHaveText('Tell us your name.');
+	await page.getByLabel('Full name').fill('Ada Obi');
+	await page.getByLabel('Email').fill('ada@example.com');
+	await page
+		.getByLabel('Message', { exact: true })
+		.fill('We would like to share our product records with DETECK.');
+	await page.getByRole('button', { name: 'Send message' }).click();
+	await expect(
+		page.getByRole('heading', { name: 'Thank you. Your message is with the DETECK team.' })
+	).toBeVisible();
+});
+
 test('a visitor can switch language, and results follow it', async ({ page }) => {
 	await page.goto(`/check?lang=ha`);
 	await expect(page.locator('html')).toHaveAttribute('lang', 'ha');
 	await expect(page.getByRole('heading', { name: ha.check.title })).toBeVisible();
-	await expect(page.getByText(ha.common.draftNotice)).toBeVisible();
+	// The translations were approved on 5 Nov 2026, so no "draft" note any more.
+	await expect(page.getByText(ha.common.draftNotice)).toHaveCount(0);
 	// The choice is remembered, so the result is in Hausa too.
 	await page.getByLabel(ha.check.label).fill('ZZZZ9999ZZZZ');
 	await page.getByRole('button', { name: ha.check.submit }).click();

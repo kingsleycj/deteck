@@ -5,6 +5,8 @@ export interface EmailMessage {
 	to: string;
 	subject: string;
 	text: string;
+	/** Where a reply goes, e.g. the person who wrote through the contact form. */
+	replyTo?: string;
 }
 
 /** Messages written by the `log` driver, kept so tests can read them. */
@@ -32,7 +34,9 @@ export async function deliverEmail(message: EmailMessage): Promise<void> {
 		sentEmails.push(message);
 		if (sentEmails.length > 50) sentEmails.shift();
 		if (!process.env.VITEST)
-			console.info(`[email] to=${message.to} subject="${message.subject}"\n${message.text}\n`);
+			console.info(
+				`[email] to=${message.to}${message.replyTo ? ` reply-to=${message.replyTo}` : ''} subject="${message.subject}"\n${message.text}\n`
+			);
 		return;
 	}
 	const response = await fetch('https://api.resend.com/emails', {
@@ -43,7 +47,8 @@ export async function deliverEmail(message: EmailMessage): Promise<void> {
 			from: emailFrom,
 			to: [message.to],
 			subject: message.subject,
-			text: message.text
+			text: message.text,
+			...(message.replyTo ? { reply_to: message.replyTo } : {})
 		})
 	});
 	if (!response.ok) {

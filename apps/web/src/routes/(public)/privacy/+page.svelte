@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import type { PageProps } from './$types';
 	import PublicTop from '#lib/ui/PublicTop.svelte';
 	import SiteFooter from '#lib/ui/SiteFooter.svelte';
@@ -6,13 +7,10 @@
 	let { data }: PageProps = $props();
 </script>
 
-<svelte:head>
-	<title>Privacy notice · DETECK</title>
-	<meta
-		name="description"
-		content="What DETECK collects when you check a medicine or use a business account, why, and how long it is kept."
-	/>
-</svelte:head>
+<Seo
+	title="Privacy notice · DETECK"
+	description="What DETECK collects when you check a medicine or use a business account, why, and how long it is kept."
+/>
 
 <div class="shell">
 	<PublicTop />
@@ -43,6 +41,11 @@
 			<li>
 				If you report a suspected fake or sign up for recall alerts, you choose what to give us, and
 				we use it only for that.
+			</li>
+			<li>
+				If you write to us through the contact page, your name, email and message go to the DETECK
+				team's inbox by email so we can reply. The website holds them only until the email is sent,
+				and deletes them within a few hours.
 			</li>
 			<li>We don't sell data and we don't show adverts.</li>
 		</ul>

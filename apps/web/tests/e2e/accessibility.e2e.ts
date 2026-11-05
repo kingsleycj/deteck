@@ -15,6 +15,7 @@ test('public pages have no serious accessibility problems', async ({ page }) => 
 		'/privacy',
 		'/terms',
 		'/scan',
+		'/contact',
 		'/business/sign-in',
 		'/business/register'
 	]) {

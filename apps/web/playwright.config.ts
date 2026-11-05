@@ -51,6 +51,11 @@ export default defineConfig({
 			// Switched off for now in the product, but kept working: the tests use it.
 			FEATURE_REPORTS: 'on',
 			ANTHROPIC_API_KEY: '',
+			// A test browser can't pass Cloudflare's "are you human?" check, so it's off whatever .env has.
+			TURNSTILE_SITE_KEY: '',
+			TURNSTILE_SECRET_KEY: '',
+			// Where the contact form sends messages (printed in the server log by the log email driver).
+			CONTACT_EMAIL: 'help@deteck.test',
 			RATE_LIMIT_DEVICE_PER_MINUTE: '100',
 			RATE_LIMIT_DEVICE_PER_HOUR: '1000',
 			RATE_LIMIT_IP_PER_HOUR: '5000'

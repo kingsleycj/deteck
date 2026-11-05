@@ -11,6 +11,12 @@ if (existsSync(rootEnv)) process.loadEnvFile(rootEnv);
 export default defineConfig({
 	// One .env file at the repo root serves the web app, the worker and the scripts.
 	envDir: '../..',
+	// Fonts stay files: Vite inlines small ones as data: URLs, which the font-src 'self' policy blocks.
+	// The smallest pieces are the ones with letters such as ɗ, ẹ and ọ, so Hausa, Yorùbá and Igbo
+	// lost the brand font for those letters.
+	build: {
+		assetsInlineLimit: (file) => (/\.woff2?$/.test(file) ? false : undefined)
+	},
 	plugins: [
 		sveltekit({
 			compilerOptions: {

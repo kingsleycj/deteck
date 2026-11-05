@@ -1,8 +1,12 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import AuthShell from '#lib/ui/AuthShell.svelte';
 </script>
 
-<svelte:head><title>DETECK for business</title></svelte:head>
+<Seo
+	title="DETECK for business"
+	description="Manufacturers, distributors, pharmacies and hospitals: register with DETECK, sign in, and share or check medicine records."
+/>
 
 <AuthShell
 	bubble="Manufacturers: share your records once, and anyone can check your medicines against them."

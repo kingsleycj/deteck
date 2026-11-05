@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import type { PageProps } from './$types';
 	import Icon from '#lib/ui/Icon.svelte';
 	import Logo from '#lib/ui/Logo.svelte';
@@ -6,29 +7,102 @@
 	import LanguageMenu from '#lib/ui/LanguageMenu.svelte';
 	import { LANDING_PHOTOS, photoSrcset } from '#lib/landing-photos.ts';
 	import CheckingOverlay from '#lib/ui/CheckingOverlay.svelte';
+	import Rich from '#lib/ui/Rich.svelte';
+	import { page } from '$app/state';
+	import { LOGO, plainText, SITE_NAME } from '#lib/seo.ts';
 
 	let { data }: PageProps = $props();
 	const t = $derived(data.t);
 	const l = $derived(t.landing);
 
-	// This page is for the public (B-82). Businesses find registration and sign-in in the footer.
-	// Copy follows analysis C-04 to C-08 and R2: no "genuine/real/safe" claims, no competitor
-	// comparisons, and honest data-cost wording. "Valid" only ever means "matches the records".
+	// A pitch page for now (B-83): Akuabata's wording of 3 Nov 2026. Claims stay within what DETECK
+	// does (analysis C-04 to C-08): a pack matches its maker's records; nothing here says a
+	// medicine is genuine or safe. Sign-up flows come back when onboarding starts.
 	const trust = $derived([l.trust.free, l.trust.network, l.trust.languages, l.trust.records]);
 	const faqs = $derived([
-		[l.faq.freeQ, l.faq.freeA],
-		[l.faq.validQ, l.faq.validA],
-		[l.faq.missingQ, l.faq.missingA],
-		[l.faq.dataQ, l.faq.dataA]
+		[l.faq.useQ, l.faq.useA],
+		[l.faq.helpQ, l.faq.helpA],
+		[l.faq.resultsQ, l.faq.resultsA],
+		[l.faq.sourceQ, l.faq.sourceA],
+		[l.faq.coverQ, l.faq.coverA],
+		[l.faq.nextQ, l.faq.nextA]
 	]);
-	const credits = [LANDING_PHOTOS.hero, LANDING_PHOTOS.citizens];
+	const WHO = {
+		individuals: LANDING_PHOTOS.individuals,
+		facilities: LANDING_PHOTOS.pharmacies,
+		makers: LANDING_PHOTOS.distributors
+	};
+	const who = $derived([
+		{
+			id: 'individuals',
+			...l.who.individuals,
+			photo: WHO.individuals.file,
+			links: [{ href: '/check', label: l.who.individuals.cta }]
+		},
+		{
+			id: 'facilities',
+			...l.who.facilities,
+			photo: WHO.facilities.file,
+			links: [
+				{ href: '/business/register/pharmacy?role=pharmacy', label: l.who.facilities.pharmacy },
+				{ href: '/business/register/pharmacy?role=hospital', label: l.who.facilities.hospital }
+			]
+		},
+		{
+			id: 'makers',
+			...l.who.makers,
+			photo: WHO.makers.file,
+			links: [
+				{ href: '/business/register', label: l.who.makers.manufacturer },
+				{ href: '/business/register/pharmacy?role=distributor', label: l.who.makers.distributor }
+			]
+		}
+	]);
+	// What search engines read about DETECK (B-85): who runs it, the site, and the questions above.
+	const structured = $derived.by(() => {
+		const origin = page.url.origin;
+		return [
+			{
+				'@context': 'https://schema.org',
+				'@type': 'Organization',
+				name: SITE_NAME,
+				url: `${origin}/`,
+				logo: new URL(LOGO, origin).href,
+				areaServed: 'NG',
+				contactPoint: {
+					'@type': 'ContactPoint',
+					contactType: 'customer support',
+					url: `${origin}/contact`,
+					availableLanguage: data.languages.map((l) => l.code)
+				}
+			},
+			{ '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: `${origin}/` },
+			{
+				'@context': 'https://schema.org',
+				'@type': 'FAQPage',
+				inLanguage: data.lang,
+				mainEntity: faqs.map(([q, a]) => ({
+					'@type': 'Question',
+					name: q,
+					acceptedAnswer: { '@type': 'Answer', text: plainText(a) }
+				}))
+			}
+		];
+	});
+	const credits = [
+		LANDING_PHOTOS.hero,
+		LANDING_PHOTOS.verify,
+		WHO.individuals,
+		WHO.facilities,
+		WHO.makers,
+		LANDING_PHOTOS.citizens
+	].filter((c, i, all) => all.findIndex((other) => other.page === c.page) === i);
 </script>
 
+<Seo title={l.metaTitle} description={l.metaDescription} path="/" multilingual {structured} />
 <svelte:head>
-	<title>{l.metaTitle}</title>
 	<script src="/js/check.js" defer></script>
 	<script src="/js/menu.js" defer></script>
-	<meta name="description" content={l.metaDescription} />
 </svelte:head>
 
 <a class="skip" href="#main">{l.skip}</a>
@@ -39,6 +113,7 @@
 		<nav class="top-nav" aria-label={t.nav.main}>
 			<a href="#how">{t.nav.how}</a>
 			<a href="#faq">{l.navFaq}</a>
+			<a href="/contact">{t.nav.contact}</a>
 		</nav>
 		<div class="top-actions">
 			<span class="wide-nav"><LanguageMenu /></span>
@@ -50,6 +125,7 @@
 					<nav aria-label={t.nav.main}>
 						<a href="#how">{t.nav.how}</a>
 						<a href="#faq">{l.navFaq}</a>
+						<a href="/contact">{t.nav.contact}</a>
 					</nav>
 					<a class="pill lime" href="/check">{t.common.checkMedicine}</a>
 					<LanguageMenu />
@@ -118,6 +194,9 @@
 	<section id="film" class="wrap film" aria-label={l.reel.label}>
 		<div class="reel">
 			{#if data.showreel}
+				<!-- The demo film has no captions file yet (SHOWREEL_CAPTIONS): a captions track with nothing
+				     in it would only mislead. Add one with the final film. -->
+				<!-- svelte-ignore a11y_media_has_caption -->
 				<video
 					src={data.showreel.video}
 					poster={data.showreel.poster}
@@ -126,7 +205,12 @@
 					preload="none"
 					aria-label={l.reel.label}
 				>
-					<track kind="captions" src={data.showreel.captions} srclang="en" label="English" />
+					{#if data.showreel.captions}<track
+							kind="captions"
+							src={data.showreel.captions}
+							srclang="en"
+							label="English"
+						/>{/if}
 				</video>
 			{:else}
 				<div class="reel-empty smiles-ink" role="img" aria-label="{l.reel.label}: {l.reel.soon}">
@@ -145,7 +229,6 @@
 
 	<section id="how" class="wrap section" aria-labelledby="how-title">
 		<div class="section-head">
-			<p class="eyebrow"><span class="dot"></span>{t.nav.how}</p>
 			<h2 id="how-title" class="display">{l.howTitle}</h2>
 		</div>
 		<ol class="lp-steps">
@@ -170,6 +253,111 @@
 		</ol>
 	</section>
 
+	<!-- Verify further: the packaging photo check, with the camera screen over a real, unlabelled pack. -->
+	<section id="verify-further" class="wrap section" aria-labelledby="vf-title">
+		<div class="vf">
+			<div class="vf-media">
+				<img
+					src="/img/landing/{LANDING_PHOTOS.verify.file}-1024.webp"
+					srcset={photoSrcset(LANDING_PHOTOS.verify.file)}
+					sizes="(max-width: 1023px) 100vw, 620px"
+					width="1024"
+					height="804"
+					alt={l.verifyFurther.alt}
+					loading="lazy"
+					decoding="async"
+				/>
+				<!-- The scanning line, moving inside the camera frame drawn on the picture. -->
+				<span class="vf-scan" aria-hidden="true"></span>
+			</div>
+			<div class="vf-copy">
+				<h2 id="vf-title" class="display">{l.verifyFurther.title}</h2>
+				<p class="section-lede">{l.verifyFurther.text}</p>
+				<a class="pill lime big vf-button" href="/scan"
+					><Icon name="scan" />{l.verifyFurther.button}</a
+				>
+			</div>
+		</div>
+	</section>
+
+	<!-- Who we serve: one section with three tabs. The tabs are radio buttons, so they work without
+	     JavaScript; a browser without :has() shows the three panels one after another instead. -->
+	<section id="who" class="wrap section" aria-labelledby="who-title">
+		<div class="who">
+			{#each who as w, i (w.id)}
+				<input
+					type="radio"
+					name="who"
+					id="who-{w.id}"
+					class="who-radio visually-hidden"
+					checked={i === 0}
+				/>
+			{/each}
+			<div class="who-side">
+				<h2 id="who-title" class="who-title">{l.who.title}</h2>
+				<div class="who-tabs">
+					{#each who as w (w.id)}
+						<label for="who-{w.id}" class="who-tab" data-who={w.id}
+							><span class="who-arrow" aria-hidden="true">→</span>{w.tab}</label
+						>
+					{/each}
+				</div>
+			</div>
+			<div class="who-panels">
+				{#each who as w (w.id)}
+					<article class="who-panel" data-who={w.id} aria-labelledby="who-{w.id}-title">
+						<img
+							src="/img/landing/{w.photo}-1024.webp"
+							srcset={photoSrcset(w.photo)}
+							sizes="(max-width: 1023px) 100vw, 780px"
+							width="1024"
+							height="683"
+							alt={w.alt}
+							loading="lazy"
+							decoding="async"
+						/>
+						<div class="who-shade" aria-hidden="true"></div>
+						<div class="who-text">
+							<p class="who-kicker">{w.tab}</p>
+							<h3 id="who-{w.id}-title">{w.title}</h3>
+							<p>{w.text}</p>
+							<div class="who-links">
+								{#each w.links as link (link.href)}
+									<a class="pill lime" href={link.href}
+										>{link.label}<Icon name="arrow" size={16} /></a
+									>
+								{/each}
+							</div>
+						</div>
+					</article>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<section id="impact" class="wrap section" aria-labelledby="impact-title">
+		<div class="section-head">
+			<h2 id="impact-title" class="display">{l.impact.title}</h2>
+		</div>
+		<ul class="impact">
+			<li class="impact-lime">
+				<span class="impact-n" aria-hidden="true">01</span>
+				<h3>{l.impact.familiesTitle}</h3>
+				<p>{l.impact.familiesText}</p>
+			</li>
+			<li class="impact-peri">
+				<span class="impact-n" aria-hidden="true">02</span>
+				<h3>{l.impact.dispensingTitle}</h3>
+				<p>{l.impact.dispensingText}</p>
+			</li>
+			<li class="impact-peach">
+				<span class="impact-n" aria-hidden="true">03</span>
+				<h3>{l.impact.productsTitle}</h3>
+				<p>{l.impact.productsText}</p>
+			</li>
+		</ul>
+	</section>
+
 	<section id="vision" class="wrap section" aria-labelledby="vision-title">
 		<div class="vision">
 			<div class="vision-photo">
@@ -185,7 +373,6 @@
 				/>
 			</div>
 			<div class="vision-copy">
-				<p class="eyebrow"><span class="dot"></span>{l.navVision}</p>
 				<h2 id="vision-title" class="display">{l.visionTitle}</h2>
 				<p class="section-lede">{l.visionText}</p>
 			</div>
@@ -195,7 +382,6 @@
 	<section id="faq" class="wrap section" aria-labelledby="faq-title">
 		<div class="faq">
 			<div class="faq-head">
-				<p class="eyebrow"><span class="dot"></span>{l.navFaq}</p>
 				<h2 id="faq-title" class="display">{l.faq.title}</h2>
 				<div class="faq-mascot" aria-hidden="true"><Mascot mood="thinking" /></div>
 			</div>
@@ -203,9 +389,17 @@
 				{#each faqs as [q, a] (q)}
 					<details>
 						<summary>{q}<span class="faq-plus" aria-hidden="true"></span></summary>
-						<p>{a}</p>
+						<p><Rich text={a} /></p>
 					</details>
 				{/each}
+				<div class="faq-more">
+					<p>{l.faq.more}</p>
+					<div class="faq-more-buttons">
+						<a class="pill ink" href="/contact?topic=partnering">{l.faq.partner}</a>
+						<a class="pill outline-ink" href="/developers">{l.faq.api}</a>
+						<a class="pill outline-ink" href="/contact">{l.faq.contactUs}</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -218,7 +412,6 @@
 					<a class="pill ink big" href="/check">{t.common.checkMedicine}</a>
 					<a class="pill outline-ink big" href="/scan"><Icon name="scan" />{l.scanPack}</a>
 				</div>
-				<p class="fine">{l.verifyFine}</p>
 			</div>
 			<div class="cta-mascot" aria-hidden="true"><Mascot mood="happy" color="#FFFFFF" /></div>
 		</div>
@@ -252,13 +445,15 @@
 					<a href="#vision">{l.navVision}</a>
 					<a href="/privacy">{t.footer.privacy}</a>
 					<a href="/terms">{t.footer.terms}</a>
-					{#if data.contactEmail}<a href="mailto:{data.contactEmail}">{l.contact}</a>{/if}
+					<a href="/contact">{l.contact}</a>
 				</div>
 			</nav>
 		</div>
 		<p class="credits">
 			{l.photoCredit}:
-			{#each credits as c, i (c.page)}<a href={c.page} rel="noopener">{c.photographer}</a>{i <
+			{#each credits as c, i (c.page)}<a href={c.page} rel="noopener">{c.photographer}</a
+				>{#if 'licence' in c}
+					(<a href={c.licence.url} rel="noopener license">{c.licence.name}</a>, {l.cropped}){/if}{i <
 				credits.length - 1
 					? ', '
 					: '.'}{/each}
@@ -395,10 +590,23 @@
 			display: none;
 		}
 	}
+	/* Wide screens: the logo left, the links in the middle of the bar, the actions right. */
 	@media (min-width: 1024px) {
+		.top-row {
+			display: grid;
+			grid-template-columns: 1fr auto 1fr;
+		}
 		.top-nav,
 		.wide-nav {
 			display: inline-flex;
+		}
+		.top-nav {
+			margin-left: 0;
+			justify-self: center;
+		}
+		.top-actions {
+			margin-left: 0;
+			justify-self: end;
 		}
 		.menu {
 			display: none;
@@ -464,23 +672,8 @@
 		font-weight: 600;
 		text-underline-offset: 4px;
 	}
-	.eyebrow {
-		margin: 0;
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 14px;
-		font-weight: 600;
-	}
-	.dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: var(--peri-ink);
-		flex: 0 0 auto;
-	}
 	.display {
-		margin: 10px 0 0;
+		margin: 0;
 		font-size: clamp(30px, 4.4vw, 56px);
 		font-weight: 800;
 		line-height: 1.02;
@@ -596,13 +789,11 @@
 		background: var(--grey-100);
 		box-shadow: 0 24px 60px rgba(26, 53, 174, 0.22);
 	}
-	/* Cropped toward the open box, which sits right of centre. */
 	.lp-photo img {
 		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		object-position: 70% 50%;
 	}
 	.lp-mascot {
 		display: none;
@@ -860,6 +1051,259 @@
 		}
 	}
 
+	/* Verify further */
+	.vf {
+		display: grid;
+		gap: 28px;
+		align-items: center;
+	}
+	.vf-media {
+		position: relative;
+		overflow: hidden;
+		border-radius: 28px;
+		background: var(--ink);
+		box-shadow: 0 30px 80px rgba(11, 11, 15, 0.16);
+	}
+	.vf-media img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	/* Placed in the picture's own percentages: its frame runs from 24% to 76% across and from 17% to
+	   91% down. Still for people who ask for less motion. */
+	.vf-scan {
+		position: absolute;
+		left: 24.6%;
+		right: 24.6%;
+		top: 70%;
+		height: 3px;
+		border-radius: 3px;
+		background: var(--lime);
+		box-shadow: 0 0 16px 4px rgba(220, 252, 126, 0.55);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.vf-scan {
+			animation: vf-scan 2.6s ease-in-out infinite alternate;
+		}
+	}
+	@keyframes vf-scan {
+		from {
+			top: 20%;
+		}
+		to {
+			top: 87%;
+		}
+	}
+	.vf-button {
+		margin-top: 26px;
+	}
+	@media (min-width: 1024px) {
+		.vf {
+			grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+			gap: 64px;
+		}
+	}
+
+	/* Who we serve: the periwinkle side with the tabs, and the photo of the chosen tab. */
+	.who {
+		display: grid;
+		gap: 14px;
+	}
+	.who-side {
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+		padding: 28px 22px;
+		border-radius: 28px;
+		background: var(--peri);
+	}
+	.who-title {
+		margin: 0;
+		font-size: clamp(26px, 3vw, 36px);
+		font-weight: 800;
+		line-height: 1.08;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
+	}
+	.who-tabs {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.who-tab {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 46px;
+		padding: 0 16px;
+		border-radius: 14px;
+		font-size: 15px;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.who-tab:hover {
+		background: rgba(255, 255, 255, 0.4);
+	}
+	.who-arrow {
+		display: none;
+		color: var(--lime);
+	}
+	.who-panels {
+		display: grid;
+		gap: 14px;
+	}
+	.who-panel {
+		position: relative;
+		overflow: hidden;
+		min-height: 440px;
+		border-radius: 28px;
+		background: var(--ink);
+	}
+	.who-panel img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.who-shade {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			rgba(11, 11, 15, 0) 30%,
+			rgba(11, 11, 15, 0.55) 60%,
+			rgba(11, 11, 15, 0.88) 100%
+		);
+	}
+	.who-text {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 24px 22px;
+		color: var(--white);
+	}
+	.who-kicker {
+		margin: 0 0 6px;
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--lime);
+	}
+	.who-text h3 {
+		margin: 0;
+		font-size: clamp(26px, 3.4vw, 44px);
+		font-weight: 800;
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+	}
+	.who-text p {
+		margin: 10px 0 0;
+		max-width: 560px;
+		font-size: 15px;
+		line-height: 1.5;
+		color: #e6e7ec;
+	}
+	.who-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 18px;
+	}
+	/* Where :has() works (nearly every browser), the radio buttons switch the panels like tabs. */
+	@supports selector(:has(*)) {
+		.who-panel,
+		.who-kicker {
+			display: none;
+		}
+		.who:has(#who-individuals:checked) .who-panel[data-who='individuals'],
+		.who:has(#who-facilities:checked) .who-panel[data-who='facilities'],
+		.who:has(#who-makers:checked) .who-panel[data-who='makers'] {
+			display: block;
+		}
+		.who:has(#who-individuals:checked) .who-tab[data-who='individuals'],
+		.who:has(#who-facilities:checked) .who-tab[data-who='facilities'],
+		.who:has(#who-makers:checked) .who-tab[data-who='makers'] {
+			background: var(--ink);
+			color: var(--white);
+		}
+		.who:has(#who-individuals:checked) [data-who='individuals'] .who-arrow,
+		.who:has(#who-facilities:checked) [data-who='facilities'] .who-arrow,
+		.who:has(#who-makers:checked) [data-who='makers'] .who-arrow {
+			display: inline;
+		}
+		.who:has(#who-individuals:focus-visible) .who-tab[data-who='individuals'],
+		.who:has(#who-facilities:focus-visible) .who-tab[data-who='facilities'],
+		.who:has(#who-makers:focus-visible) .who-tab[data-who='makers'] {
+			outline: 3px solid var(--ink);
+			outline-offset: 2px;
+		}
+	}
+	@media (min-width: 1024px) {
+		.who {
+			grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+			gap: 16px;
+		}
+		.who-side {
+			justify-content: space-between;
+			padding: 34px 30px;
+		}
+		.who-panel {
+			min-height: 560px;
+		}
+		.who-text {
+			padding: 34px 36px;
+		}
+	}
+
+	/* Our impact */
+	.impact {
+		list-style: none;
+		margin: 32px 0 0;
+		padding: 0;
+		display: grid;
+		gap: 14px;
+	}
+	.impact li {
+		padding: 26px 24px;
+		border-radius: var(--radius-l);
+	}
+	.impact-lime {
+		background: var(--lime);
+	}
+	.impact-peri {
+		background: var(--peri);
+	}
+	.impact-peach {
+		background: var(--peach);
+	}
+	.impact-n {
+		font-family: var(--font-display);
+		font-size: 15px;
+		font-weight: 800;
+	}
+	.impact h3 {
+		margin-top: 36px;
+		font-size: 22px;
+		letter-spacing: -0.02em;
+	}
+	.impact p {
+		margin: 8px 0 0;
+		line-height: 1.55;
+		color: #262a36;
+	}
+	@media (min-width: 720px) {
+		.impact {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+	@media (min-width: 1024px) {
+		.impact li {
+			min-height: 250px;
+			padding: 30px;
+		}
+	}
+
 	/* Vision */
 	.vision {
 		display: grid;
@@ -957,6 +1401,24 @@
 		padding: 0 20px 20px;
 		color: var(--text-2);
 		line-height: 1.55;
+		/* "What do the results mean?" puts each result on its own line. */
+		white-space: pre-line;
+	}
+	.faq-more {
+		margin-top: 14px;
+		padding: 22px 20px;
+		border-radius: 18px;
+		background: var(--peri-tint);
+	}
+	.faq-more p {
+		margin: 0;
+		font-weight: 700;
+	}
+	.faq-more-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 14px;
 	}
 	@media (min-width: 1024px) {
 		.faq {
@@ -992,13 +1454,6 @@
 		flex-wrap: wrap;
 		gap: 12px;
 		margin-top: 24px;
-	}
-	.fine {
-		margin: 18px 0 0;
-		max-width: 620px;
-		font-size: 13px;
-		line-height: 1.5;
-		color: #3b4513;
 	}
 	.cta-mascot {
 		display: none;

@@ -1,10 +1,10 @@
-/** Nigerian Pidgin (Naijá). Draft: needs a native speaker's review before launch. */
+/** Nigerian Pidgin (Naijá). Approved for production by the product owner (5 Nov 2026). */
 import type { Messages } from './en.ts';
 
 export const pcm: Messages = {
 	meta: {
 		name: 'Naijá (Pidgin)',
-		reviewed: false
+		reviewed: true
 	},
 
 	common: {
@@ -26,7 +26,7 @@ export const pcm: Messages = {
 		home: 'Deteck home',
 		main: 'Main',
 		how: 'How e dey work',
-		badge: 'DETECK no dey charge you',
+		contact: 'Contact us',
 		menu: 'Menu'
 	},
 
@@ -37,6 +37,7 @@ export const pcm: Messages = {
 		terms: 'Terms',
 		business: 'For pharmacies and companies wey make medicine',
 		developers: 'Developers',
+		contact: 'Contact us',
 		note: 'Di result wey you go see depend on di records wey manufacturers share with DETECK.'
 	},
 
@@ -72,7 +73,6 @@ export const pcm: Messages = {
 		checkingBody: 'Deteck dey compare your serial with di manufacturer records.',
 		retry: 'Try am again',
 		tryAgain: 'Try again',
-		eyebrow: 'Medicine checker',
 		lede: 'Type di serial number wey dey di pack. Deteck go check am with di manufacturer records and show you where e don pass.',
 		scanNote: 'Use your camera, or upload photos of di pack.',
 		helloTitle: 'Hi, na me be Deteck.',
@@ -84,8 +84,6 @@ export const pcm: Messages = {
 		step2Text: 'AI dey find difference wey eye fit see',
 		step3Title: '3 · Journey',
 		step3Text: 'From di maker reach di last business wey dem record',
-		checkingEyebrow: 'Checking',
-		tipsEyebrow: 'Wrong format',
 		tipsTitle: 'Where you go see di serial',
 		tip1: 'Near di barcode, after **SN** or **Serial**',
 		tip2: 'E no pass 20 letters and numbers, sometimes dem group am',
@@ -119,7 +117,6 @@ export const pcm: Messages = {
 			one: 'Too many checks for short time. Abeg wait {n} minute, then try again.',
 			other: 'Too many checks for short time. Abeg wait {n} minutes, then try again.'
 		},
-		offlineEyebrow: 'No connection',
 		editSerial: 'Change di serial',
 		offlineNote:
 			'One check no dey use data reach to load one photo, so even weak 2G or 3G signal dey usually enough.'
@@ -378,40 +375,28 @@ export const pcm: Messages = {
 
 	scan: {
 		metaTitle: 'Check am more with scan · DETECK',
+		metaDescription:
+			'Snap photo of medicine pack and DETECK go compare am with di manufacturer own packaging. E free, you no need account.',
 		title: 'Check am more with scan',
 		closeAria: 'Close di scanner',
-		blockedBubble: 'I need your camera to scan di pack. E be like say camera dey off for DETECK.',
-		turnOnTitle: 'On di camera',
-		turnOn1: 'Open your phone Settings, or press di lock sign wey dey near di web address.',
-		turnOn2: 'Find your browser, then find Camera.',
-		turnOn3: 'Allow Camera, then come back for here.',
-		turnedOn: 'I don on am',
 		cameraAria: 'Wetin di camera dey see',
-		holdAuto: 'Hold di square code make e dey inside di box. I go read am by myself.',
-		holdPhoto:
-			'Hold di square code make e dey inside di box, for where light dey well, then snap photo.',
-		takePhoto: 'Snap photo of di code',
-		reading: 'I dey read di code…',
-		intro:
-			'Scan di square code wey dey di pack, and I go check if im serial match di manufacturer records.',
-		unsupported: 'Dis browser no fit open camera for here. Snap photo of di code instead.',
-		scanButton: 'Scan di code',
-		photoIdle: 'Snap or choose photo of di code',
-		photoGallery: 'Choose photo from your gallery',
-		readPhoto: 'Read di code wey dey my photo',
+		startBubble: 'Snap di packaging, and I go compare am with di manufacturer own pack.',
+		startButton: 'Scan di pack',
+		startUpload: 'Upload 3 photos of di pack',
+		startUploadNote:
+			'Front, back and label. We dey reduce di photo size for your phone before e send, so e no go chop your data. Na only to compare di packaging we dey use di photos; we no dey keep dem.',
+		startPhotoAlt: 'Hand wey hold phone up to snap one medicine pack',
+		howTitle: 'How e dey work',
+		how1: 'Hold di pack for where light dey well.',
+		how2: 'Snap 3 photos: di front, di back, and di label wey get di batch number.',
+		how3: 'Deteck go compare dem with di manufacturer own packaging.',
+		how4: 'You go see wetin match and wetin no look di same.',
 		typeInstead: 'Type di serial instead',
-		footer:
-			'We dey reduce di photo size for your phone before e send, so e no go chop your data. Na only to read di code we dey use di photo; we no dey keep am.',
-		noPhoto: 'First, snap or choose photo of di code.',
-		tooLarge: 'Dat photo too big. Try again with smaller one.',
-		unreadable:
-			'I no fit read any code for dis photo. Bring di pack closer, for where light dey well, make di square code dey di middle. Or type di serial instead.',
 		cancel: 'Cancel',
 		tabCamera: 'Use camera',
 		tabUpload: 'Upload photos',
 		methodAria: 'How you go add di photos',
 		photoOf: 'Photo {n} of 3 · {side}',
-		codeRead: 'I don read di code · {serial}',
 		serialValid: 'Serial {serial}: E match records',
 		sayFront: 'Hold di front of di pack flat for di camera, where light dey well.',
 		sayBack: 'Now di back, make di square code show. Na from there I go read di code.',
@@ -433,14 +418,10 @@ export const pcm: Messages = {
 		rule2: 'Make di whole side of di pack show',
 		rule3: 'Light dey well, no glare',
 		added: '{n} of 3 photos don enter',
-		reviewEyebrow: '3 of 3 photos',
 		reviewTitle: 'Di photos fine',
 		reviewText: 'Dem clear, light dey well and di whole pack show.',
 		reviewBubble: 'I don ready to compare dem with di manufacturer packaging.',
 		retakeOne: 'Snap one photo again',
-		retakePhoto: 'Snap am again',
-		uploadInstead: 'Upload phone photo instead',
-		neverUsed: 'We no dey use photo wey blur, dark or cut for result.',
 		noCode:
 			'I no fit read di code for these photos. Snap di back of di pack again, closer, make di square code show. Or type di serial instead.',
 		startCamera: 'On di camera',
@@ -597,6 +578,58 @@ export const pcm: Messages = {
 		}
 	},
 
+	contact: {
+		metaTitle: 'Contact us · DETECK',
+		metaDescription:
+			'Send di DETECK team message about how to check medicine, how to join hand with DETECK or how to use di API.',
+		title: 'Contact us',
+		lede: 'You get question about how to check medicine, how to join hand with DETECK or how to use our API? Send us message and we go answer you for email.',
+		bubble: 'Hello! Tell us how we fit help you.',
+		waysTitle: 'Oda ways to reach us',
+		emailTitle: 'Email',
+		partnerTitle: 'Join hand with us',
+		partnerText:
+			'Manufacturers, distributors, pharmacies and hospitals: choose "Join hand with DETECK" for di form and tell us about your business.',
+		devTitle: 'Developers',
+		devText: 'Read di API documentation',
+		faqTitle: 'Quick answers',
+		faqText: 'See di questions wey people dey ask',
+		formTitle: 'Send us message',
+		name: 'Full name',
+		email: 'Email',
+		organisation: 'Organisation (if you want)',
+		topic: 'Wetin di message dey about?',
+		chooseTopic: 'Choose one',
+		topics: {
+			general: 'General question',
+			checking: 'How to check medicine',
+			partnering: 'Join hand with DETECK',
+			developers: 'Di API',
+			press: 'Press and media',
+			problem: 'Problem with dis website'
+		},
+		message: 'Message',
+		messageHint: 'E no suppose pass 3,000 characters.',
+		privacy: 'Na only to answer dis message we dey use your details.',
+		privacyLink: 'Privacy notice',
+		send: 'Send di message',
+		sending: 'We dey send am…',
+		sentTitle: 'Thank you. Your message don reach di DETECK team.',
+		sentText: 'We go answer you for email.',
+		sendAnother: 'Send another message',
+		worried: 'Medicine wey you get now dey worry you? Check am for DETECK and ask pharmacist.',
+		errors: {
+			name: 'Tell us your name.',
+			email: 'Sometin dey miss for dat email address, like .com or .ng.',
+			topic: 'Choose wetin your message dey about.',
+			message: 'Write wetin you wan talk (at least 10 characters).',
+			too_long: 'Your message too long. Make e no pass 3,000 characters.',
+			human: 'Abeg finish di check wey dey ask "you be human?".',
+			limit: 'You don send plenty messages already. Abeg try again later.',
+			failed: 'We no fit send your message now now. Abeg try again after few minutes.'
+		}
+	},
+
 	error: {
 		notFoundTitle: 'I no fit find dat page',
 		notFoundBody: 'E fit be say di link don old, or dem type am wrong.',
@@ -611,7 +644,7 @@ export const pcm: Messages = {
 	},
 
 	landing: {
-		metaTitle: 'About DETECK · Check if medicine match di manufacturer records',
+		metaTitle: 'DETECK · Check if medicine match di manufacturer records',
 		metaDescription:
 			'With DETECK, anybody for Nigeria fit check if medicine serial number match di records wey im manufacturer share. E free to check, and you no need account.',
 		navVision: 'Our vision',
@@ -623,7 +656,7 @@ export const pcm: Messages = {
 		scanPack: 'Check am more with scan',
 		seeHow: 'See how e dey work',
 		heroBubble: 'Hello, na me be Deteck. I dey here to help you.',
-		heroAlt: 'Capsules for foil strips near one open medicine box for pharmacy counter',
+		heroAlt: 'Orange capsule dem near one empty blister pack for light blue background',
 		heroNote: 'You no need account. Di answer go come for few seconds.',
 		trust: {
 			free: 'E free to check',
@@ -645,9 +678,52 @@ export const pcm: Messages = {
 		step3Text:
 			'"E match records" or "We no find am", for simple words. If di records no enough to dey sure, Deteck go tell you.',
 		biz: {
-			registerManufacturer: 'Register manufacturer',
-			registerBusiness: 'Register pharmacy, hospital or distributor',
+			registerManufacturer: 'Register as manufacturer',
+			registerBusiness: 'Register as pharmacy, hospital or distributor',
 			docs: 'API documentation'
+		},
+		verifyFurther: {
+			title: 'Check di packaging, no be only di code.',
+			text: 'Snap di front, back and label of your pack. Deteck go compare dem with di manufacturer own packaging and tell you if anything no look di same.',
+			button: 'Check am more',
+			alt: 'DETECK camera screen wey dey frame one blister pack of tablet wey no get label'
+		},
+		who: {
+			title: 'We build am for everybody wey dey buy, move or give out medicine.',
+			individuals: {
+				tab: 'Individuals',
+				title: 'Check am before you buy or use am',
+				text: 'Type di serial number wey dey di medicine, or snap im packaging, and see whether e match records wey you fit trust.',
+				alt: 'One young woman for Lagos dey smile as she dey look her phone for chair',
+				cta: 'Check medicine'
+			},
+			facilities: {
+				tab: 'Pharmacies, hospitals & oda facilities',
+				title: 'Check am before you sell or give am out',
+				text: 'Check di medicines wey you collect from suppliers before dem reach your shelf or before dem give am to patients.',
+				alt: 'Di counter and shelves of one modern pharmacy for Ikeja, Lagos',
+				pharmacy: 'Register as pharmacy',
+				hospital: 'Register as hospital'
+			},
+			makers: {
+				tab: 'Manufacturers & distributors',
+				title: 'Share di data of your products',
+				text: 'Whether na you make di medicine or na you import and package am, upload your products, serial numbers and your own packaging so people fit check dem with your records.',
+				alt: 'One man dey check boxes of stock for warehouse shelves',
+				manufacturer: 'Register as manufacturer',
+				distributor: 'Register as distributor'
+			}
+		},
+		impact: {
+			title: 'Di impact wey we dey work towards',
+			familiesTitle: 'Families wey get confidence',
+			familiesText: 'People fit check medicine by demself before dem buy am or use am.',
+			dispensingTitle: 'Safer way to give out medicine',
+			dispensingText:
+				'Pharmacies and hospitals fit confirm di medicines wey dem collect before dem give am out.',
+			productsTitle: 'Products wey people fit trust',
+			productsText:
+				'Manufacturers fit register dia products and help people check dem with dia records.'
 		},
 		visionTitle: 'Anybody for Nigeria suppose fit check im medicine.',
 		visionAlt: 'One young woman dey smile as she dey look her phone for one café for Abuja',
@@ -655,24 +731,31 @@ export const pcm: Messages = {
 			'DETECK dey connect di serial number of each pack to im manufacturer records, so you fit check am yourself. No be only how di packaging look you go depend on.',
 		faq: {
 			title: 'Questions wey people dey ask',
-			freeQ: 'E dey cost money?',
-			freeA:
-				'To check medicine na free and you no need account. Your network normal data money go still apply, but serial check no dey use plenty data.',
-			validQ: 'Wetin "Valid" mean?',
-			validA:
-				'E mean say di serial match di records wey di manufacturer share with DETECK. DETECK no fit test wetin dey inside pack, so if anything about am worry you, ask pharmacist.',
-			missingQ: 'Wetin happen if my medicine no dey DETECK?',
-			missingA:
-				'No be every manufacturer don share dia records. DETECK go talk am clear, and e no mean say di medicine na fake. Your pharmacist fit help you.',
-			dataQ: 'Wetin dey happen to my details?',
-			dataA:
-				'Check no need your name or phone number. DETECK dey keep only wetin e need to answer checks and stop abuse; di privacy notice talk wetin and for how long.'
+			useQ: 'How I go take use DETECK?',
+			useA: 'Type di serial number wey dem print for di pack, then press Check am. Deteck go check am with di manufacturer records and tell you di result for few seconds. If you wan dey more sure, press Check am more and snap di packaging.',
+			helpQ: 'How DETECK go help me?',
+			helpA:
+				'You fit check medicine before you buy am, take am or give am to your family, instead to judge am by how di pack look. E free, you no need account, and e dey work for 2G and 3G for five languages.',
+			resultsQ: 'Wetin di results mean?',
+			resultsA:
+				'**E match records:** di serial match di manufacturer records.\n**We no find am:** we no fit find di serial. Check say you type am well, and no use di medicine until you dey sure.\n**E need more check:** sometin no match. Snap di packaging to check am more.',
+			sourceQ: 'Where DETECK dey get im information?',
+			sourceA:
+				'From di manufacturers and distributors for Nigeria medicine supply chain wey we dey partner with. Dem dey share dia product records with us: product details, batch and serial numbers, expiry dates and photos of dia own packaging.',
+			coverQ: 'DETECK dey cover every medicine for Nigeria?',
+			coverA:
+				'No yet. We dey add manufacturers and dia medicines one by one. If one medicine never dey DETECK, Deteck go tell you say we no get im records. Dat one no mean say e be fake. Ask licensed pharmacist before you use am.',
+			nextQ: 'Wetin DETECK wan do next?',
+			nextA:
+				'We dey build supply-chain traceability, so you go fit see where one batch don pass, from di factory through each distributor reach di pharmacy or hospital wey sell am.',
+			more: 'You still get question? Reach us direct.',
+			partner: 'Join hand with us',
+			api: 'Developer API',
+			contactUs: 'Contact us'
 		},
 		verifyTitle: 'Pack dey your hand? Check am now.',
 		verifyLabel: 'Serial number wey dey di pack',
 		verifyButton: 'Check am',
-		verifyFine:
-			'Your network go still collect normal data money. Di result depend on di records wey manufacturers share with DETECK. Wen information no reach to dey sure, Deteck go tell you.',
 		footerLead:
 			'We dey build DETECK with partners from every corner of Nigeria medicine supply chain.',
 		footerNav: 'Footer',
@@ -680,7 +763,8 @@ export const pcm: Messages = {
 		footerCompany: 'Company',
 		footerBusiness: 'For business',
 		contact: 'Contact us',
-		photoCredit: 'Photos from Unsplash and Pexels',
+		photoCredit: 'Di photos come from Unsplash, Pexels and Wikimedia Commons',
+		cropped: 'dem crop am',
 		legal:
 			'© 2026 DETECK. Di checks depend on whether di manufacturers wey join dey record dia products. DETECK dey check records and, for di beta, how pack look; e no fit test wetin dey inside pack.'
 	}

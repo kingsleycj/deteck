@@ -29,7 +29,6 @@
 		</div>
 
 		<section class="co-text co-when-busy" role="status">
-			<p class="co-eyebrow co-dot">{t.check.checkingEyebrow}</p>
 			<h2>{t.check.checkingTitle}</h2>
 			<p class="co-body">{t.check.checkingBody}</p>
 			<div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -41,7 +40,6 @@
 		</section>
 
 		<section class="co-text co-when-off" role="alert">
-			<p class="co-eyebrow">{t.network.offlineEyebrow}</p>
 			<h2>{t.network.offlineTitle}</h2>
 			<p class="co-body">
 				{t.network.offlineBody}
@@ -99,31 +97,6 @@
 	}
 	.co-text h2 {
 		font-size: 28px;
-	}
-	.co-eyebrow {
-		margin: 0;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 12px;
-		font-weight: 800;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--text-3);
-	}
-	.co-dot {
-		font-size: 14px;
-		font-weight: 600;
-		letter-spacing: 0;
-		text-transform: none;
-		color: var(--ink);
-	}
-	.co-dot::before {
-		content: '';
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: #2d4fe0;
 	}
 	.co-body {
 		margin: 0;

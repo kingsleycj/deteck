@@ -23,7 +23,8 @@
 		>
 		<a href="/" style="display: inline-flex"><Logo height={30} inverse /></a>
 		<p class="small" style="color: #c9cbd4">DETECK for business</p>
-		<h1>The records behind every check.</h1>
+		<!-- A tagline, not the page title: each page has its own h1 in the card beside it. -->
+		<p class="auth-tagline">The records behind every check.</p>
 		<p>
 			Manufacturers share their products, serials, supply chain records and packaging photos so
 			people can check medicines against them. DETECK reviews every company before its records go

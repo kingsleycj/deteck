@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import PublicTop from '#lib/ui/PublicTop.svelte';
 	import SiteFooter from '#lib/ui/SiteFooter.svelte';
 	import type { PageProps } from './$types';
@@ -50,13 +51,10 @@ function fromDeteck(body, headers, secret) {
 }`;
 </script>
 
-<svelte:head>
-	<title>DETECK API · Developers</title>
-	<meta
-		name="description"
-		content="Check medicine serials, send manufacturer data and check deliveries with the DETECK REST API."
-	/>
-</svelte:head>
+<Seo
+	title="DETECK API · Developers"
+	description="Check medicine serials, send manufacturer data and check deliveries with the DETECK REST API."
+/>
 
 <div class="shell">
 	<PublicTop />

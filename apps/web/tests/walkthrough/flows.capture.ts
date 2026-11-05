@@ -288,6 +288,7 @@ test('the public packaging check (beta)', async ({ page }) => {
 		.filter({ visible: true })
 		.first()
 		.click();
+	await page.getByRole('link', { name: /Upload 3 photos of the pack/ }).click();
 	const photo = await packPhoto();
 	for (const side of ['front', 'back', 'label']) {
 		await page.locator(`#photo-${side}`).setInputFiles({

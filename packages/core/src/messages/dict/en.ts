@@ -34,7 +34,7 @@ export const en = {
 		home: 'Deteck home',
 		main: 'Main',
 		how: 'How it works',
-		badge: 'No DETECK charge',
+		contact: 'Contact',
 		menu: 'Menu'
 	},
 
@@ -45,6 +45,7 @@ export const en = {
 		terms: 'Terms',
 		business: 'For manufacturers and pharmacies',
 		developers: 'Developers',
+		contact: 'Contact us',
 		note: 'Results depend on the records manufacturers share with DETECK.'
 	},
 
@@ -79,7 +80,6 @@ export const en = {
 		checkingBody: "Deteck is matching your serial with the manufacturer's records.",
 		retry: 'Retry',
 		tryAgain: 'Try again',
-		eyebrow: 'Medicine checker',
 		lede: "Type the serial number on the pack. Deteck checks it against the manufacturer's records and shows you where it has been.",
 		scanNote: 'Use your camera, or upload photos of the pack.',
 		helloTitle: "Hi, I'm Deteck.",
@@ -91,8 +91,6 @@ export const en = {
 		step2Text: 'AI spots visible differences',
 		step3Title: '3 · Journey',
 		step3Text: 'From the maker to the last recorded business',
-		checkingEyebrow: 'Checking',
-		tipsEyebrow: 'Wrong format',
 		tipsTitle: 'Where to find the serial',
 		tip1: 'Near the barcode, after **SN** or **Serial**',
 		tip2: 'Up to 20 letters and numbers, often in groups',
@@ -125,7 +123,6 @@ export const en = {
 			one: 'Too many checks in a short time. Please wait {n} minute and try again.',
 			other: 'Too many checks in a short time. Please wait {n} minutes and try again.'
 		},
-		offlineEyebrow: 'No connection',
 		editSerial: 'Edit serial',
 		offlineNote:
 			'A check uses less data than loading a photo, so even a weak 2G or 3G signal is usually enough.'
@@ -383,39 +380,30 @@ export const en = {
 
 	scan: {
 		metaTitle: 'Verify further by scan · DETECK',
+		metaDescription:
+			"Photograph a medicine pack and DETECK compares it with the manufacturer's own packaging. Free, no account needed.",
 		title: 'Verify further by scan',
 		closeAria: 'Close scanner',
-		blockedBubble: "I need your camera to scan the pack. It looks like it's turned off for DETECK.",
-		turnOnTitle: 'Turn on the camera',
-		turnOn1: "Open your phone's Settings, or tap the lock icon next to the web address.",
-		turnOn2: 'Find your browser, then Camera.',
-		turnOn3: 'Allow Camera, then come back here.',
-		turnedOn: "I've turned it on",
 		cameraAria: 'Camera view',
-		holdAuto: 'Hold the square code inside the frame. I read it automatically.',
-		holdPhoto: 'Hold the square code inside the frame, in good light, then take a photo.',
-		takePhoto: 'Take photo of the code',
-		reading: 'Reading the code…',
-		intro:
-			"Scan the square code on the pack and I'll check its serial against the manufacturer's records.",
-		unsupported: "This browser can't open the camera here. Take a photo of the code instead.",
-		scanButton: 'Scan the code',
-		photoIdle: 'Take or choose a photo of the code',
-		photoGallery: 'Choose a photo from your gallery',
-		readPhoto: 'Read the code in my photo',
+		// The packaging check's first screen (Akuabata, 3 Nov 2026).
+		startBubble:
+			"Photograph the packaging and I'll compare it with the manufacturer's genuine pack.",
+		startButton: 'Scan the package',
+		startUpload: 'Upload 3 photos of the pack',
+		startUploadNote:
+			"Front, back and label. Photos are shrunk on your phone before sending, to save data. They're used only to compare the packaging and aren't kept.",
+		startPhotoAlt: 'A hand holding up a phone to photograph a medicine pack',
+		howTitle: 'How it works',
+		how1: 'Hold the pack in good light.',
+		how2: 'Take 3 photos: front, back, and the label with the batch number.',
+		how3: "Deteck compares them with the manufacturer's genuine packaging.",
+		how4: 'You see what matches and what looks different.',
 		typeInstead: 'Type the serial instead',
-		footer:
-			"Photos are shrunk on your phone before sending, to save data. The photo is used to read the code and isn't kept.",
-		noPhoto: 'Take or choose a photo of the code first.',
-		tooLarge: 'That photo is too large. Try again with a smaller one.',
-		unreadable:
-			"I couldn't read a code in this photo. Hold the pack closer, in good light, with the square code in the middle. Or type the serial instead.",
 		cancel: 'Cancel',
 		tabCamera: 'Use camera',
 		tabUpload: 'Upload photos',
 		methodAria: 'How to add the photos',
 		photoOf: 'Photo {n} of 3 · {side}',
-		codeRead: 'Code read · {serial}',
 		serialValid: 'Serial {serial}: Valid',
 		sayFront: 'Hold the front of the pack flat to the camera, in good light.',
 		sayBack: 'Now the back, with the square code in view. I read the code from it.',
@@ -437,14 +425,10 @@ export const en = {
 		rule2: 'Whole side of the pack in view',
 		rule3: 'Good light, no glare',
 		added: '{n} of 3 photos added',
-		reviewEyebrow: '3 of 3 photos',
 		reviewTitle: 'Photos look good',
 		reviewText: 'Sharp, well lit and the whole pack is in view.',
 		reviewBubble: "I'm ready to compare them with the manufacturer's packaging.",
 		retakeOne: 'Retake a photo',
-		retakePhoto: 'Retake photo',
-		uploadInstead: 'Upload a phone photo instead',
-		neverUsed: 'Blurry, dark or cropped photos are never used for a result.',
 		noCode:
 			"I couldn't read the code in these photos. Retake the back of the pack, closer, with the square code in view. Or type the serial instead.",
 		startCamera: 'Turn on the camera',
@@ -604,6 +588,59 @@ export const en = {
 		}
 	},
 
+	// The contact page (B-84).
+	contact: {
+		metaTitle: 'Contact us · DETECK',
+		metaDescription:
+			'Send the DETECK team a message about checking a medicine, partnering with DETECK or using the API.',
+		title: 'Contact us',
+		lede: "Questions about checking a medicine, partnering with DETECK or using our API? Send us a message and we'll reply by email.",
+		bubble: 'Hi! Tell us how we can help.',
+		waysTitle: 'Other ways to reach us',
+		emailTitle: 'Email',
+		partnerTitle: 'Partner with us',
+		partnerText:
+			'Manufacturers, distributors, pharmacies and hospitals: choose "Partnering with DETECK" in the form and tell us about your business.',
+		devTitle: 'Developers',
+		devText: 'Read the API documentation',
+		faqTitle: 'Quick answers',
+		faqText: 'See the questions people ask',
+		formTitle: 'Send us a message',
+		name: 'Full name',
+		email: 'Email',
+		organisation: 'Organisation (optional)',
+		topic: 'What is it about?',
+		chooseTopic: 'Choose one',
+		topics: {
+			general: 'A general question',
+			checking: 'Checking a medicine',
+			partnering: 'Partnering with DETECK',
+			developers: 'The API',
+			press: 'Press and media',
+			problem: 'A problem with the website'
+		},
+		message: 'Message',
+		messageHint: 'Up to 3,000 characters.',
+		privacy: 'We use your details only to reply to this message.',
+		privacyLink: 'Privacy notice',
+		send: 'Send message',
+		sending: 'Sending…',
+		sentTitle: 'Thank you. Your message is with the DETECK team.',
+		sentText: "We'll reply by email.",
+		sendAnother: 'Send another message',
+		worried: 'Worried about a medicine you have now? Check it on DETECK and ask a pharmacist.',
+		errors: {
+			name: 'Tell us your name.',
+			email: 'That email address is missing something, like .com or .ng.',
+			topic: 'Choose what your message is about.',
+			message: 'Write your message (at least 10 characters).',
+			too_long: 'Your message is too long. Keep it under 3,000 characters.',
+			human: 'Please complete the "are you human?" check.',
+			limit: "You've sent several messages already. Please try again later.",
+			failed: "We couldn't send your message just now. Please try again in a few minutes."
+		}
+	},
+
 	error: {
 		notFoundTitle: "I can't find that page",
 		notFoundBody: 'The link may be old or mistyped.',
@@ -618,7 +655,7 @@ export const en = {
 	},
 
 	landing: {
-		metaTitle: 'About DETECK · Check medicines against the manufacturer’s records',
+		metaTitle: 'DETECK · Check medicines against the manufacturer’s records',
 		metaDescription:
 			"DETECK lets anyone in Nigeria check a medicine's serial number against the records its manufacturer shared. Free to check, no account needed.",
 		navVision: 'Our vision',
@@ -630,7 +667,7 @@ export const en = {
 		scanPack: 'Verify further by scan',
 		seeHow: 'See how it works',
 		heroBubble: "Hi, I'm Deteck. I'm here to help.",
-		heroAlt: 'Capsules in foil strips beside an open medicine box on a pharmacy counter',
+		heroAlt: 'Orange capsules beside an empty blister pack on a pale blue background',
 		heroNote: 'No account needed. The answer comes in seconds.',
 		trust: {
 			free: 'Free to check',
@@ -652,41 +689,95 @@ export const en = {
 		step3Text:
 			"Valid or Unrecognised, in plain words. If the records aren't enough to be sure, Deteck says so.",
 		biz: {
-			registerManufacturer: 'Register a manufacturer',
-			registerBusiness: 'Register a pharmacy, hospital or distributor',
+			registerManufacturer: 'Register as a manufacturer',
+			registerBusiness: 'Register as a pharmacy, hospital or distributor',
 			docs: 'API documentation'
+		},
+		verifyFurther: {
+			title: 'Check the packaging, not just the code.',
+			text: "Photograph the front, back and label of your pack. Deteck compares them with the manufacturer's genuine packaging and tells you if anything looks different.",
+			button: 'Verify further',
+			alt: 'The DETECK camera screen framing an unlabelled blister pack of tablets'
+		},
+		who: {
+			title: 'Built for everyone who buys, moves or dispenses medicine.',
+			individuals: {
+				tab: 'Individuals',
+				title: 'Check before you buy or use it',
+				text: 'Type the serial number on a medicine, or photograph its packaging, and see whether it matches trusted records.',
+				alt: 'A young woman in Lagos smiling at her phone on a sofa',
+				cta: 'Check a medicine'
+			},
+			facilities: {
+				tab: 'Pharmacies, hospitals & facilities',
+				title: 'Check before you sell or dispense',
+				text: 'Verify the medicines you receive from suppliers before they reach your shelves or are given to patients.',
+				alt: 'The counter and shelves of a modern pharmacy in Ikeja, Lagos',
+				pharmacy: 'Register as a pharmacy',
+				hospital: 'Register as a hospital'
+			},
+			makers: {
+				tab: 'Manufacturers & distributors',
+				title: 'Share your product data',
+				// Akuabata's text ends "so people can confirm your medicines are real"; softened (C-06, B-83).
+				text: 'Whether you make medicines or import and package them, upload your products, serial numbers and genuine packaging so people can check them against your records.',
+				alt: 'A man checking boxes of stock on warehouse shelves',
+				manufacturer: 'Register as a manufacturer',
+				distributor: 'Register as a distributor'
+			}
+		},
+		impact: {
+			title: "The impact we're working toward",
+			familiesTitle: 'Confident families',
+			familiesText: 'People can check a medicine themselves before they buy it or use it.',
+			dispensingTitle: 'Safer dispensing',
+			dispensingText:
+				'Pharmacies and hospitals can confirm the medicines they receive before dispensing them.',
+			productsTitle: 'Trusted products',
+			// Akuabata's text ends "help people confirm they are genuine"; softened (C-06, B-83).
+			productsText:
+				'Manufacturers can register their products and help people check them against their records.'
 		},
 		visionTitle: 'Anyone in Nigeria should be able to check their medicine.',
 		visionAlt: 'A young woman smiling at her phone in a café in Abuja',
 		visionText:
 			"DETECK connects each pack's serial number to its manufacturer's records, so you can check it yourself instead of relying only on how the packaging looks.",
+		// Akuabata's questions and answers (3 Nov 2026), word for word.
 		faq: {
 			title: 'Questions people ask',
-			freeQ: 'Does it cost anything?',
-			freeA:
-				"Checking a medicine is free and needs no account. Your network's normal data charges apply, and a serial check uses very little data.",
-			validQ: 'What does "Valid" mean?',
-			validA:
-				"It means the serial matches the records its manufacturer shared with DETECK. DETECK can't test what is inside a pack, so if anything about it worries you, ask a pharmacist.",
-			missingQ: "What if my medicine isn't on DETECK?",
-			missingA:
-				"Not every manufacturer shares its records yet. DETECK says so plainly, and it doesn't mean the medicine is fake. Your pharmacist can help.",
-			dataQ: 'What happens to my details?',
-			dataA:
-				'A check needs no name or phone number. DETECK keeps only what it needs to answer checks and stop abuse; the privacy notice says what, and for how long.'
+			useQ: 'How do I use DETECK?',
+			useA: "Type the serial number printed on the pack and tap Check it. Deteck checks it against the manufacturer's records and tells you the result in seconds. For extra confidence, tap Verify further and photograph the packaging.",
+			helpQ: 'How does DETECK help me?',
+			helpA:
+				"You can check a medicine before you buy it, take it or give it to your family, instead of judging by how the pack looks. It's free, needs no account, and works on 2G and 3G in five languages.",
+			resultsQ: 'What do the results mean?',
+			resultsA:
+				"**Valid:** the serial matches the manufacturer's records.\n**Unrecognised:** we couldn't find the serial. Check you typed it correctly, and don't use the medicine until you're sure.\n**Needs further checks:** something doesn't match. Verify further by photographing the packaging.",
+			sourceQ: 'Where does DETECK get its information?',
+			sourceA:
+				"From the manufacturers and distributors in Nigeria's medicine supply chain we partner with. They share their product records with us: product details, batch and serial numbers, expiry dates and photos of their genuine packaging.",
+			coverQ: 'Does DETECK cover every medicine in Nigeria?',
+			coverA:
+				"Not yet. We're adding manufacturers and their medicines one at a time. If a medicine isn't on DETECK yet, Deteck will tell you we don't have its records. That doesn't mean it's fake. Ask a licensed pharmacist before you use it.",
+			nextQ: "What's next for DETECK?",
+			nextA:
+				"We're building supply-chain traceability, so you'll be able to see where a batch has been, from the factory through each distributor to the pharmacy or hospital that sold it.",
+			more: 'Still have a question? Reach out to us directly.',
+			partner: 'Partner with us',
+			api: 'Developer API',
+			contactUs: 'Contact us'
 		},
 		verifyTitle: 'Got a pack in your hand? Check it now.',
 		verifyLabel: 'Serial number on the pack',
 		verifyButton: 'Check it',
-		verifyFine:
-			"Normal data charges apply. Results depend on the records manufacturers share with DETECK. When there isn't enough information to be sure, Deteck will tell you.",
 		footerLead: "Building DETECK with partners across Nigeria's medicine supply chain.",
 		footerNav: 'Footer',
 		footerProduct: 'Product',
 		footerCompany: 'Company',
 		footerBusiness: 'For business',
 		contact: 'Contact',
-		photoCredit: 'Photos from Unsplash and Pexels',
+		photoCredit: 'Photos from Unsplash, Pexels and Wikimedia Commons',
+		cropped: 'cropped',
 		legal:
 			'© 2026 DETECK. Checks depend on participating manufacturers recording their products. DETECK checks records and, in the beta, how a pack looks; it can’t test what is inside a pack.'
 	}

@@ -21,6 +21,7 @@
 	<a href="/terms">{t.footer.terms}</a>
 	<a href="/business">{t.footer.business}</a>
 	<a href="/developers">{t.footer.developers}</a>
+	<a href="/contact">{t.footer.contact}</a>
 	<span>{t.footer.note}</span>
 </footer>
 

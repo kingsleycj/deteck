@@ -11,9 +11,9 @@
 	<nav aria-label={t.nav.main}>
 		<a href="/#how">{t.nav.how}</a>
 		<a href="/#faq">{t.landing.navFaq}</a>
+		<a href="/contact">{t.nav.contact}</a>
 	</nav>
 	<div class="row" style="--gap: 8px">
-		<span class="pill">{t.nav.badge}</span>
 		<LanguageMenu />
 		<a class="topbar-signin" href="/business/sign-in">{t.landing.signIn}</a>
 	</div>

@@ -1,10 +1,10 @@
-/** Hausa. Draft: needs a native speaker's review before launch. */
+/** Hausa. Approved for production by the product owner (5 Nov 2026). */
 import type { Messages } from './en.ts';
 
 export const ha: Messages = {
 	meta: {
 		name: 'Hausa',
-		reviewed: false
+		reviewed: true
 	},
 
 	common: {
@@ -26,7 +26,7 @@ export const ha: Messages = {
 		home: 'Shafin farko na Deteck',
 		main: 'Babban menu',
 		how: 'Yadda yake aiki',
-		badge: 'Babu kuɗin DETECK',
+		contact: 'Tuntuɓe mu',
 		menu: 'Zaɓuɓɓuka'
 	},
 
@@ -37,6 +37,7 @@ export const ha: Messages = {
 		terms: 'Sharuɗɗa',
 		business: 'Don kamfanonin ƙera magani da kantunan magani',
 		developers: 'Masu haɓaka manhaja',
+		contact: 'Tuntuɓe mu',
 		note: 'Sakamako ya dogara da bayanan da kamfanonin ƙera magani suka ba DETECK.'
 	},
 
@@ -74,7 +75,6 @@ export const ha: Messages = {
 			'Deteck yana kwatanta lambar serial ɗinka da bayanan kamfanin da ya ƙera maganin.',
 		retry: 'Sake gwadawa',
 		tryAgain: 'Gwada kuma',
-		eyebrow: 'Mai duba magani',
 		lede: 'Rubuta lambar serial da ke kan kwalin. Deteck zai kwatanta ta da bayanan kamfanin da ya ƙera maganin, ya kuma nuna maka inda ya bi.',
 		scanNote: 'Yi amfani da kyamararka, ko ka ɗora hotunan kwalin.',
 		helloTitle: 'Sannu, ni ne Deteck.',
@@ -86,8 +86,6 @@ export const ha: Messages = {
 		step2Text: 'AI yana gano bambance-bambancen da ake iya gani',
 		step3Title: '3 · Tafiya',
 		step3Text: 'Daga kamfanin da ya ƙera zuwa kasuwancin ƙarshe da aka rubuta',
-		checkingEyebrow: 'Ana dubawa',
-		tipsEyebrow: 'Tsarin bai dace ba',
 		tipsTitle: 'Inda za ka sami lambar serial',
 		tip1: 'Kusa da barcode, bayan **SN** ko **Serial**',
 		tip2: 'Har zuwa haruffa da lambobi 20, sau da yawa a rukuni-rukuni',
@@ -123,7 +121,6 @@ export const ha: Messages = {
 			other:
 				'An yi dubawa da yawa cikin ɗan lokaci. Don Allah jira minti {n} sannan ka sake gwadawa.'
 		},
-		offlineEyebrow: 'Babu haɗin intanet',
 		editSerial: 'Gyara lambar serial',
 		offlineNote:
 			'Dubawa ɗaya ba ta cin data kamar loda hoto, don haka ko da siginar 2G ko 3G mai rauni yakan isa.'
@@ -383,42 +380,29 @@ export const ha: Messages = {
 
 	scan: {
 		metaTitle: 'Ƙara dubawa ta hanyar sikan · DETECK',
+		metaDescription:
+			'Ɗauki hoton kwalin magani, DETECK zai kwatanta shi da kwalin kamfanin da ya ƙera shi. Kyauta ne, babu buƙatar asusu.',
 		title: 'Ƙara dubawa ta hanyar sikan',
 		closeAria: 'Rufe sikan',
-		blockedBubble:
-			'Ina buƙatar kyamararka don yin sikan na kwalin. Da alama an kashe ta ga DETECK.',
-		turnOnTitle: 'Kunna kyamara',
-		turnOn1: 'Buɗe Settings na wayarka, ko ka danna alamar kwaɗo da ke kusa da adireshin shafin.',
-		turnOn2: 'Nemo burauzarka (browser), sannan ka zaɓi Camera.',
-		turnOn3: 'Ba da izini ga Camera (Allow), sannan ka dawo nan.',
-		turnedOn: 'Na kunna ta',
 		cameraAria: 'Abin da kyamara ke gani',
-		holdAuto: 'Sa kod mai siffar murabbaʼi a cikin akwatin. Zan karanta shi kai tsaye.',
-		holdPhoto:
-			'Sa kod mai siffar murabbaʼi a cikin akwatin, a wuri mai haske, sannan ka ɗauki hoto.',
-		takePhoto: 'Ɗauki hoton kod ɗin',
-		reading: 'Ana karanta kod ɗin…',
-		intro:
-			'Yi sikan na kod mai siffar murabbaʼi da ke kan kwalin, ni kuma zan kwatanta lambar serial ɗinsa da bayanan kamfanin da ya ƙera maganin.',
-		unsupported:
-			'Wannan burauza ba za ta iya buɗe kyamara a nan ba. Ɗauki hoton kod ɗin a maimakon haka.',
-		scanButton: 'Yi sikan na kod ɗin',
-		photoIdle: 'Ɗauki ko zaɓi hoton kod ɗin',
-		photoGallery: 'Zaɓi hoto daga cikin hotunanka',
-		readPhoto: 'Karanta kod ɗin da ke hotona',
+		startBubble:
+			'Ɗauki hotunan kwalin, ni kuma zan kwatanta su da kwalin asali na kamfanin da ya ƙera maganin.',
+		startButton: 'Yi sikan na kwalin',
+		startUpload: 'Ɗora hotuna 3 na kwalin',
+		startUploadNote:
+			'Gaba, baya da lakabi. Ana rage girman hotuna a wayarka kafin a aika, don a rage kashe data. Ana amfani da su ne don kwatanta kwalin kawai, ba a ajiye su.',
+		startPhotoAlt: 'Hannu yana ɗaga waya don ɗaukar hoton kwalin magani',
+		howTitle: 'Yadda yake aiki',
+		how1: 'Riƙe kwalin a wuri mai haske.',
+		how2: 'Ɗauki hotuna 3: gaba, baya, da lakabin da ke da lambar batch.',
+		how3: 'Deteck zai kwatanta su da kwalin asali na kamfanin da ya ƙera maganin.',
+		how4: 'Za ka ga abin da ya yi daidai da abin da ya bambanta.',
 		typeInstead: 'Rubuta lambar serial a maimakon haka',
-		footer:
-			'Ana rage girman hotuna a wayarka kafin a aika, don a rage kashe data. Ana amfani da hoton ne don karanta kod ɗin kawai, ba a ajiye shi.',
-		noPhoto: 'Da farko, ɗauki ko zaɓi hoton kod ɗin.',
-		tooLarge: 'Wannan hoton ya yi girma da yawa. Sake gwadawa da ƙaramin hoto.',
-		unreadable:
-			'Ban iya karanta kod a wannan hoton ba. Kusantar da kwalin, a wuri mai haske, kod mai siffar murabbaʼi ya kasance a tsakiya. Ko kuma ka rubuta lambar serial a maimakon haka.',
 		cancel: 'Soke',
 		tabCamera: 'Yi amfani da kyamara',
 		tabUpload: 'Ɗora hotuna',
 		methodAria: 'Yadda za a ƙara hotunan',
 		photoOf: 'Hoto {n} cikin 3 · {side}',
-		codeRead: 'An karanta kod ɗin · {serial}',
 		serialValid: 'Lambar serial {serial}: Ya yi daidai da bayanai',
 		sayFront: 'Riƙe gaban kwalin a miƙe a gaban kyamara, a wuri mai haske.',
 		sayBack:
@@ -441,14 +425,10 @@ export const ha: Messages = {
 		rule2: 'Gefen kwalin gaba ɗaya ya bayyana',
 		rule3: 'Wuri mai haske, babu kyalli',
 		added: 'An ƙara hotuna {n} cikin 3',
-		reviewEyebrow: 'Hotuna 3 cikin 3',
 		reviewTitle: 'Hotunan suna da kyau',
 		reviewText: 'Suna bayyane, akwai haske, kuma kwalin gaba ɗaya yana gani.',
 		reviewBubble: 'Na shirya in kwatanta su da kwalin kamfanin.',
 		retakeOne: 'Sake ɗaukar hoto ɗaya',
-		retakePhoto: 'Sake ɗaukar hoton',
-		uploadInstead: 'Ɗora hoton waya a maimakon haka',
-		neverUsed: 'Ba a taɓa amfani da hoto mai dushewa, duhu ko yankakke don sakamako.',
 		noCode:
 			'Ban iya karanta kod ɗin a cikin waɗannan hotunan ba. Sake ɗaukar bayan kwalin, kusa-kusa, tare da kod mai murabba’i a bayyane. Ko ka rubuta lambar serial a maimakon haka.',
 		startCamera: 'Kunna kyamara',
@@ -610,6 +590,59 @@ export const ha: Messages = {
 		}
 	},
 
+	contact: {
+		metaTitle: 'Tuntuɓe mu · DETECK',
+		metaDescription:
+			'Aika wa maʼaikatan DETECK saƙo game da duba magani, haɗin gwiwa da DETECK ko amfani da API.',
+		title: 'Tuntuɓe mu',
+		lede: 'Kana da tambaya game da duba magani, haɗin gwiwa da DETECK ko amfani da API ɗinmu? Aiko mana da saƙo, za mu ba ka amsa ta imel.',
+		bubble: 'Sannu! Faɗa mana yadda za mu taimaka maka.',
+		waysTitle: 'Wasu hanyoyin tuntuɓar mu',
+		emailTitle: 'Imel',
+		partnerTitle: 'Yi haɗin gwiwa da mu',
+		partnerText:
+			'Kamfanonin ƙera magani, masu rarrabawa, kantunan magani da asibitoci: zaɓi "Haɗin gwiwa da DETECK" a cikin fom ɗin, ka kuma faɗa mana game da kasuwancinka.',
+		devTitle: 'Masu haɓaka manhaja',
+		devText: 'Karanta takardun API',
+		faqTitle: 'Amsoshi a taƙaice',
+		faqText: 'Duba tambayoyin da mutane ke yi',
+		formTitle: 'Aiko mana da saƙo',
+		name: 'Cikakken suna',
+		email: 'Imel',
+		organisation: 'Kamfani ko ƙungiya (ba dole ba)',
+		topic: 'Game da me ne?',
+		chooseTopic: 'Zaɓi ɗaya',
+		topics: {
+			general: 'Tambaya ta gaba ɗaya',
+			checking: 'Duba magani',
+			partnering: 'Haɗin gwiwa da DETECK',
+			developers: 'API ɗin',
+			press: 'Manema labarai da kafofin watsa labarai',
+			problem: 'Matsala da wannan shafin intanet'
+		},
+		message: 'Saƙo',
+		messageHint: 'Har zuwa haruffa 3,000.',
+		privacy: 'Muna amfani da bayananka ne kawai don mu amsa wannan saƙo.',
+		privacyLink: 'Sanarwar sirri',
+		send: 'Aika saƙo',
+		sending: 'Ana aikawa…',
+		sentTitle: 'Mun gode. Saƙonka ya isa ga maʼaikatan DETECK.',
+		sentText: 'Za mu ba ka amsa ta imel.',
+		sendAnother: 'Aika wani saƙo',
+		worried:
+			'Kana damuwa da wani magani da kake da shi yanzu? Duba shi a DETECK, ka kuma tambayi masanin magunguna.',
+		errors: {
+			name: 'Faɗa mana sunanka.',
+			email: 'Akwai abin da ya rage a wannan adireshin imel, kamar .com ko .ng.',
+			topic: 'Zaɓi abin da saƙonka ya shafa.',
+			message: 'Rubuta saƙonka (aƙalla haruffa 10).',
+			too_long: 'Saƙonka ya yi tsawo da yawa. Kada ya wuce haruffa 3,000.',
+			human: 'Don Allah ka kammala gwajin "kai mutum ne?".',
+			limit: 'Ka riga ka aika saƙonni da dama. Don Allah ka sake gwadawa daga baya.',
+			failed: 'Ba mu iya aika saƙonka a yanzu ba. Don Allah ka sake gwadawa bayan wasu mintuna.'
+		}
+	},
+
 	error: {
 		notFoundTitle: 'Ban sami wannan shafin ba',
 		notFoundBody: 'Mai yiwuwa link ɗin ya tsufa ko an rubuta shi ba daidai ba.',
@@ -624,7 +657,7 @@ export const ha: Messages = {
 	},
 
 	landing: {
-		metaTitle: 'Game da DETECK · Duba magunguna da bayanan kamfanonin da suka ƙera su',
+		metaTitle: 'DETECK · Duba magunguna da bayanan kamfanonin da suka ƙera su',
 		metaDescription:
 			'DETECK yana ba kowa a Najeriya damar kwatanta lambar serial ta magani da bayanan da kamfanin da ya ƙera shi ya bayar. Dubawa kyauta ne, babu asusu.',
 		navVision: 'Burinmu',
@@ -637,7 +670,7 @@ export const ha: Messages = {
 		seeHow: 'Ga yadda yake aiki',
 		heroBubble: 'Sannu, ni ne Deteck. Ina nan don in taimaka.',
 		heroAlt:
-			'Kwayoyin magani a cikin takardar foil kusa da buɗaɗɗen kwalin magani a kan kantar kantin magani',
+			'Kwayoyin magani masu launin lemu kusa da fakitin blister maras komai a kan bango shuɗi mai haske',
 		heroNote: 'Ba a buƙatar asusu. Amsar tana zuwa cikin daƙiƙoƙi.',
 		trust: {
 			free: 'Dubawa kyauta ne',
@@ -660,9 +693,52 @@ export const ha: Messages = {
 		step3Text:
 			'Ya yi daidai da bayanai ko Ba a gane shi ba, cikin kalmomi masu sauƙi. Idan bayanan ba su isa a tabbatar ba, Deteck zai faɗa maka haka.',
 		biz: {
-			registerManufacturer: 'Yi rajistar kamfanin ƙera magani',
-			registerBusiness: 'Yi rajistar kantin magani, asibiti ko mai rarrabawa',
+			registerManufacturer: 'Yi rajista a matsayin kamfanin ƙera magani',
+			registerBusiness: 'Yi rajista a matsayin kantin magani, asibiti ko mai rarrabawa',
 			docs: 'Takardun API'
+		},
+		verifyFurther: {
+			title: 'Duba kwalin, ba kod ɗin kawai ba.',
+			text: 'Ɗauki hoton gaba, baya da lakabin kwalinka. Deteck zai kwatanta su da kwalin asali na kamfanin da ya ƙera maganin, ya kuma faɗa maka idan wani abu ya bambanta.',
+			button: 'Ƙara dubawa',
+			alt: 'Allon kyamarar DETECK yana tsara fakitin blister na ƙwayoyin magani maras lakabi'
+		},
+		who: {
+			title: 'An gina shi don duk wanda ke saye, ko jigila, ko ba da magani.',
+			individuals: {
+				tab: 'Ɗaiɗaikun mutane',
+				title: 'Duba kafin ka saya ko ka yi amfani da shi',
+				text: 'Rubuta lambar serial da ke kan magani, ko ka ɗauki hoton kwalinsa, ka ga ko ya yi daidai da bayanai amintattu.',
+				alt: 'Wata budurwa a Legas tana murmushi tana kallon wayarta a kan kujera',
+				cta: 'Duba magani'
+			},
+			facilities: {
+				tab: 'Kantunan magani, asibitoci da cibiyoyin lafiya',
+				title: 'Duba kafin ka sayar ko ka ba da magani',
+				text: 'Tantance magungunan da kake karɓa daga masu kawo kaya kafin su isa kan shiryayyunka ko a ba marasa lafiya.',
+				alt: 'Kanta da shiryayyun wani kantin magani na zamani a Ikeja, Legas',
+				pharmacy: 'Yi rajista a matsayin kantin magani',
+				hospital: 'Yi rajista a matsayin asibiti'
+			},
+			makers: {
+				tab: 'Kamfanonin ƙera magani da masu rarrabawa',
+				title: 'Ba da bayanan kayayyakinka',
+				text: 'Ko kai ne ka ƙera magunguna ko kana shigo da su kana kuma sanya su a kwali, ɗora kayayyakinka, lambobin serial da kwalayenka na asali domin mutane su iya duba su da bayananka.',
+				alt: 'Wani mutum yana duba kwalayen kaya a kan shiryayyun maʼajiya',
+				manufacturer: 'Yi rajista a matsayin kamfanin ƙera magani',
+				distributor: 'Yi rajista a matsayin mai rarrabawa'
+			}
+		},
+		impact: {
+			title: 'Tasirin da muke ƙoƙarin samarwa',
+			familiesTitle: 'Iyalai masu kwarin gwiwa',
+			familiesText: 'Mutane za su iya duba magani da kansu kafin su saya ko su yi amfani da shi.',
+			dispensingTitle: 'Ba da magani cikin ƙarin aminci',
+			dispensingText:
+				'Kantunan magani da asibitoci za su iya tantance magungunan da suka karɓa kafin su ba da su.',
+			productsTitle: 'Kayayyaki amintattu',
+			productsText:
+				'Kamfanonin ƙera magani za su iya yin rajistar kayayyakinsu, su kuma taimaka wa mutane su duba su da bayanansu.'
 		},
 		visionTitle: 'Ya kamata kowa a Najeriya ya iya duba maganinsa.',
 		visionAlt: 'Wata budurwa tana murmushi tana duban wayarta a wani gidan shayi a Abuja',
@@ -670,24 +746,31 @@ export const ha: Messages = {
 			'DETECK yana haɗa lambar serial ta kowane kwali da bayanan kamfanin da ya ƙera shi, don ka iya dubawa da kanka, maimakon ka dogara kawai da yadda kwalin yake a gani.',
 		faq: {
 			title: 'Tambayoyin da mutane ke yi',
-			freeQ: 'Akwai kuɗi?',
-			freeA:
-				'Duba magani kyauta ne kuma ba ya buƙatar asusu. Kuɗin data na kamfanin sadarwarka na yau da kullum yana aiki, kuma duba lambar serial yana amfani da ɗan ƙaramin data.',
-			validQ: 'Me "Valid" ke nufi?',
-			validA:
-				'Yana nufin lambar serial ta yi daidai da bayanan da kamfanin da ya ƙera shi ya ba DETECK. DETECK ba za ta iya gwada abin da ke cikin kwali ba, don haka idan wani abu game da shi ya dame ka, tambayi masanin magunguna.',
-			missingQ: 'Me zai faru idan maganina ba ya cikin DETECK?',
-			missingA:
-				'Ba kowane kamfani ne ya ba da bayanansa ba tukuna. DETECK za ta faɗi haka a sarari, kuma ba yana nufin maganin na jabu ne ba. Masanin magungunanka zai iya taimaka maka.',
-			dataQ: 'Me ke faruwa da bayanaina?',
-			dataA:
-				'Dubawa ba ta buƙatar sunanka ko lambar wayarka. DETECK tana ajiye abin da take buƙata kawai don amsa dubawa da hana cin zarafi; sanarwar sirri ta faɗi menene, da tsawon lokaci.'
+			useQ: 'Ta yaya zan yi amfani da DETECK?',
+			useA: 'Rubuta lambar serial da aka buga a kan kwalin, sannan ka danna Duba shi. Deteck zai kwatanta ta da bayanan kamfanin da ya ƙera maganin, ya faɗa maka sakamako cikin daƙiƙoƙi. Don ƙarin tabbaci, danna Ƙara dubawa ka ɗauki hoton kwalin.',
+			helpQ: 'Ta yaya DETECK zai taimake ni?',
+			helpA:
+				'Za ka iya duba magani kafin ka saya, ka sha, ko ka ba iyalinka, maimakon ka yi hukunci da yadda kwalin yake a gani. Kyauta ne, ba ya buƙatar asusu, kuma yana aiki a kan 2G da 3G cikin harsuna biyar.',
+			resultsQ: 'Me sakamakon ke nufi?',
+			resultsA:
+				'**Ya yi daidai da bayanai:** lambar serial ta yi daidai da bayanan kamfanin da ya ƙera maganin.\n**Ba a gane shi ba:** ba mu sami lambar serial ɗin ba. Duba ko ka rubuta ta daidai, kuma kada ka yi amfani da maganin har sai ka tabbata.\n**Yana buƙatar ƙarin dubawa:** wani abu bai dace ba. Ƙara dubawa ta hanyar ɗaukar hoton kwalin.',
+			sourceQ: 'Daga ina DETECK ke samun bayanansa?',
+			sourceA:
+				'Daga kamfanonin ƙera magani da masu rarrabawa a hanyar samar da magunguna ta Najeriya da muke haɗin gwiwa da su. Suna ba mu bayanan kayayyakinsu: bayanan magani, lambobin batch da serial, ranakun ƙarewa da hotunan kwalayensu na asali.',
+			coverQ: 'Shin kowane magani a Najeriya yana cikin DETECK?',
+			coverA:
+				'Tukuna ba. Muna ƙara kamfanonin ƙera magani da magungunansu ɗaya bayan ɗaya. Idan wani magani ba ya cikin DETECK tukuna, Deteck zai faɗa maka cewa ba mu da bayanansa. Hakan ba yana nufin na jabu ne ba. Tambayi masanin magunguna mai lasisi kafin ka yi amfani da shi.',
+			nextQ: 'Me ke tafe ga DETECK?',
+			nextA:
+				'Muna gina tsarin bin diddigin hanyar samar da magunguna, don ka iya ganin inda wani batch ya bi, daga masanaʼanta ta hannun kowane mai rarrabawa zuwa kantin magani ko asibitin da ya sayar da shi.',
+			more: 'Har yanzu kana da tambaya? Tuntuɓe mu kai tsaye.',
+			partner: 'Yi haɗin gwiwa da mu',
+			api: 'API na masu haɓaka manhaja',
+			contactUs: 'Tuntuɓe mu'
 		},
 		verifyTitle: 'Kana riƙe da kwalin magani? Duba shi yanzu.',
 		verifyLabel: 'Lambar serial da ke kan kwalin',
 		verifyButton: 'Duba shi',
-		verifyFine:
-			'Za a cire kuɗin data kamar yadda aka saba. Sakamako ya dogara da bayanan da kamfanonin ƙera magani suka ba DETECK. Idan babu isasshen bayani da za a tabbatar, Deteck zai faɗa maka.',
 		footerLead:
 			'Muna gina DETECK tare da abokan hulɗa a duk faɗin hanyar samar da magunguna a Najeriya.',
 		footerNav: 'Ƙasan shafi',
@@ -695,7 +778,8 @@ export const ha: Messages = {
 		footerCompany: 'Kamfani',
 		footerBusiness: "Na 'yan kasuwa",
 		contact: 'Tuntuɓe mu',
-		photoCredit: 'Hotuna daga Unsplash da Pexels',
+		photoCredit: 'Hotuna daga Unsplash, Pexels da Wikimedia Commons',
+		cropped: 'an yanke shi',
 		legal:
 			'© 2026 DETECK. Dubawa ya dogara da kamfanonin ƙera magani masu shiga shirin da suke rubuta magungunansu. DETECK yana duba bayanai, kuma a lokacin gwaji, yadda kwali yake a gani; ba zai iya gwada abin da ke cikin kwali ba.'
 	}

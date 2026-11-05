@@ -1,10 +1,10 @@
-/** Igbo. Draft: needs a native speaker's review before launch. */
+/** Igbo. Approved for production by the product owner (5 Nov 2026). */
 import type { Messages } from './en.ts';
 
 export const ig: Messages = {
 	meta: {
 		name: 'Igbo',
-		reviewed: false
+		reviewed: true
 	},
 
 	common: {
@@ -26,7 +26,7 @@ export const ig: Messages = {
 		home: 'Peeji mbụ Deteck',
 		main: 'Isi',
 		how: 'Otú o si arụ ọrụ',
-		badge: 'DETECK anaghị ana ego',
+		contact: 'Kpọtụrụ anyị',
 		menu: 'Nhọrọ'
 	},
 
@@ -37,6 +37,7 @@ export const ig: Messages = {
 		terms: 'Iwu na usoro',
 		business: 'Maka ndị na-emepụta ọgwụ na ụlọ ahịa ọgwụ',
 		developers: 'Ndị na-ede koodu',
+		contact: 'Kpọtụrụ anyị',
 		note: 'Nsonaazụ dabere na ndekọ ndị na-emepụta ọgwụ na-enye DETECK.'
 	},
 
@@ -71,7 +72,6 @@ export const ig: Messages = {
 		checkingBody: 'Deteck na-atụnyere nọmba serial gị na ndekọ ụlọ ọrụ mepụtara ya.',
 		retry: 'Nwaa ọzọ',
 		tryAgain: 'Nwaa ọzọ',
-		eyebrow: 'Onye nyocha ọgwụ',
 		lede: 'Dee nọmba serial dị na ngwugwu ahụ. Deteck ga-eji ya tụnyere ndekọ ụlọ ọrụ mepụtara ya, ma gosi gị ebe ọ gafere.',
 		scanNote: 'Jiri igwefoto gị, ma ọ bụ bulite foto ngwugwu ahụ.',
 		helloTitle: 'Ndewo, abụ m Deteck.',
@@ -83,8 +83,6 @@ export const ig: Messages = {
 		step2Text: 'AI na-ahụ ọdịiche anya nwere ike ịhụ',
 		step3Title: '3 · Njem',
 		step3Text: 'Site n’aka onye mepụtara ya ruo azụmahịa ikpeazụ e dekọrọ',
-		checkingEyebrow: 'Na-enyocha',
-		tipsEyebrow: 'Ụdị ezighi ezi',
 		tipsTitle: 'Ebe ị ga-ahụ nọmba serial',
 		tip1: 'N’akụkụ barcode, mgbe **SN** ma ọ bụ **Serial** gasịrị',
 		tip2: 'Ruo mkpụrụedemede na nọmba 20, mgbe ụfọdụ n’otu n’otu',
@@ -118,7 +116,6 @@ export const ig: Messages = {
 			one: "Nlele karịrị akarị n'obere oge. Biko chere nkeji {n}, wee nwaa ọzọ.",
 			other: "Nlele karịrị akarị n'obere oge. Biko chere nkeji {n}, wee nwaa ọzọ."
 		},
-		offlineEyebrow: 'Enweghị njikọ',
 		editSerial: 'Dezie nọmba serial',
 		offlineNote:
 			'Otu nyocha anaghị eri data dị ka ibudata foto, ya mere ọbụna mgbaàmà 2G ma ọ bụ 3G na-adịghị ike na-ezukarị.'
@@ -376,39 +373,28 @@ export const ig: Messages = {
 
 	scan: {
 		metaTitle: 'Jiri scan nyochaa karịa · DETECK',
+		metaDescription:
+			"See foto nke ngwugwu ọgwụ, DETECK ga-eji ya tụnyere ngwugwu ụlọ ọrụ mepụtara ya. Ọ bụ n'efu, ọ dịghị akaụntụ achọrọ.",
 		title: 'Jiri scan nyochaa karịa',
 		closeAria: 'Mechie scanner',
-		blockedBubble: 'Achọrọ m kamera gị iji scan ngwugwu ahụ. O yiri ka a gbanyụrụ ya maka DETECK.',
-		turnOnTitle: 'Gbanye kamera',
-		turnOn1: "Mepee Settings ekwentị gị, ma ọ bụ pịa akara mkpọchi dị n'akụkụ adreesị weebụ.",
-		turnOn2: 'Chọta browser gị, wee pịa Camera.',
-		turnOn3: 'Pịa Allow maka Camera, wee laghachi ebe a.',
-		turnedOn: 'Agbanyela m ya',
 		cameraAria: 'Ihe kamera na-ahụ',
-		holdAuto: "Jide koodu akụkụ anọ ahụ n'ime igbe a. M ga-agụ ya n'onwe m.",
-		holdPhoto: "Jide koodu akụkụ anọ ahụ n'ime igbe a, ebe ìhè zuru ezu, wee see foto.",
-		takePhoto: 'See foto koodu ahụ',
-		reading: 'Ana m agụ koodu ahụ…',
-		intro:
-			'Scan koodu akụkụ anọ dị na ngwugwu ahụ, m ga-atụnyere nọmba serial ya na ndekọ ụlọ ọrụ mepụtara ya.',
-		unsupported: 'Browser a enweghị ike imepe kamera ebe a. See foto koodu ahụ kama.',
-		scanButton: 'Scan koodu ahụ',
-		photoIdle: 'See ma ọ bụ họrọ foto koodu ahụ',
-		photoGallery: 'Họrọ foto na gallery gị',
-		readPhoto: 'Gụọ koodu dị na foto m',
+		startBubble: 'See foto ngwugwu ahụ, m ga-atụnyere ya na ngwugwu ụlọ ọrụ mepụtara ya na-eji.',
+		startButton: 'Scan ngwugwu ahụ',
+		startUpload: 'Bulite foto atọ nke ngwugwu ahụ',
+		startUploadNote:
+			"Ihu, azụ na label. A na-ebelata foto n'ekwentị gị tupu e ziga ha, iji chekwaa data. A na-eji ha naanị atụnyere ngwugwu ahụ; anyị anaghị edebe ha.",
+		startPhotoAlt: 'Aka jidere ekwentị elu iji see foto ngwugwu ọgwụ',
+		howTitle: 'Otú o si arụ ọrụ',
+		how1: 'Jide ngwugwu ahụ ebe ìhè zuru ezu.',
+		how2: 'See foto atọ: ihu, azụ, na label nwere nọmba batch.',
+		how3: 'Deteck ga-atụnyere ha na ngwugwu ụlọ ọrụ mepụtara ya na-eji.',
+		how4: 'Ị ga-ahụ ihe dabara na ihe yiri ka ọ dị iche.',
 		typeInstead: 'Dee nọmba serial kama',
-		footer:
-			"A na-ebelata foto n'ekwentị gị tupu e ziga ya, iji chekwaa data. A na-eji foto ahụ agụ koodu ahụ; anyị anaghị edebe ya.",
-		noPhoto: 'Buru ụzọ see ma ọ bụ họrọ foto koodu ahụ.',
-		tooLarge: 'Foto ahụ buru oke ibu. Nwaa ọzọ, jiri foto pere mpe.',
-		unreadable:
-			"Enweghị m ike ịgụ koodu ọ bụla na foto a. Bute ngwugwu ahụ nso, ebe ìhè zuru ezu, ka koodu akụkụ anọ ahụ dị n'etiti. Ma ọ bụ dee nọmba serial kama.",
 		cancel: 'Kagbuo',
 		tabCamera: 'Jiri igwefoto',
 		tabUpload: 'Bulite foto',
 		methodAria: 'Otu ị ga-esi tinye foto ndị ahụ',
 		photoOf: 'Foto {n} n’ime 3 · {side}',
-		codeRead: 'Agụọla m koodu ahụ · {serial}',
 		serialValid: 'Serial {serial}: Dabara na ndekọ',
 		sayFront: 'Jide ihu ngwugwu ahụ ka ọ dị larịị n’ihu igwefoto, ebe ìhè zuru ezu.',
 		sayBack:
@@ -431,15 +417,10 @@ export const ig: Messages = {
 		rule2: 'Akụkụ ngwugwu ahụ dum ga-apụta',
 		rule3: 'Ìhè zuru ezu, ọ dịghị ìhè na-egbuke egbuke',
 		added: 'Etinyela foto {n} n’ime 3',
-		reviewEyebrow: 'Foto 3 n’ime 3',
 		reviewTitle: 'Foto ndị a dị mma',
 		reviewText: 'Ha doro anya, ìhè zuru ezu, ngwugwu ahụ dum na-apụtakwa.',
 		reviewBubble: 'Adịla m njikere iji ha tụnyere ngwugwu ụlọ ọrụ ahụ.',
 		retakeOne: 'See otu foto ọzọ',
-		retakePhoto: 'See foto ọzọ',
-		uploadInstead: 'Bulite foto ekwentị kama',
-		neverUsed:
-			'A naghị eji foto na-adịghị doro anya, gbara ọchịchịrị ma ọ bụ e gbubiri egbubi maka nsonaazụ.',
 		noCode:
 			'Enweghị m ike ịgụ koodu ahụ na foto ndị a. See azụ ngwugwu ahụ ọzọ, nso nso, ka koodu nwere akụkụ anọ pụta ìhè. Ma ọ bụ dee nọmba serial kama.',
 		startCamera: 'Gbanye igwefoto',
@@ -600,6 +581,58 @@ export const ig: Messages = {
 		}
 	},
 
+	contact: {
+		metaTitle: 'Kpọtụrụ anyị · DETECK',
+		metaDescription:
+			'Zigara ndị ọrụ DETECK ozi gbasara ilele ọgwụ, mmekọ na DETECK ma ọ bụ iji API.',
+		title: 'Kpọtụrụ anyị',
+		lede: 'I nwere ajụjụ gbasara ilele ọgwụ, mmekọ na DETECK ma ọ bụ iji API anyị? Zitere anyị ozi, anyị ga-azaghachi gị site na email.',
+		bubble: 'Ndewo! Gwa anyị otú anyị ga-esi nyere gị aka.',
+		waysTitle: 'Ụzọ ndị ọzọ isi kpọtụrụ anyị',
+		emailTitle: 'Email',
+		partnerTitle: 'Soro anyị rụkọọ ọrụ',
+		partnerText:
+			'Ndị na-emepụta ọgwụ, ndị nkesa, ụlọ ahịa ọgwụ na ụlọ ọgwụ: họrọ “Mmekọ na DETECK” na fọm a, ma gwa anyị maka azụmahịa gị.',
+		devTitle: 'Ndị na-ede koodu',
+		devText: 'Gụọ akwụkwọ API',
+		faqTitle: 'Azịza ngwa ngwa',
+		faqText: 'Hụ ajụjụ ndị mmadụ na-ajụ',
+		formTitle: 'Zitere anyị ozi',
+		name: 'Aha gị zuru ezu',
+		email: 'Email',
+		organisation: 'Ụlọ ọrụ (ọ bụghị iwu)',
+		topic: 'Gịnị ka ọ gbasara?',
+		chooseTopic: 'Họrọ otu',
+		topics: {
+			general: 'Ajụjụ izugbe',
+			checking: 'Ilele ọgwụ',
+			partnering: 'Mmekọ na DETECK',
+			developers: 'API ahụ',
+			press: 'Ndị nta akụkọ na mgbasa ozi',
+			problem: 'Nsogbu na weebụsaịtị a'
+		},
+		message: 'Ozi',
+		messageHint: 'Ruo mkpụrụedemede 3,000.',
+		privacy: 'Anyị na-eji nkọwa i nyere naanị iji zaa ozi a.',
+		privacyLink: 'Ọkwa nzuzo',
+		send: 'Ziga ozi',
+		sending: 'A na-eziga ya…',
+		sentTitle: 'Daalụ. Ozi gị eruola ndị ọrụ DETECK aka.',
+		sentText: 'Anyị ga-azaghachi gị site na email.',
+		sendAnother: 'Ziga ozi ọzọ',
+		worried: 'Ọgwụ i nwere ugbu a na-echegbu gị? Lelee ya na DETECK, ma jụọ pharmacist.',
+		errors: {
+			name: 'Gwa anyị aha gị.',
+			email: "Ihe kọrọ n'adreesị email ahụ, dịka .com ma ọ bụ .ng.",
+			topic: 'Họrọ ihe ozi gị gbasara.',
+			message: 'Dee ozi gị (opekata mpe mkpụrụedemede 10).',
+			too_long: 'Ozi gị dị ogologo nke ukwuu. Mee ka ọ ghara ịkarị mkpụrụedemede 3,000.',
+			human: 'Biko mezue nlele “ị bụ mmadụ?”.',
+			limit: 'I zigalarị ọtụtụ ozi. Biko nwaa ọzọ mgbe e mesịrị.',
+			failed: 'Anyị enweghị ike iziga ozi gị ugbu a. Biko nwaa ọzọ mgbe nkeji ole na ole gachara.'
+		}
+	},
+
 	error: {
 		notFoundTitle: 'Achọtaghị m peeji ahụ',
 		notFoundBody: 'O nwere ike ịbụ na link ahụ adịla ochie ma ọ bụ na e dehiere ya.',
@@ -614,7 +647,7 @@ export const ig: Messages = {
 	},
 
 	landing: {
-		metaTitle: 'Banyere DETECK · Lelee ma ọgwụ dabara na ndekọ ụlọ ọrụ mepụtara ha',
+		metaTitle: 'DETECK · Lelee ma ọgwụ dabara na ndekọ ụlọ ọrụ mepụtara ha',
 		metaDescription:
 			"DETECK na-enyere onye ọ bụla nọ na Naịjirịa aka ilele ma nọmba serial ọgwụ dabara na ndekọ ụlọ ọrụ mepụtara ya nyere. Ilele bụ n'efu, ị chọghịkwa akaụntụ.",
 		navVision: 'Ọhụụ anyị',
@@ -626,7 +659,8 @@ export const ig: Messages = {
 		scanPack: 'Jiri scan nyochaa karịa',
 		seeHow: 'Hụ otú o si arụ ọrụ',
 		heroBubble: 'Ndewo, abụ m Deteck. Anọ m ebe a inyere gị aka.',
-		heroAlt: "Kapsul ọgwụ n'ime foil n'akụkụ igbe ọgwụ meghere emeghe na kanta ụlọ ahịa ọgwụ",
+		heroAlt:
+			"Kapsul ọgwụ na-acha oroma n'akụkụ ngwugwu blister tọgbọrọ chakoo n'elu ndabere na-acha anụnụ anụnụ",
 		heroNote: 'Ịchọghị akaụntụ. Azịza na-abịa n’ime sekọnd ole na ole.',
 		trust: {
 			free: "Ilele bụ n'efu",
@@ -648,9 +682,52 @@ export const ig: Messages = {
 		step3Text:
 			"“Dabara na ndekọ” ma ọ bụ “A maghị ya”, n'okwu dị mfe. Ọ bụrụ na ndekọ ezughị ezu iji jide n'aka, Deteck ga-agwa gị.",
 		biz: {
-			registerManufacturer: 'Debanye aha onye na-emepụta ọgwụ',
-			registerBusiness: 'Debanye aha ụlọ ahịa ọgwụ, ụlọ ọgwụ ma ọ bụ onye nkesa',
+			registerManufacturer: 'Debanye aha dịka onye na-emepụta ọgwụ',
+			registerBusiness: 'Debanye aha dịka ụlọ ahịa ọgwụ, ụlọ ọgwụ ma ọ bụ onye nkesa',
 			docs: 'Akwụkwọ API'
+		},
+		verifyFurther: {
+			title: 'Lelee ngwugwu ya, ọ bụghị naanị koodu ya.',
+			text: 'See foto ihu, azụ na label nke ngwugwu gị. Deteck ga-atụnyere ha na ngwugwu ụlọ ọrụ mepụtara ya na-eji, ma gwa gị ma ọ bụrụ na ihe ọ bụla yiri ka ọ dị iche.',
+			button: 'Nyochaa karịa',
+			alt: 'Ihuenyo igwefoto DETECK na-akpachi ngwugwu blister nke ọgwụ na-enweghị akara'
+		},
+		who: {
+			title: 'Emere ya maka onye ọ bụla na-azụ, na-ebugharị ma ọ bụ na-enye ọgwụ.',
+			individuals: {
+				tab: "Ndị mmadụ n'otu n'otu",
+				title: 'Lelee tupu ị zụta ma ọ bụ jiri ya',
+				text: 'Dee nọmba serial dị na ọgwụ, ma ọ bụ see foto ngwugwu ya, ka ị hụ ma ọ dabara na ndekọ a pụrụ ịtụkwasị obi.',
+				alt: "Otu nwaada nọ na Legọs na-amụmụ ọnụ ọchị ka ọ na-ele ekwentị ya n'oche",
+				cta: 'Lelee ọgwụ'
+			},
+			facilities: {
+				tab: 'Ụlọ ahịa ọgwụ, ụlọ ọgwụ na ebe ahụike',
+				title: 'Lelee tupu ị ree ma ọ bụ nye ya',
+				text: 'Nyochaa ọgwụ ndị ị na-anata n’aka ndị na-enye gị ngwaahịa tupu ha erute na shelf gị ma ọ bụ tupu e nye ha ndị ọrịa.',
+				alt: "Kanta na shelf nke ụlọ ahịa ọgwụ ọgbara ọhụrụ dị n'Ikeja, Lagos",
+				pharmacy: 'Debanye aha dịka ụlọ ahịa ọgwụ',
+				hospital: 'Debanye aha dịka ụlọ ọgwụ'
+			},
+			makers: {
+				tab: 'Ndị na-emepụta ọgwụ na ndị nkesa',
+				title: 'Kesaa data ngwaahịa gị',
+				text: 'Ma ọ bụ gị na-emepụta ọgwụ, ma ọ bụ ị na-ebubata ma na-etinye ha na ngwugwu, bulite ngwaahịa gị, nọmba serial ha na ngwugwu ị na-eji, ka ndị mmadụ nwee ike iji ndekọ gị lelee ha.',
+				alt: "Otu nwoke na-elele igbe ngwaahịa n'elu shelf ụlọ nchekwa ngwaahịa",
+				manufacturer: 'Debanye aha dịka onye na-emepụta ọgwụ',
+				distributor: 'Debanye aha dịka onye nkesa'
+			}
+		},
+		impact: {
+			title: 'Mmetụta anyị na-arụ ọrụ iji nweta',
+			familiesTitle: 'Ezinụlọ nwere obi ike',
+			familiesText: "Ndị mmadụ nwere ike ilele ọgwụ n'onwe ha tupu ha azụta ya ma ọ bụ jiri ya.",
+			dispensingTitle: "Inye ọgwụ n'ụzọ ka dị nchebe",
+			dispensingText:
+				'Ụlọ ahịa ọgwụ na ụlọ ọgwụ nwere ike ikwenye ọgwụ ndị ha natara tupu ha enye ya.',
+			productsTitle: 'Ngwaahịa a tụkwasịrị obi',
+			productsText:
+				'Ndị na-emepụta ọgwụ nwere ike idebanye aha ngwaahịa ha ma nyere ndị mmadụ aka iji ndekọ ha lelee ha.'
 		},
 		visionTitle: 'Onye ọ bụla nọ na Naịjirịa kwesịrị inwe ike ilele ọgwụ ya.',
 		visionAlt: 'Otu nwaagbọghọ na-amụmụ ọnụ ọchị ka ọ na-ele ekwentị ya n’ụlọ kọfị dị na Abuja',
@@ -658,31 +735,39 @@ export const ig: Messages = {
 			"DETECK na-ejikọ nọmba serial nke ngwugwu ọ bụla na ndekọ ụlọ ọrụ mepụtara ya, ka i wee nwee ike ilele ya n'onwe gị, kama ịdabere naanị n'otú ngwugwu ahụ si dị.",
 		faq: {
 			title: 'Ajụjụ ndị mmadụ na-ajụ',
-			freeQ: 'Ọ na-efu ego?',
-			freeA:
-				"Ilele ọgwụ bụ n'efu, ọ chọghịkwa akaụntụ. Ụgwọ data nkịtị nke netwọk gị ka na-adị, ilele serial anaghịkwa eji data buru ibu.",
-			validQ: 'Gịnị ka "Valid" pụtara?',
-			validA:
-				'Ọ pụtara na nọmba serial dabara na ndekọ ụlọ ọrụ mepụtara ya nyere DETECK. DETECK enweghị ike ịnwale ihe dị n’ime ngwugwu, ya mere ọ bụrụ na ihe ọ bụla gbasara ya na-echegbu gị, jụọ pharmacist.',
-			missingQ: 'Gịnị ma ọ bụrụ na ọgwụ m adịghị na DETECK?',
-			missingA:
-				'Ọ bụghị ụlọ ọrụ ọ bụla ekesala ndekọ ya. DETECK ga-ekwu ya n’ụzọ doro anya, ọ pụtaghịkwa na ọgwụ ahụ bụ adịgboroja. Pharmacist gị nwere ike inyere gị aka.',
-			dataQ: 'Gịnị na-eme ozi m?',
-			dataA:
-				'Ilele achọghị aha gị ma ọ bụ nọmba ekwentị gị. DETECK na-edobe naanị ihe ọ chọrọ iji zaa ilele ma kwụsị mmegbu; ọkwa nzuzo kwuru ihe ọ bụ, na ogologo oge ole.'
+			useQ: 'Kedu ka m ga-esi jiri DETECK?',
+			useA: "Dee nọmba serial e biri na ngwugwu ahụ, wee pịa Lelee ya. Deteck ga-eji ya tụnyere ndekọ ụlọ ọrụ mepụtara ya, ma gwa gị nsonaazụ n'ime sekọnd ole na ole. Iji jide n'aka karịa, pịa Nyochaa karịa ma see foto ngwugwu ahụ.",
+			helpQ: 'Kedu ka DETECK si enyere m aka?',
+			helpA:
+				"I nwere ike ilele ọgwụ tupu ị zụta ya, ṅụọ ya ma ọ bụ nye ezinụlọ gị, kama ikpe ya ikpe site n'otú ngwugwu ahụ si dị. Ọ bụ n'efu, ọ chọghị akaụntụ, ọ na-arụkwa ọrụ na 2G na 3G n'asụsụ ise.",
+			resultsQ: 'Gịnị ka nsonaazụ ndị a pụtara?',
+			resultsA:
+				"**Dabara na ndekọ:** nọmba serial ahụ dabara na ndekọ ụlọ ọrụ mepụtara ya.\n**A maghị ya:** anyị achọtaghị nọmba serial ahụ. Lelee na i dere ya nke ọma, ejikwala ọgwụ ahụ ruo mgbe i jide n'aka.\n**Ọ chọrọ nyocha ọzọ:** otu ihe adabaghị. Nyochaa karịa site n'ise foto ngwugwu ahụ.",
+			sourceQ: 'Ebee ka DETECK si enweta ozi ya?',
+			sourceA:
+				"Site n'aka ndị na-emepụta ọgwụ na ndị nkesa n'ụzọ nkesa ọgwụ na Naịjirịa anyị na ha na-arụkọ ọrụ. Ha na-ekesara anyị ndekọ ngwaahịa ha: nkọwa ngwaahịa, nọmba batch na serial, ụbọchị njedebe na foto ngwugwu ha na-eji.",
+			coverQ: 'Ọgwụ niile dị na Naịjirịa ọ dị na DETECK?',
+			coverA:
+				'Ọ bụbeghị. Anyị na-agbakwunye ndị na-emepụta ọgwụ na ọgwụ ha otu otu. Ọ bụrụ na ọgwụ adịbeghị na DETECK, Deteck ga-agwa gị na anyị enweghị ndekọ ya. Nke ahụ apụtaghị na ọ bụ adịgboroja. Jụọ pharmacist nwere ikike tupu i jiri ya.',
+			nextQ: 'Gịnị na-esote maka DETECK?',
+			nextA:
+				"Anyị na-ewu usoro nsochi n'ụzọ nkesa ọgwụ, ka i wee nwee ike ịhụ ebe batch gafere, site n'ụlọ nrụpụta, gafee onye nkesa ọ bụla, ruo ụlọ ahịa ọgwụ ma ọ bụ ụlọ ọgwụ rere ya.",
+			more: 'Ị ka nwere ajụjụ? Kpọtụrụ anyị ozugbo.',
+			partner: 'Soro anyị rụkọọ ọrụ',
+			api: 'API maka ndị na-ede koodu',
+			contactUs: 'Kpọtụrụ anyị'
 		},
 		verifyTitle: "Ngwugwu ọgwụ dị gị n'aka? Lelee ya ugbu a.",
 		verifyLabel: 'Nọmba serial dị na ngwugwu ahụ',
 		verifyButton: 'Lelee ya',
-		verifyFine:
-			"Ị ga-akwụ ụgwọ data dịka ọ na-adị. Nsonaazụ dabere na ndekọ ndị na-emepụta ọgwụ na-enye DETECK. Mgbe ozi ezughị ezu iji jide n'aka, Deteck ga-agwa gị.",
 		footerLead: "Anyị na ndị mmekọ n'ụzọ nkesa ọgwụ na Naịjirịa niile na-ewu DETECK.",
 		footerNav: 'Ala peeji',
 		footerProduct: 'Ngwaahịa',
 		footerCompany: 'Ụlọ ọrụ',
 		footerBusiness: 'Maka azụmahịa',
 		contact: 'Kpọtụrụ anyị',
-		photoCredit: 'Foto si na Unsplash na Pexels',
+		photoCredit: 'Foto si na Unsplash, Pexels na Wikimedia Commons',
+		cropped: 'e gbubiri ya',
 		legal:
 			"© 2026 DETECK. Nlele dabere na ndị na-emepụta ọgwụ sonyere na-edekọ ngwaahịa ha. DETECK na-elele ndekọ, na n'ime beta, otú ngwugwu si dị; o nweghị ike ịnwale ihe dị n'ime ngwugwu."
 	}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import { page } from '$app/state';
 	import type { PageProps } from './$types';
 	import Mascot from '#lib/ui/Mascot.svelte';
@@ -27,9 +28,8 @@
 	);
 </script>
 
+<Seo title={t.check.metaTitle} description={t.check.metaDescription} path="/check" multilingual />
 <svelte:head>
-	<title>{t.check.metaTitle}</title>
-	<meta name="description" content={t.check.metaDescription} />
 	<script src="/js/check.js" defer></script>
 	{#if turnstile}<script
 			src="https://challenges.cloudflare.com/turnstile/v0/api.js"
@@ -59,7 +59,6 @@
 				</div>
 			</div>
 
-			{#if !problem}<p class="eyebrow-dot desk-only">{t.check.eyebrow}</p>{/if}
 			<div class="home-title">
 				<h1>{t.check.title}<span class="desk-only" aria-hidden="true">.</span></h1>
 				<p class="muted phone-only">{t.check.subtitle}</p>
@@ -123,7 +122,6 @@
 
 		{#if problem}
 			<aside class="home-panel panel-tips desk-only" aria-labelledby="tips-title">
-				<p class="tips-eyebrow">{t.check.tipsEyebrow}</p>
 				<h2 id="tips-title">{t.check.tipsTitle}</h2>
 				<ul class="tips">
 					<li><Rich text={t.check.tip1} /></li>
@@ -204,20 +202,6 @@
 	.scan-btn {
 		width: 100%;
 	}
-	.eyebrow-dot {
-		margin: 0;
-		align-items: center;
-		gap: 8px;
-		font-size: 14px;
-		font-weight: 600;
-	}
-	.eyebrow-dot::before {
-		content: '';
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: #2d4fe0;
-	}
 
 	@media (min-width: 1024px) {
 		.home {
@@ -234,10 +218,6 @@
 			justify-content: center;
 			gap: 0;
 			padding: 0 40px 0 12px;
-		}
-		.eyebrow-dot {
-			display: flex;
-			margin-bottom: 18px;
 		}
 		.home-title h1 {
 			font-size: clamp(54px, 5vw, 72px);
@@ -441,14 +421,6 @@
 		.panel-tips {
 			padding: 32px 32px 0;
 			background: var(--peach);
-		}
-		.tips-eyebrow {
-			margin: 0;
-			font-size: 12px;
-			font-weight: 800;
-			letter-spacing: 0.06em;
-			text-transform: uppercase;
-			color: var(--peach-ink);
 		}
 		.panel-tips h2 {
 			margin-top: 10px;

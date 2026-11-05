@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/ui/Seo.svelte';
 	import type { PageProps } from './$types';
 	import PublicTop from '#lib/ui/PublicTop.svelte';
 	import SiteFooter from '#lib/ui/SiteFooter.svelte';
@@ -6,13 +7,10 @@
 	let { data }: PageProps = $props();
 </script>
 
-<svelte:head>
-	<title>Terms of use · DETECK</title>
-	<meta
-		name="description"
-		content="What a DETECK check can and can't tell you, and the rules for using the service."
-	/>
-</svelte:head>
+<Seo
+	title="Terms of use · DETECK"
+	description="What a DETECK check can and can't tell you, and the rules for using the service."
+/>
 
 <div class="shell">
 	<PublicTop />

@@ -27,6 +27,8 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+	<link rel="manifest" href="/site.webmanifest" />
 	<meta name="theme-color" content="#FBFBF9" />
 </svelte:head>
 

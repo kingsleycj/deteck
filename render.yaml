@@ -41,8 +41,11 @@ envVarGroups:
         value: auto
       - key: EMAIL_DRIVER
         value: resend
+      # The packaging photo check is open to everyone (B-83, 5 Nov 2026). Each check uses Claude
+      # credit (about NGN 150); 'pilot' limits it to browsers that opened /pilot/<PILOT_ACCESS_CODE>,
+      # 'off' turns it off.
       - key: FEATURE_PACKAGING_AI
-        value: 'off'
+        value: public
       # "Report a suspected fake" is switched off for now; 'on' brings back the form and pages.
       - key: FEATURE_REPORTS
         value: 'off'
@@ -54,10 +57,14 @@ envVarGroups:
         value: deteck_recall_alert
       - key: WHATSAPP_TEMPLATE_LANGUAGE
         value: en
-      # Public pages in English only until each translation has been checked by a native
-      # speaker (docs/reference/translation-review.md). Then, for example: en,pcm,ha,yo,ig
+      # Languages on the public pages. All five were approved on 5 Nov 2026 (B-83).
       - key: LANGUAGES
-        value: en
+        value: en,pcm,ha,yo,ig
+      # The film on the landing page (a 1.25x-speed demo for now): files in apps/web/static/media.
+      - key: SHOWREEL_URL
+        value: /media/deteck-demo.mp4
+      - key: SHOWREEL_POSTER
+        value: /media/deteck-demo-poster.webp
       # Connections per process. Each website copy or worker uses up to this many plus about 5
       # (the job queue and reports); keep the total under the database plan's limit.
       - key: DATABASE_POOL_MAX

@@ -1,8 +1,9 @@
 /**
- * Photos for the landing pages. The public page uses `hero` and `citizens`; the others wait for the
- * business landing page (B-82). From Unsplash (unsplash.com/license: free, credit optional), Pexels
- * (pexels.com/license: free, credit optional) and Wikimedia Commons (CC BY-SA: credit it with the
- * licence, and mark it as cropped). The people shown don't endorse DETECK, so a page must never say
+ * Photos for the landing page: `hero`, `citizens` (the vision), and `individuals`, `pharmacies`
+ * and `distributors` (Who we serve, B-83); `hospitals` and `manufacturers` aren't used for now.
+ * From Unsplash (unsplash.com/license: free, credit optional), Pexels (pexels.com/license: free,
+ * credit optional) and Wikimedia Commons (CC BY-SA: credit it with the licence, and mark it as
+ * cropped). The people shown don't endorse DETECK, so a page must never say
  * or imply they do. Each file is saved as `static/img/landing/<file>-{640,1024,1600}.webp`, 3:2.
  */
 interface Photo {
@@ -16,18 +17,33 @@ interface Photo {
 }
 
 export const LANDING_PHOTOS = {
-	// No brand is readable on the box or the foil. Not taken in Nigeria, and the page doesn't say so.
+	// No text or brand anywhere (B-83, replaces Unsplash F6clvre8fGg). Not taken in Nigeria, and
+	// the page doesn't say so.
 	hero: {
-		file: 'counter-capsules',
-		photographer: 'Melany (tuinfosalud.com)',
+		file: 'orange-capsules',
+		photographer: 'Jorge Campos',
 		source: 'Unsplash',
-		page: 'https://unsplash.com/photos/F6clvre8fGg'
+		page: 'https://unsplash.com/photos/fbXayXy0Pok'
 	},
 	citizens: {
 		file: 'abuja-cafe',
 		photographer: 'Muhammad-Taha Ibrahim',
 		source: 'Pexels',
 		page: 'https://www.pexels.com/photo/33837432/'
+	},
+	// Verify further: a DETECK camera frame drawn over this photo of unlabelled blister strips (B-83).
+	verify: {
+		file: 'verify-scan',
+		photographer: 'Christine Sandu',
+		source: 'Unsplash',
+		page: 'https://unsplash.com/photos/jwWtZrm67VI'
+	},
+	// "Individuals" in Who we serve (B-83). The page gives its location as Lagos, Nigeria.
+	individuals: {
+		file: 'lagos-couch',
+		photographer: 'Ninthgrid',
+		source: 'Unsplash',
+		page: 'https://unsplash.com/photos/TRkyQgyb4c0'
 	},
 	pharmacies: {
 		file: 'ikeja-pharmacy',

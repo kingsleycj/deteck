@@ -67,7 +67,12 @@
 				].join(' · ')
 			: undefined
 	);
-	const noReference = $derived(page.url.searchParams.get('scan') === 'noref');
+	// Back from /scan without a packaging comparison: no photos from the maker, or the check is off.
+	const scanNote = $derived(
+		{ noref: t.packaging.notAvailable, off: t.packaging.notAvailableYet }[
+			page.url.searchParams.get('scan') ?? ''
+		] ?? null
+	);
 </script>
 
 <svelte:head>
@@ -217,8 +222,8 @@
 			</div>
 		{/snippet}
 
-		{#if noReference}
-			<p class="notice notice-info small" role="status">{t.packaging.notAvailable}</p>
+		{#if scanNote}
+			<p class="notice notice-info small" role="status">{scanNote}</p>
 		{/if}
 
 		<main class="result result-{layout}">
@@ -253,7 +258,6 @@
 				<section class="col journey-panel" aria-labelledby="journey-title">
 					<div class="jp-head">
 						<div>
-							<p class="eyebrow-dot">{t.journey.title}</p>
 							<h2 id="journey-title">
 								{j.state === 'BATCH_LEVEL'
 									? journeyLinkLine(j, t)
@@ -303,7 +307,6 @@
 				</div>
 				<div class="col">
 					<section class="card nojourney" aria-labelledby="journey-title">
-						<p class="eyebrow-dot">{t.journey.title}</p>
 						<div class="nj-circle"><div><Mascot mood="thinking" /></div></div>
 						<h2 id="journey-title">{t.journey.noneTitle}</h2>
 						<p class="muted">
@@ -489,21 +492,6 @@
 	.nj-circle {
 		display: none;
 	}
-	.eyebrow-dot {
-		margin: 0;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 13px;
-		font-weight: 600;
-	}
-	.eyebrow-dot::before {
-		content: '';
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: #2d4fe0;
-	}
 
 	/* ---- the desktop designs (D2, D4, D11, D14) */
 	@media (min-width: 1024px) {
@@ -627,9 +615,6 @@
 			padding: 28px;
 			border-radius: 28px;
 			text-align: center;
-		}
-		.nojourney .eyebrow-dot {
-			align-self: flex-start;
 		}
 		.nj-circle {
 			display: flex;
